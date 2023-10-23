@@ -1,225 +1,140 @@
-<template>
-    <!-- <div class="container header">
-        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                <span class="fs-4"><strong>Телефонный Справочник</strong></span>
-            </a>
-
-            <ul class="nav nav-pills">
-                <li class="nav-item"><a href="#" class="nav-link" aria-current="page"><strong>Телефоны</strong></a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><strong>Квартиры</strong></a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><strong>Дома</strong></a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><strong>Улицы</strong></a></li>
-                <li class="nav-item"><a href="#" class="nav-link active" aria-current="page"><strong>Города</strong></a>
-                </li>
-            </ul>
-        </header>
-    </div> -->
-
-    <div id="liveAlertPlaceholder"></div>
-
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="col-2" id="title_container">
-                        <h1 class="text-start colorGreen"><strong>Города</strong></h1>
-
-                        <div class="btn-container">
-                            <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
-                                data-bs-target="#myModal"><strong>+</strong></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row table_container">
-                <div class="col-12">
-                    <div v-if="data">
-                        <!-- Создаем таблицу для отображения данных -->
-                        <table>
-                            <tbody>
-                                <!-- Итерируемся по данным городов и улиц -->
-                                <tr v-for="(city, index) in data" :key="index">
-                                    <!-- Отображаем имя города в ячейке "Город" -->
-                                    <td>
-                                        <div id="title_list_btn_container">
-                                            <div id="title_list_container">
-                                                <h6 class="alphabet"><strong class="city-icon" v-if="city.city_Name">{{
-                                                    city.city_Name.charAt(0) }}</strong></h6>
-
-                                                <h4><strong>{{ city.city_Name }}</strong></h4>
-                                            </div>
-
-                                            <div class="btn-group dropend">
-                                                <button class="btn btn-primary dropdown-toggle" type="button"
-                                                    data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu">
-                                                    <i class="bi bi-three-dots-vertical" id="i-menu"></i>
-                                                </button>
-
-                                                <ul class="dropdown-menu gap-1 p-2 rounded-3 mx-0 shadow w-220px">
-                                                    <li>
-                                                        <a class="dropdown-item rounded-2" data-bs-toggle="modal"
-                                                            data-bs-target="#modal-update" id="dropdown-upd"
-                                                            @click="prepareUpdate(city.city_ID)" href="#">
-                                                            <i class="bi bi-pen-fill" id="i-dropdown"></i>
-                                                            Обновить город
-                                                            
-                                                        </a>
-                                                    </li>
-
-                                                    
-                                                    <li>
-                                                        <hr class="dropdown-divider">
-                                                    </li>
-
-                                                    <li>
-                                                        <a class="dropdown-item rounded-2" data-bs-toggle="modal"
-                                                            data-bs-target="#modal-delete" id="dropdown-del"
-                                                            @click="prepareUpdate(city.city_ID)" href="#">
-                                                            <i class="bi bi-trash-fill" id="i-dropdown"></i>
-                                                            Удалить город
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </td>
-
-                                    <td>
-                                        <ul class="no-bullets-list">
-                                            <!-- Используем условие для проверки наличия улиц и отображения их или "Нет улиц" -->
-                                            <li v-for="(street, sIndex) in city.streets" :key="sIndex">
-                                                <div class="inner_list_container">
-                                                    <h6><i class="bi bi-signpost-fill" id="i-list"></i></h6>
-
-                                                    <h6><strong>{{ street ? street.street_Name : 'Нет улиц' }}</strong></h6>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- <div class="container">
-        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-            <div class="col-md-4 d-flex align-items-center">
-                <span class="mb-3 mb-md-0 text-body-secondary">Телефонный Справочник <strong>&middot;</strong> 2023</span>
-            </div>
-
-        </footer>
-    </div> -->
-
-    <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Добавление города</h1>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <form @submit.prevent="createCity">
-                        <div class="mb-3" id="message-text_container">
-                            <label for="message-text" class="col-form-label">Введите название:</label>
-
-                            <input v-model="newCityName" type="text"
-                                :class="{ 'form-control': true, 'is-invalid': !newCityName, 'is-valid': newCityName }"
-                                id="message-text" autocomplete="off">
-                        </div>
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-
-                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @click="createCity"
-                        :disabled="!newCityName">Добавить</button>
-
-                    <!-- <button type="button" class="btn btn-primary" id="liveAlertBtn" data-bs-dismiss="modal"
-                        @click="showAlert">Show live alert</button> -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modal-update" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Обновление города</h1>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <form @submit.prevent="updateCity">
-                        <div class="mb-3" id="message-text_container">
-                            <label for="message-text" class="col-form-label">Введите новое название:</label>
-
-                            <input v-model="newCityName" type="text"
-                                :class="{ 'form-control': true, 'is-invalid': !newCityName, 'is-valid': newCityName }"
-                                id="message-text" autocomplete="off">
-                        </div>
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-
-                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @click="updateCity"
-                        :disabled="!newCityName">Обновить</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modal-delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Удалить город?</h1>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body" id="mb-delete">
-                    <form @submit.prevent="deleteCity">
-                        <label id="l-delete">
-                            <h1><i class="bi bi-exclamation-triangle-fill" id="i-danger"></i></h1>
-                            Удаление этого города также приведет к удалению его данных.
-                        </label>
-                    </form>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                        @click="deleteCity">Удалить</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
+<style src="../styles/bootstrap.min.css"></style>
+<style src="../styles/bootstrap-icons.css"></style>
+<style src="../styles/city.css"></style>
+<template src="../templates/city.html"></template>
 
 <script>
-import cityScript from '@/scripts/city.js';
+import axios from 'axios';
+import '@/scripts/bootstrap.bundle.min.js';
 
 export default {
-    mixins: [cityScript], // Используйте логику из city.js
+    data() {
+        return {
+            data: null, // Инициализируем переменную для хранения данных
+            newCityName: '', // Добавьте новое поле для хранения названия нового города
+            updatedCityId: null, // Добавляем поле для хранения идентификатора обновляемого города
+            alertMessage: null, // Добавьте переменную для хранения сообщения
+        };
+    },
+
+    mounted() {
+        // Вызываем fetchData при загрузке компонента
+        this.fetchData();
+    },
+
+    methods: {
+        showAlert(alertMessage, alertType) {
+            const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+            const wrapper = document.createElement('div');
+
+            if (alertMessage) {
+                const icon = alertType === 'danger' ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill';
+
+                // Удалите слово "Ошибка" из текста уведомления при ошибке
+                alertMessage = alertType === 'danger' ? alertMessage.replace('Ошибка: ', '') : alertMessage;
+
+                wrapper.innerHTML = `
+                    <div class="alert alert-${alertType} alert-dismissible" role="alert">
+                        <div><i class="bi ${icon}" id="i-check"></i>${alertMessage}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`;
+                alertPlaceholder.append(wrapper);
+            }
+            // Добавляем код для автоматического закрытия уведомления через 5 секунд
+            setTimeout(() => {
+                wrapper.remove(); // Удаляем уведомление из DOM через 5 секунд
+            }, 5000);
+        },
+
+        fetchData() {
+            axios.get('https://localhost:5001/api/city') // Выполняем GET-запрос к серверу
+                .then(response => {
+                    const sortedData = response.data.map(city => {
+                        // Сортируем улицы для каждого города
+                        city.streets = city.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
+                        return city;
+                    });
+
+                    // Сортируем города по имени
+                    this.data = sortedData.sort((a, b) => a.city_Name.localeCompare(b.city_Name));
+                })
+
+                .catch(error => {
+                    console.error('Ошибка при выполнении GET запроса:', error); // Выводим ошибку в случае неудачи
+                })
+        },
+
+        createCity() {
+            this.alertMessage = null; // Сброс сообщения перед выполнением запроса
+
+            const cityData = {
+                City_Name: this.newCityName, // Используйте значение из поля ввода
+            };
+
+            axios.post('https://localhost:5001/api/city', cityData) // Отправьте POST-запрос
+                .then(response => {
+                    console.log(response.data);
+                    this.data.push(response.data);
+                    this.newCityName = '';
+                    this.fetchData();
+                    this.alertMessage = 'Город добавлен'; // Установите сообщение об успешном добавлении
+                    this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
+                })
+
+                .catch(error => {
+                    console.error('Ошибка при выполнении POST запроса:', error);
+                    this.alertMessage = error.response.data; // Установите сообщение об ошибке из response.data
+                    this.showAlert(this.alertMessage, 'danger'); // Отображение уведомления с типом 'danger'
+                });
+        },
+
+        prepareUpdate(cityId) {
+            this.updatedCityId = cityId;
+        },
+
+        updateCity() {
+            this.alertMessage = null; // Сброс сообщения перед выполнением запроса
+
+            const cityData = {
+                City_Name: this.newCityName,
+            };
+
+            // Посылаем PUT-запрос на сервер для обновления города
+            axios.put(`https://localhost:5001/api/city/${this.updatedCityId}`, cityData)
+                .then(response => {
+                    console.log(response.data);
+                    // Обновляем данные на клиенте
+                    this.fetchData();
+                    // Сбрасываем значения
+                    this.updatedCityId = null;
+                    this.newCityName = '';
+                    this.alertMessage = 'Город обновлен'; // Установите сообщение об успешном обновлении
+                    this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
+                })
+                .catch(error => {
+                    console.error('Ошибка при выполнении PUT запроса:', error);
+                    this.alertMessage = error.response.data; // Установите сообщение об ошибке из response.data
+                    this.showAlert(this.alertMessage, 'danger'); // Отображение уведомления с типом 'danger'
+                });
+        },
+
+        deleteCity() {
+            // Посылаем Delete-запрос на сервер для удаления города
+            axios.delete(`https://localhost:5001/api/city/${this.updatedCityId}`)
+                .then(response => {
+                    console.log(response.data);
+                    // Обновляем данные на клиенте
+                    this.fetchData();
+                    // Сбрасываем значения
+                    // this.updatedCityId = null;
+                    // this.newCityName = '';
+                    this.alertMessage = 'Город удален'; // Установите сообщение об успешном удалении
+                    this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
+                })
+                .catch(error => {
+                    console.error('Ошибка при выполнении DELETE запроса:', error);
+                });
+        },
+    },
 };
 </script>
-
-<style>
-@import "@/styles/bootstrap.min.css";
-@import '/node_modules/bootstrap-icons/font/bootstrap-icons.css';
-@import "@/styles/city.css";
-</style>
