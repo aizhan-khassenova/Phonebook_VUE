@@ -64,9 +64,11 @@
                                                             @click="prepareUpdate(city.city_ID)" href="#">
                                                             <i class="bi bi-pen-fill" id="i-dropdown"></i>
                                                             Обновить город
+                                                            
                                                         </a>
                                                     </li>
 
+                                                    
                                                     <li>
                                                         <hr class="dropdown-divider">
                                                     </li>
