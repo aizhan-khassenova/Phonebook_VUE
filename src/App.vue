@@ -1,8 +1,9 @@
 <template>
-  <City />
+  <!-- <City /> -->
+  <router-view />
 </template>
 
-<script>
+<!-- <script>
 import City from './components/City.vue'
 
 export default {
@@ -11,7 +12,7 @@ export default {
     City
   }
 }
-</script>
+</script> -->
 
 <style>
 #app {

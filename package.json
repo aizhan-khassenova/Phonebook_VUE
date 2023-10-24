@@ -14,7 +14,8 @@
     "bootstrap-icons": "^1.11.1",
     "core-js": "^3.8.3",
     "v-click-outside": "^3.2.0",
-    "vue": "^3.2.13"
+    "vue": "^3.2.13",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -37,7 +38,9 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": {"vue/multi-word-component-names": "off"}
+    "rules": {
+      "vue/multi-word-component-names": "off"
+    }
   },
   "browserslist": [
     "> 1%",
