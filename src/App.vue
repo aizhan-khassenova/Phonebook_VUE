@@ -1,18 +1,8 @@
 <template>
-  <!-- <City /> -->
-  <router-view />
+  <div>
+    <router-view />
+  </div>
 </template>
-
-<!-- <script>
-import City from './components/City.vue'
-
-export default {
-  name: 'App',
-  components: {
-    City
-  }
-}
-</script> -->
 
 <style>
 #app {

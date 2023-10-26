@@ -1,15 +1,27 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import City from '@/components/City'
+import Phone from '@/views/Phone'
 
 const routes = [
   {
     path: '/',
-    component: City
+    component: Phone
+  },
+  {
+    path: '/city',
+    component: () => import('@/views/City.vue')
   },
   {
     path: '/street',
-    component: () => import('@/components/Street.vue')
-  }
+    component: () => import('@/views/Street.vue')
+  },
+  {
+    path: '/house',
+    component: () => import('@/views/House.vue')
+  },
+  {
+    path: '/apartment',
+    component: () => import('@/views/Apartment.vue')
+  },
 ]
 
 const router = createRouter({
