@@ -1,8 +1,8 @@
 <template>
     <div class="row">
         <div class="col-12">
-            <div class="col-2" id="title_container">
-                <h1 class="text-start colorGreen"><strong>{{ title }}</strong></h1>
+            <div class="col-3" id="title_container">
+                <h1 class="text-start text-primary"><strong>{{ title }}</strong></h1>
 
                 <div class="btn-container">
                     <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"

@@ -51,10 +51,6 @@ footer {
 }
 
 
-.table_container {
-	padding: 50px 0;
-}
-
 table {
 	width: 100%;
 	border-collapse: collapse;
@@ -67,53 +63,6 @@ td {
 	vertical-align: top;
 	text-align: left;
 	width: 50%;
-}
-
-#title_list_btn_container {
-	display: flex;
-	justify-content: space-between;
-	flex-wrap: wrap;
-}
-
-#title_list_container {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
-}
-
-.alphabet {
-	margin-right: 30px;
-	text-align: center;
-}
-
-.city-icon {
-	width: 30px;
-	height: 30px;
-	border: 2px solid var(--primary-color);
-	border-radius: 50%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: var(--primary-color);
-	/* line-height: 30px; */
-}
-
-.no-bullets-list {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-}
-
-#i-list {
-	color: var(--primary-color);
-	margin-right: 10px;
-}
-
-.inner_list_container {
-	display: flex;
-	align-items: center;
-	padding-top: 5px;
-	padding-bottom: 5px;
 }
 
 h1,
