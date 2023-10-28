@@ -4,6 +4,8 @@
         <section>
             <div class="container">
                 <Title title="Улицы"></Title>
+                <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
+                    data-bs-target="#myModal" @click="fetchCities">+</button>
 
                 <div class="row" id="table_container">
                     <div class="col-12">
@@ -88,7 +90,50 @@
 
         <Footer></Footer>
 
-        <ModalCreate @item-added="onStreetAdded" title="Добавить улицу" inputLabel="Введите название улицы:" apiEndpoint="street" name="street_Name"></ModalCreate>
+        <!-- <ModalCreate @item-added="onStreetAdded" title="Добавить улицу" inputLabel="Введите название улицы:" apiEndpoint="street" name="street_Name"></ModalCreate> -->
+
+        <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Добавить улицу</h1>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form @submit.prevent="createStreet">
+                            <div class="mb-3" id="message-text_container">
+                                <div class="col-md-3">
+                                    <label for="validationCustom04" class="form-label">Город</label>
+                                    <select class="form-select" id="validationCustom04" required v-model="selectedCity">
+                                        <option selected disabled value="">Выберите город</option>
+                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
+                                            city.city_Name }}</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Пожалуйста, выберите корректный город.
+                                    </div>
+                                </div>
+
+                                <label for="message-text" class="col-form-label">Введите название:</label>
+
+                                <input v-model="newStreetName" type="text"
+                                    :class="{ 'form-control': true, 'is-invalid': !newStreetName, 'is-valid': newStreetName }"
+                                    id="message-text" autocomplete="off">
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @click="createStreet"
+                            :disabled="!newStreetName">Добавить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -98,15 +143,17 @@ import '@/scripts/bootstrap.bundle.min.js';
 import Header from '@/components/Header.vue';
 import Title from '@/components/Title.vue';
 import Footer from '@/components/Footer.vue';
-import ModalCreate from '@/components/ModalCreate.vue';
+// import ModalCreate from '@/components/ModalCreate.vue';
 
 export default {
     data() {
         return {
             data: null, // Инициализируем переменную для хранения данных
             newStreetName: '', // Добавьте новое поле для хранения названия нового города
-            updatedStreetId: null, // Добавляем поле для хранения идентификатора обновляемого города
-            alertMessage: null, // Добавьте переменную для хранения сообщения
+            cityId: null,
+            cities: [],
+            // updatedStreetId: null, // Добавляем поле для хранения идентификатора обновляемого города
+            // alertMessage: null, // Добавьте переменную для хранения сообщения
         };
     },
 
@@ -114,7 +161,7 @@ export default {
         Header,
         Title,
         Footer,
-        ModalCreate,
+        // ModalCreate,
     },
 
     mounted() {
@@ -145,10 +192,56 @@ export default {
                 })
         },
 
-        onStreetAdded(newCity) {
-            // Обновляем список городов после добавления нового города
-            this.data.push(newCity);
-            this.fetchData(); // Запрашиваем актуальные данные с сервера
+        // onStreetAdded() {
+        //     // Обновляем список городов после добавления нового города
+        //     // this.data.push(newCity);
+        //     this.fetchData(); // Запрашиваем актуальные данные с сервера
+        // },
+
+        fetchCities() {
+            axios.get('https://localhost:5001/api/city')
+                .then(response => {
+                    this.cities = response.data; // Предполагается, что полученные данные содержат список городов
+                    console.log(this.cities);
+                })
+                .catch(error => {
+                    console.error('Ошибка при выполнении GET запроса для получения городов:', error);
+                });
+        },
+
+        createStreet() {
+            this.fetchCities();
+            this.alertMessage = null; // Сброс сообщения перед выполнением запроса
+
+            const streetData = {
+                Street_Name: this.newStreetName, // Используйте значение из поля ввода
+            };
+
+            const cityIdData = {
+                City_ID: this.selectedCity, // Используйте значение из поля ввода
+            };
+
+            console.log(cityIdData); // Вывод выбранного города в консоль
+
+            axios.post(`https://localhost:5001/api/street/${cityIdData.City_ID}/`, streetData) // Отправьте POST-запрос
+                .then(response => {
+                    console.log(response.data);
+                    this.data.push(response.data);
+                    this.newStreetName = '';
+                    this.cityId = null;
+                    this.fetchData();
+                    // this.alertMessage = 'Город добавлен'; // Установите сообщение об успешном добавлении
+                    // this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
+
+                    // this.$emit('city-added', response.data); // Отправляем событие с новым городом
+                    // this.newStreetName = '';
+                })
+
+                .catch(error => {
+                    console.error('Ошибка при выполнении POST запроса:', error);
+                    // this.alertMessage = error.response.data; // Установите сообщение об ошибке из response.data
+                    // this.showAlert(this.alertMessage, 'danger'); // Отображение уведомления с типом 'danger'
+                });
         },
     }
 }

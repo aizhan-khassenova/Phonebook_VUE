@@ -63,6 +63,7 @@
                                             </div>
                                         </td>
 
+
                                         <td>
                                             <ul id="no-bullets-list">
                                                 <li v-for="(street, sIndex) in city.streets" :key="sIndex">
@@ -92,7 +93,38 @@
 
         <Footer></Footer>
 
-        <ModalCreate @item-added="onCityAdded" title="Добавить город" inputLabel="Введите название города:" apiEndpoint="city" name="city_Name"></ModalCreate>
+        <!-- <ModalCreate @city-added="onCityAdded" title="Добавить город" inputLabel="Введите название города:" apiEndpoint="city" name="city_Name"></ModalCreate> -->
+
+        <!-- <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{ title }}</h1>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form @submit.prevent="createCity">
+                            <div class="mb-3" id="message-text_container">
+                                <label for="message-text" class="col-form-label">Введите название:</label>
+
+                                <input v-model="newCityName" type="text"
+                                    :class="{ 'form-control': true, 'is-invalid': !newCityName, 'is-valid': newCityName }"
+                                    id="message-text" autocomplete="off">
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @click="createCity"
+                            :disabled="!newCityName">Добавить</button>
+                    </div>
+                </div>
+            </div>
+        </div> -->
 
         <div class="modal fade" id="modal-update" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -161,7 +193,7 @@ import '@/scripts/bootstrap.bundle.min.js';
 import Header from '@/components/Header.vue';
 import Title from '@/components/Title.vue';
 import Footer from '@/components/Footer.vue';
-import ModalCreate from '@/components/ModalCreate.vue';
+// import ModalCreate from '@/components/ModalCreate.vue';
 
 export default {
     data() {
@@ -177,7 +209,7 @@ export default {
         Header,
         Title,
         Footer,
-        ModalCreate,
+        // ModalCreate,
     },
 
     mounted() {
@@ -227,11 +259,11 @@ export default {
                 })
         },
 
-        onCityAdded(newCity) {
-            // Обновляем список городов после добавления нового города
-            this.data.push(newCity);
-            this.fetchData(); // Запрашиваем актуальные данные с сервера
-        },
+        // onCityAdded() {
+        //     // Обновляем список городов после добавления нового города
+        //     // this.data.push(newCity);
+        //     this.fetchData(); // Запрашиваем актуальные данные с сервера
+        // },
 
         // createCity() {
         //     this.alertMessage = null; // Сброс сообщения перед выполнением запроса

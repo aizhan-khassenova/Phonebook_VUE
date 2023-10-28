@@ -29,7 +29,7 @@
             </div>
         </div>
     </div>
-</template>
+</template> 
 
 <script>
 import axios from 'axios';
@@ -99,7 +99,7 @@ export default {
 
                             <input v-model="newItemName" type="text"
                                 :class="{ 'form-control': true, 'is-invalid': !newItemName, 'is-valid': newItemName }"
-                                id="message-text" autocomplete="off" />
+                                id="message-text" autocomplete="off"/>
                         </div>
                     </form>
 
@@ -116,7 +116,7 @@ export default {
     </div>
 </template>
   
-<script>
+ <script>
 import axios from 'axios';
 import '@/scripts/bootstrap.bundle.min.js';
 
@@ -148,8 +148,9 @@ export default {
             axios
             .post('https://localhost:5001/api/' + this.apiEndpoint, newItemData) // Отправьте POST-запрос
                 .then((response) => {
-                    this.$emit('item-added', response.data); // Отправляем событие с новым элементом (городом или улицей)
+                    this.$emit('city-added'); // Отправляем событие с новым элементом (городом или улицей)
                     this.newItemName = '';
+                    console.log(response.data);
                 })
                 .catch((error) => {
                     console.error('Ошибка при выполнении POST запроса:', error);
@@ -158,4 +159,4 @@ export default {
     },
 };
 </script>
-  
+   
