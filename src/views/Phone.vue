@@ -3,7 +3,20 @@
         <Header></Header>
         <section>
             <div class="container">
-                <Title title="Телефоны"></Title>
+                <!-- <Title title="Телефоны"></Title> -->
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="col-3" id="title_container">
+                            <h1 class="text-start text-primary"><strong>Телефоны</strong></h1>
+
+                            <div class="btn-container">
+                                <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
+                                    data-bs-target="#myModal"><strong>+</strong></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="row" id="table_container">
                     <div class="col-12">
@@ -27,7 +40,7 @@
                                                     </h4>
                                                 </div>
 
-                                                
+
                                             </div>
                                         </td>
 
@@ -44,41 +57,41 @@
                                                                 {{ phone ? phone.phone_Number : 'Нет телефонов' }}
                                                             </strong>
                                                         </h6>
-                                                        
+
                                                     </div>
                                                 </li>
                                             </ul>
 
                                             <div class="btn-group dropend">
-                                                    <button class="btn btn-primary dropdown-toggle" type="button"
-                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu">
-                                                        <i class="bi bi-three-dots-vertical" id="i-menu"></i>
-                                                    </button>
+                                                <button class="btn btn-primary dropdown-toggle" type="button"
+                                                    data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu">
+                                                    <i class="bi bi-three-dots-vertical" id="i-menu"></i>
+                                                </button>
 
-                                                    <ul class="dropdown-menu gap-1 p-2 rounded-3 mx-0 shadow w-220px">
-                                                        <li>
-                                                            <a class="dropdown-item rounded-2" data-bs-toggle="modal"
-                                                                data-bs-target="#modal-update" id="dropdown-upd"
-                                                                @click="prepareUpdate(city.city_ID)" href="#">
-                                                                <i class="bi bi-pen-fill" id="i-dropdown"></i>
-                                                                Обновить город
-                                                            </a>
-                                                        </li>
+                                                <ul class="dropdown-menu gap-1 p-2 rounded-3 mx-0 shadow w-220px">
+                                                    <li>
+                                                        <a class="dropdown-item rounded-2" data-bs-toggle="modal"
+                                                            data-bs-target="#modal-update" id="dropdown-upd"
+                                                            @click="prepareUpdate(city.city_ID)" href="#">
+                                                            <i class="bi bi-pen-fill" id="i-dropdown"></i>
+                                                            Обновить город
+                                                        </a>
+                                                    </li>
 
-                                                        <li>
-                                                            <hr class="dropdown-divider">
-                                                        </li>
+                                                    <li>
+                                                        <hr class="dropdown-divider">
+                                                    </li>
 
-                                                        <li>
-                                                            <a class="dropdown-item rounded-2" data-bs-toggle="modal"
-                                                                data-bs-target="#modal-delete" id="dropdown-del"
-                                                                @click="prepareUpdate(city.city_ID)" href="#">
-                                                                <i class="bi bi-trash-fill" id="i-dropdown"></i>
-                                                                Удалить город
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
+                                                    <li>
+                                                        <a class="dropdown-item rounded-2" data-bs-toggle="modal"
+                                                            data-bs-target="#modal-delete" id="dropdown-del"
+                                                            @click="prepareUpdate(city.city_ID)" href="#">
+                                                            <i class="bi bi-trash-fill" id="i-dropdown"></i>
+                                                            Удалить город
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -91,7 +104,61 @@
 
         <Footer></Footer>
 
-        <ModalCreate @item-added="onPhoneAdded" title="Добавить контакт" inputLabel="Введите имя и телефон контакта:" apiEndpoint="phone"></ModalCreate>
+        <!-- <ModalCreate @item-added="onPhoneAdded" title="Добавить контакт" inputLabel="Введите имя и телефон контакта:"
+            apiEndpoint="phone"></ModalCreate> -->
+
+            <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Добавить улицу</h1>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form @submit.prevent="createStreet">
+                            <div class="mb-3" id="val-cont">
+                                <div class="col-md-5" id="val-item">
+                                    <label for="validationServer04" class="form-label">Город:</label>
+                                    <select class="form-select is-invalid" id="validationServer04" required
+                                        v-model="selectedCity">
+                                        <option selected disabled value="">Выберите...</option>
+                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
+                                            city.city_Name }}</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-5" id="val-item">
+                                    <label for="validationServer04" class="form-label">Город:</label>
+                                    <select class="form-select is-invalid" id="validationServer04" required
+                                        v-model="selectedCity">
+                                        <option selected disabled value="">Выберите...</option>
+                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
+                                            city.city_Name }}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3" id="message-text_container">
+                                <label for="message-text" class="col-form-label">Введите название:</label>
+
+                                <input v-model="newStreetName" type="text"
+                                    :class="{ 'form-control': true, 'is-invalid': !newStreetName, 'is-valid': newStreetName }"
+                                    id="message-text" autocomplete="off">
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+
+                        <button type="submit" class="btn btn-primary" @click="createStreet"
+                            :disabled="!newStreetName">Добавить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -99,9 +166,9 @@
 import axios from 'axios';
 import '@/scripts/bootstrap.bundle.min.js';
 import Header from '@/components/Header.vue';
-import Title from '@/components/Title.vue';
+// import Title from '@/components/Title.vue';
 import Footer from '@/components/Footer.vue';
-import ModalCreate from '@/components/ModalCreate.vue';
+// import ModalCreate from '@/components/ModalCreate.vue';
 
 export default {
     data() {
@@ -115,9 +182,9 @@ export default {
 
     components: {
         Header,
-        Title,
+        // Title,
         Footer,
-        ModalCreate,
+        // ModalCreate,
     },
 
     mounted() {
@@ -161,6 +228,15 @@ export default {
 <style src="../styles/city.css"></style>
 
 <style scoped>
+#val-cont {
+    display: flex;
+    justify-content: space-between;
+}
+#val-item {
+    text-align: left;
+    width: 45%;
+} 
+
 #table_container {
     padding: 50px 0;
 }

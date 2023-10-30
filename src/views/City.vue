@@ -6,7 +6,18 @@
 
         <section>
             <div class="container">
-                <Title title="Города"></Title>
+                <div class="row">
+                    <div class="col-12">
+                        <div id="title_container">
+                            <h1 class="text-start text-primary"><strong>Города</strong></h1>
+
+                            <div class="btn-container">
+                                <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
+                                    data-bs-target="#myModal"><strong>+</strong></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="row" id="table_container">
                     <div class="col-12">
@@ -93,13 +104,11 @@
 
         <Footer></Footer>
 
-        <!-- <ModalCreate @city-added="onCityAdded" title="Добавить город" inputLabel="Введите название города:" apiEndpoint="city" name="city_Name"></ModalCreate> -->
-
-        <!-- <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{ title }}</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Добавление города</h1>
 
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -119,12 +128,12 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
 
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @click="createCity"
+                        <button type="submit" class="btn btn-primary" @click="createCity"
                             :disabled="!newCityName">Добавить</button>
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
 
         <div class="modal fade" id="modal-update" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -191,9 +200,7 @@
 import axios from 'axios';
 import '@/scripts/bootstrap.bundle.min.js';
 import Header from '@/components/Header.vue';
-import Title from '@/components/Title.vue';
 import Footer from '@/components/Footer.vue';
-// import ModalCreate from '@/components/ModalCreate.vue';
 
 export default {
     data() {
@@ -207,9 +214,7 @@ export default {
 
     components: {
         Header,
-        Title,
         Footer,
-        // ModalCreate,
     },
 
     mounted() {
@@ -265,29 +270,33 @@ export default {
         //     this.fetchData(); // Запрашиваем актуальные данные с сервера
         // },
 
-        // createCity() {
-        //     this.alertMessage = null; // Сброс сообщения перед выполнением запроса
+        createCity() {
+            this.alertMessage = null; // Сброс сообщения перед выполнением запроса
 
-        //     const cityData = {
-        //         City_Name: this.newCityName, // Используйте значение из поля ввода
-        //     };
+            const cityData = {
+                City_Name: this.newCityName, // Используйте значение из поля ввода
+            };
 
-        //     axios.post('https://localhost:5001/api/city', cityData) // Отправьте POST-запрос
-        //         .then(response => {
-        //             console.log(response.data);
-        //             this.data.push(response.data);
-        //             this.newCityName = '';
-        //             this.fetchData();
-        //             this.alertMessage = 'Город добавлен'; // Установите сообщение об успешном добавлении
-        //             this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
-        //         })
+            axios.post('https://localhost:5001/api/city', cityData) // Отправьте POST-запрос
+                .then(response => {
+                    console.log(response.data);
+                    this.data.push(response.data);
+                    this.newCityName = '';
+                    this.fetchData();
+                    this.alertMessage = 'Город добавлен'; // Установите сообщение об успешном добавлении
+                    this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
+                })
 
-        //         .catch(error => {
-        //             console.error('Ошибка при выполнении POST запроса:', error);
-        //             this.alertMessage = error.response.data; // Установите сообщение об ошибке из response.data
-        //             this.showAlert(this.alertMessage, 'danger'); // Отображение уведомления с типом 'danger'
-        //         });
-        // },
+                .catch(error => {
+                    console.error('Ошибка при выполнении POST запроса:', error);
+                    this.alertMessage = error.response.data; // Установите сообщение об ошибке из response.data
+                    this.showAlert(this.alertMessage, 'danger'); // Отображение уведомления с типом 'danger'
+                });
+
+
+            // Закрыть модальное окно с использованием data-bs-dismiss
+            document.querySelector('[data-bs-dismiss="modal"]').click();
+        },
 
         prepareUpdate(cityId) {
             this.updatedCityId = cityId;
@@ -354,6 +363,8 @@ export default {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    /* border: 1px solid black; */
+
 }
 
 #sort_name_container {
@@ -384,10 +395,10 @@ export default {
 }
 
 #second_column_container {
+    height: 35px;
     display: flex;
     align-items: center;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    /* border: 1px solid black; */
 }
 
 #i-list {

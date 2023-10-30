@@ -2,6 +2,7 @@
 	--primary-color: #0d6efd;
 	--green-color: #41B883;
 	--black-color: #35495E;
+	--gray-color: #FCFCFD;
 }
 
 .colorGreen {
@@ -14,21 +15,20 @@
 
 section {
 	padding: 100px 0;
-	background-color: #eee
+	background-color: var(--gray-color);
 }
 
 header {
-	background-color: #eee;
+	background-color: var(--gray-color);
 }
 
 
 footer {
-	background-color: #eee;
+	background-color: var(--gray-color);
 }
 
 #title_container {
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
 	flex-wrap: wrap;
 }
@@ -37,6 +37,7 @@ footer {
 	border-radius: 50%;
 	height: 35px;
 	width: 35px;
+	margin-left: 35px;
 }
 
 #message-text {
@@ -48,6 +49,7 @@ footer {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
+
 }
 
 
@@ -79,6 +81,7 @@ h6 {
 	border-radius: 50%;
 	height: 35px;
 	width: 35px;
+	/* border: 1px solid black; */
 }
 
 #btn-menu::after {
