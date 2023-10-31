@@ -49,9 +49,9 @@
                                                         <li>
                                                             <a class="dropdown-item rounded-2" data-bs-toggle="modal"
                                                                 data-bs-target="#modal-update" id="dropdown-upd"
-                                                                @click="prepareUpdate(city.city_ID)" href="#">
+                                                                @click="prepareId(street.street_ID)" href="#">
                                                                 <i class="bi bi-pen-fill" id="i-dropdown"></i>
-                                                                Обновить город
+                                                                Обновить улицу
                                                             </a>
                                                         </li>
 
@@ -62,9 +62,9 @@
                                                         <li>
                                                             <a class="dropdown-item rounded-2" data-bs-toggle="modal"
                                                                 data-bs-target="#modal-delete" id="dropdown-del"
-                                                                @click="prepareUpdate(city.city_ID)" href="#">
+                                                                @click="prepareId(street.street_ID)" href="#">
                                                                 <i class="bi bi-trash-fill" id="i-dropdown"></i>
-                                                                Удалить город
+                                                                Удалить улицу
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -111,6 +111,18 @@
 
                     <div class="modal-body">
                         <form @submit.prevent="createStreet">
+
+
+                            <div class="mb-3" id="message-text_container">
+                                <label for="message-text" class="col-form-label">Улица:</label>
+
+                                <input v-model="newStreetName" type="text"
+                                    :class="{ 'form-control': true, 'is-invalid': !newStreetName, 'is-valid': newStreetName }"
+                                    id="message-text" autocomplete="off"
+                                    :title="newStreetName ? 'Все хорошо!' : 'Заполните это поле.'"
+                                    placeholder="Введите название">
+                            </div>
+
                             <div class="mb-3" id="val-cont">
                                 <div class="col-md-5" id="val-item">
                                     <label for="validationServer04" class="form-label">Город:</label>
@@ -126,15 +138,6 @@
                                     </select>
                                 </div>
                             </div>
-
-                            <div class="mb-3" id="message-text_container">
-                                <label for="message-text" class="col-form-label">Введите название:</label>
-
-                                <input v-model="newStreetName" type="text"
-                                    :class="{ 'form-control': true, 'is-invalid': !newStreetName, 'is-valid': newStreetName }"
-                                    id="message-text" autocomplete="off"
-                                    :title="newStreetName ? 'Все хорошо!' : 'Заполните это поле.'">
-                            </div>
                         </form>
                     </div>
 
@@ -147,6 +150,13 @@
                 </div>
             </div>
         </div>
+
+        <ModalUpdate @item-updated="onStreetChanged" :itemId="selectedStreetId" title="Обновление улицы" inputLabel="Улица:"
+            apiEndpoint="street" name="street_Name" inputplaceholder="Введите название"></ModalUpdate>
+
+        <ModalDelete @item-deleted="onStreetChanged" :itemId="selectedStreetId" title="Удалить улицу?"
+            inputLabel="Удаление этой улицы также приведет к удалению ее данных." apiEndpoint="street" name="street_Name"
+            inputplaceholder="Введите название"></ModalDelete>
     </div>
 </template>
 
@@ -155,6 +165,9 @@ import axios from 'axios';
 import '@/scripts/bootstrap.bundle.min.js';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
+import ModalUpdate from '@/components/ModalUpdate.vue';
+import ModalDelete from '@/components/ModalDelete.vue';
+
 
 export default {
     data() {
@@ -166,12 +179,15 @@ export default {
             selectedCity: null,
             // updatedStreetId: null, // Добавляем поле для хранения идентификатора обновляемого города
             alertMessage: null, // Добавьте переменную для хранения сообщения
+            selectedStreetId: null, // Добавляем поле для хранения идентификатора обновляемого города
         };
     },
 
     components: {
         Header,
         Footer,
+        ModalUpdate,
+        ModalDelete
     },
 
     mounted() {
@@ -230,6 +246,15 @@ export default {
         //     // this.data.push(newCity);
         //     this.fetchData(); // Запрашиваем актуальные данные с сервера
         // },
+
+        onStreetChanged() {
+            this.fetchData(); // Запрашиваем актуальные данные с сервера
+        },
+
+        prepareId(streetId) {
+            this.selectedStreetId = streetId;
+            console.log(streetId)
+        },
 
         fetchCities() {
             axios.get('https://localhost:5001/api/city')

@@ -45,25 +45,25 @@
                                                     </button>
 
                                                     <ul class="dropdown-menu gap-1 p-2 rounded-3 mx-0 shadow w-220px">
-                                                        <li>
+                                                        <!-- <li>
                                                             <a class="dropdown-item rounded-2" data-bs-toggle="modal"
                                                                 data-bs-target="#modal-update" id="dropdown-upd"
-                                                                @click="prepareUpdate(city.city_ID)" href="#">
+                                                                @click="prepareId(house.house_ID)" href="#">
                                                                 <i class="bi bi-pen-fill" id="i-dropdown"></i>
-                                                                Обновить город
+                                                                Обновить дом
                                                             </a>
                                                         </li>
 
                                                         <li>
                                                             <hr class="dropdown-divider">
-                                                        </li>
+                                                        </li> -->
 
                                                         <li>
                                                             <a class="dropdown-item rounded-2" data-bs-toggle="modal"
                                                                 data-bs-target="#modal-delete" id="dropdown-del"
-                                                                @click="prepareUpdate(city.city_ID)" href="#">
+                                                                @click="prepareId(house.house_ID)" href="#">
                                                                 <i class="bi bi-trash-fill" id="i-dropdown"></i>
-                                                                Удалить город
+                                                                Удалить дом
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -98,10 +98,6 @@
         </section>
 
         <Footer></Footer>
-
-        <!-- <ModalCreate @item-added="onHouseAdded" title="Добавить дом" inputLabel="Введите номер дома:" apiEndpoint="house"
-            name="house_Number"></ModalCreate> -->
-        <!-- <ModalCreate @item-added="onStreetAdded" title="Добавить улицу" inputLabel="Введите название улицы:" apiEndpoint="street" name="street_Name"></ModalCreate> -->
 
         <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -155,6 +151,10 @@
                 </div>
             </div>
         </div>
+
+        <ModalDelete @item-deleted="onHouseChanged" :itemId="selectedHouseId" title="Удалить дом?"
+            inputLabel="Удаление этого дома также приведет к удалению его данных." apiEndpoint="house" name="house_Number"
+            inputplaceholder="Введите название"></ModalDelete>
     </div>
 </template>
 
@@ -164,14 +164,15 @@ import '@/scripts/bootstrap.bundle.min.js';
 import Header from '@/components/Header.vue';
 // import Title from '@/components/Title.vue';
 import Footer from '@/components/Footer.vue';
-// import ModalCreate from '@/components/ModalCreate.vue';
+import ModalDelete from '@/components/ModalDelete.vue';
+
 
 export default {
     data() {
         return {
             data: null, // Инициализируем переменную для хранения данных
             newHouseName: '', // Добавьте новое поле для хранения названия нового города
-            updatedHouseId: null, // Добавляем поле для хранения идентификатора обновляемого города
+            selectedHouseId: null, // Добавляем поле для хранения идентификатора обновляемого города
             alertMessage: null, // Добавьте переменную для хранения сообщения
         };
     },
@@ -181,6 +182,7 @@ export default {
         // Title,
         Footer,
         // ModalCreate,
+        ModalDelete
     },
 
     mounted() {
@@ -210,10 +212,13 @@ export default {
                 })
         },
 
-        onHouseAdded(newCity) {
-            // Обновляем список городов после добавления нового города
-            this.data.push(newCity);
+        onHouseChanged() {
             this.fetchData(); // Запрашиваем актуальные данные с сервера
+        },
+
+        prepareId(houseId) {
+            this.selectedHouseId = houseId;
+            console.log(houseId)
         },
     }
 }

@@ -47,25 +47,14 @@
                                                     </button>
 
                                                     <ul class="dropdown-menu gap-1 p-2 rounded-3 mx-0 shadow w-220px">
-                                                        <li>
-                                                            <a class="dropdown-item rounded-2" data-bs-toggle="modal"
-                                                                data-bs-target="#modal-update" id="dropdown-upd"
-                                                                @click="prepareUpdate(city.city_ID)" href="#">
-                                                                <i class="bi bi-pen-fill" id="i-dropdown"></i>
-                                                                Обновить город
-                                                            </a>
-                                                        </li>
 
-                                                        <li>
-                                                            <hr class="dropdown-divider">
-                                                        </li>
 
                                                         <li>
                                                             <a class="dropdown-item rounded-2" data-bs-toggle="modal"
                                                                 data-bs-target="#modal-delete" id="dropdown-del"
-                                                                @click="prepareUpdate(city.city_ID)" href="#">
+                                                                @click="prepareId(apartment.apartment_ID)" href="#">
                                                                 <i class="bi bi-trash-fill" id="i-dropdown"></i>
-                                                                Удалить город
+                                                                Удалить квартиру
                                                             </a>
                                                         </li>
                                                     </ul>
@@ -100,11 +89,8 @@
         </section>
 
         <Footer></Footer>
-<!-- 
-        <ModalCreate @item-added="onApartmentAdded" title="Добавить квартиру" inputLabel="Введите номер квартиры:"
-            apiEndpoint="apartment"></ModalCreate> -->
 
-            <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -156,6 +142,10 @@
                 </div>
             </div>
         </div>
+
+        <ModalDelete @item-deleted="onApartmentChanged" :itemId="selectedApartmentId" title="Удалить квартиру?"
+            inputLabel="Удаление этой квартиры также приведет к удалению ее данных." apiEndpoint="apartment"
+            name="apartment_Number" inputplaceholder="Введите название"></ModalDelete>
     </div>
 </template>
 
@@ -165,14 +155,15 @@ import '@/scripts/bootstrap.bundle.min.js';
 import Header from '@/components/Header.vue';
 // import Title from '@/components/Title.vue';
 import Footer from '@/components/Footer.vue';
-// import ModalCreate from '@/components/ModalCreate.vue';
+import ModalDelete from '@/components/ModalDelete.vue';
+
 
 export default {
     data() {
         return {
             data: null, // Инициализируем переменную для хранения данных
             newApartmentName: '', // Добавьте новое поле для хранения названия нового города
-            updatedApartmentId: null, // Добавляем поле для хранения идентификатора обновляемого города
+            selectedApartmentId: null, // Добавляем поле для хранения идентификатора обновляемого города
             alertMessage: null, // Добавьте переменную для хранения сообщения
         };
     },
@@ -182,6 +173,7 @@ export default {
         // Title,
         Footer,
         // ModalCreate,
+        ModalDelete
     },
 
     mounted() {
@@ -210,11 +202,13 @@ export default {
                     console.error('Ошибка при выполнении GET запроса:', error); // Выводим ошибку в случае неудачи
                 })
         },
-
-        onApartmentAdded(newCity) {
-            // Обновляем список городов после добавления нового города
-            this.data.push(newCity);
+        onHouseChanged() {
             this.fetchData(); // Запрашиваем актуальные данные с сервера
+        },
+
+        prepareId(apartmentId) {
+            this.selectedApartmentId = apartmentId;
+            console.log(apartmentId)
         },
     }
 }
@@ -229,10 +223,11 @@ export default {
     display: flex;
     justify-content: space-between;
 }
+
 #val-item {
     text-align: left;
     width: 45%;
-} 
+}
 
 #table_container {
     padding: 50px 0;

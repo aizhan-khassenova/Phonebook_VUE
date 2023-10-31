@@ -51,7 +51,7 @@
                                                         <li>
                                                             <a class="dropdown-item rounded-2" data-bs-toggle="modal"
                                                                 data-bs-target="#modal-update" id="dropdown-upd"
-                                                                @click="prepareUpdate(city.city_ID)" href="#">
+                                                                @click="prepareId(city.city_ID)" href="#">
                                                                 <i class="bi bi-pen-fill" id="i-dropdown"></i>
                                                                 Обновить город
                                                             </a>
@@ -64,7 +64,7 @@
                                                         <li>
                                                             <a class="dropdown-item rounded-2" data-bs-toggle="modal"
                                                                 data-bs-target="#modal-delete" id="dropdown-del"
-                                                                @click="prepareUpdate(city.city_ID)" href="#">
+                                                                @click="prepareId(city.city_ID)" href="#">
                                                                 <i class="bi bi-trash-fill" id="i-dropdown"></i>
                                                                 Удалить город
                                                             </a>
@@ -116,11 +116,13 @@
                     <div class="modal-body">
                         <form @submit.prevent="createCity">
                             <div class="mb-3" id="message-text_container">
-                                <label for="message-text" class="col-form-label">Введите название:</label>
+                                <label for="message-text" class="col-form-label">Город:</label>
 
                                 <input v-model="newCityName" type="text"
                                     :class="{ 'form-control': true, 'is-invalid': !newCityName, 'is-valid': newCityName }"
-                                    id="message-text" autocomplete="off">
+                                    id="message-text" autocomplete="off"
+                                    :title="newCityName ? 'Все хорошо!' : 'Заполните это поле.'"
+                                    placeholder="Введите название">
                             </div>
                         </form>
                     </div>
@@ -135,64 +137,12 @@
             </div>
         </div>
 
-        <div class="modal fade" id="modal-update" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Обновление города</h1>
+        <ModalUpdate @item-updated="onCityChanged" :itemId="selectedCityId" title="Обновление города" inputLabel="Город:"
+            apiEndpoint="city" name="city_Name" inputplaceholder="Введите название"></ModalUpdate>
 
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <form @submit.prevent="updateCity">
-                            <div class="mb-3" id="message-text_container">
-                                <label for="message-text" class="col-form-label">Введите новое название:</label>
-
-                                <input v-model="newCityName" type="text"
-                                    :class="{ 'form-control': true, 'is-invalid': !newCityName, 'is-valid': newCityName }"
-                                    id="message-text" autocomplete="off">
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @click="updateCity"
-                            :disabled="!newCityName">Обновить</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="modal-delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Удалить город?</h1>
-
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-
-                    <div class="modal-body" id="mb-delete">
-                        <form @submit.prevent="deleteCity">
-                            <label id="l-delete">
-                                <h1><i class="bi bi-exclamation-triangle-fill" id="i-danger"></i></h1>
-                                Удаление этого города также приведет к удалению его данных.
-                            </label>
-                        </form>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                            @click="deleteCity">Удалить</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <ModalDelete @item-deleted="onCityChanged" :itemId="selectedCityId" title="Удалить город?"
+            inputLabel="Удаление этого города также приведет к удалению его данных." apiEndpoint="city" name="city_Name"
+            inputplaceholder="Введите название"></ModalDelete>
     </div>
 </template>
 
@@ -201,13 +151,16 @@ import axios from 'axios';
 import '@/scripts/bootstrap.bundle.min.js';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
+import ModalUpdate from '@/components/ModalUpdate.vue';
+import ModalDelete from '@/components/ModalDelete.vue';
+
 
 export default {
     data() {
         return {
             data: null, // Инициализируем переменную для хранения данных
             newCityName: '', // Добавьте новое поле для хранения названия нового города
-            updatedCityId: null, // Добавляем поле для хранения идентификатора обновляемого города
+            selectedCityId: null, // Добавляем поле для хранения идентификатора обновляемого города
             alertMessage: null, // Добавьте переменную для хранения сообщения
         };
     },
@@ -215,6 +168,8 @@ export default {
     components: {
         Header,
         Footer,
+        ModalUpdate,
+        ModalDelete
     },
 
     mounted() {
@@ -264,11 +219,14 @@ export default {
                 })
         },
 
-        // onCityAdded() {
-        //     // Обновляем список городов после добавления нового города
-        //     // this.data.push(newCity);
-        //     this.fetchData(); // Запрашиваем актуальные данные с сервера
-        // },
+
+        prepareId(cityId) {
+            this.selectedCityId = cityId;
+        },
+
+        onCityChanged() {
+            this.fetchData(); // Запрашиваем актуальные данные с сервера
+        },
 
         createCity() {
             this.alertMessage = null; // Сброс сообщения перед выполнением запроса
@@ -296,55 +254,6 @@ export default {
 
             // Закрыть модальное окно с использованием data-bs-dismiss
             document.querySelector('[data-bs-dismiss="modal"]').click();
-        },
-
-        prepareUpdate(cityId) {
-            this.updatedCityId = cityId;
-        },
-
-        updateCity() {
-            this.alertMessage = null; // Сброс сообщения перед выполнением запроса
-
-            const cityData = {
-                City_Name: this.newCityName,
-            };
-
-            // Посылаем PUT-запрос на сервер для обновления города
-            axios.put(`https://localhost:5001/api/city/${this.updatedCityId}`, cityData)
-                .then(response => {
-                    console.log(response.data);
-                    // Обновляем данные на клиенте
-                    this.fetchData();
-                    // Сбрасываем значения
-                    this.updatedCityId = null;
-                    this.newCityName = '';
-                    this.alertMessage = 'Город обновлен'; // Установите сообщение об успешном обновлении
-                    this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
-                })
-                .catch(error => {
-                    console.error('Ошибка при выполнении PUT запроса:', error);
-                    this.alertMessage = error.response.data; // Установите сообщение об ошибке из response.data
-                    this.showAlert(this.alertMessage, 'danger'); // Отображение уведомления с типом 'danger'
-                });
-        },
-
-        deleteCity() {
-            // this.alertMessage = null; // Сброс сообщения перед выполнением запроса
-            // Посылаем Delete-запрос на сервер для удаления города
-            axios.delete(`https://localhost:5001/api/city/${this.updatedCityId}`)
-                .then(response => {
-                    console.log(response.data);
-                    // Обновляем данные на клиенте
-                    this.fetchData();
-                    // Сбрасываем значения
-                    // this.updatedCityId = null;
-                    // this.newCityName = '';
-                    this.alertMessage = 'Город удален'; // Установите сообщение об успешном удалении
-                    this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
-                })
-                .catch(error => {
-                    console.error('Ошибка при выполнении DELETE запроса:', error);
-                });
         },
     },
 };

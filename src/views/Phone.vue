@@ -72,9 +72,9 @@
                                                     <li>
                                                         <a class="dropdown-item rounded-2" data-bs-toggle="modal"
                                                             data-bs-target="#modal-update" id="dropdown-upd"
-                                                            @click="prepareUpdate(city.city_ID)" href="#">
+                                                            @click="prepareId(phone.phone_ID)" href="#">
                                                             <i class="bi bi-pen-fill" id="i-dropdown"></i>
-                                                            Обновить город
+                                                            Обновить контакт
                                                         </a>
                                                     </li>
 
@@ -85,9 +85,9 @@
                                                     <li>
                                                         <a class="dropdown-item rounded-2" data-bs-toggle="modal"
                                                             data-bs-target="#modal-delete" id="dropdown-del"
-                                                            @click="prepareUpdate(city.city_ID)" href="#">
+                                                            @click="prepareId(phone.phone_ID)" href="#">
                                                             <i class="bi bi-trash-fill" id="i-dropdown"></i>
-                                                            Удалить город
+                                                            Удалить контакт
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -103,9 +103,6 @@
         </section>
 
         <Footer></Footer>
-
-        <!-- <ModalCreate @item-added="onPhoneAdded" title="Добавить контакт" inputLabel="Введите имя и телефон контакта:"
-            apiEndpoint="phone"></ModalCreate> -->
 
             <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -159,6 +156,12 @@
                 </div>
             </div>
         </div>
+
+        <!-- <ModalUpdate @item-updated="onPhoneUpdated" :itemId="updatedPhoneId" title="Обновление контакта" inputLabel="Контакт:" apiEndpoint="phone" name="phone_Number" inputplaceholder="Введите контакт"></ModalUpdate> -->
+
+        <ModalDelete @item-deleted="onPhoneChanged" :itemId="selectedPhoneId" title="Удалить контакт?"
+            inputLabel="Удаление этого контакта также приведет к удалению его данных." apiEndpoint="phone" name="phone_Number"
+            inputplaceholder="Введите название"></ModalDelete>
     </div>
 </template>
 
@@ -168,14 +171,16 @@ import '@/scripts/bootstrap.bundle.min.js';
 import Header from '@/components/Header.vue';
 // import Title from '@/components/Title.vue';
 import Footer from '@/components/Footer.vue';
-// import ModalCreate from '@/components/ModalCreate.vue';
+// import ModalUpdate from '@/components/ModalUpdate.vue';
+import ModalDelete from '@/components/ModalDelete.vue';
+
 
 export default {
     data() {
         return {
             data: null, // Инициализируем переменную для хранения данных
             newPhoneName: '', // Добавьте новое поле для хранения названия нового города
-            updatedPhoneId: null, // Добавляем поле для хранения идентификатора обновляемого города
+            selectedPhoneId: null, // Добавляем поле для хранения идентификатора обновляемого города
             alertMessage: null, // Добавьте переменную для хранения сообщения
         };
     },
@@ -185,6 +190,8 @@ export default {
         // Title,
         Footer,
         // ModalCreate,
+        // ModalUpdate
+        ModalDelete
     },
 
     mounted() {
@@ -214,10 +221,13 @@ export default {
                 })
         },
 
-        onPhoneAdded(newCity) {
-            // Обновляем список городов после добавления нового города
-            this.data.push(newCity);
+        onStreetChanged() {
             this.fetchData(); // Запрашиваем актуальные данные с сервера
+        },
+
+        prepareId(phoneId) {
+            this.selectedPhoneId = phoneId;
+            console.log(phoneId)
         },
     }
 }
