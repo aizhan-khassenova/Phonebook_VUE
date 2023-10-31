@@ -76,13 +76,12 @@ h6 {
 	margin: 0;
 }
 
-#btn-menu {
+/* #btn-menu {
 	margin-right: 50px;
 	border-radius: 50%;
 	height: 35px;
 	width: 35px;
-	/* border: 1px solid black; */
-}
+} */
 
 #btn-menu::after {
 	display: none;

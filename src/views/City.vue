@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div id="liveAlertPlaceholder"></div>
+        <!-- <div id="liveAlertPlaceholder"></div> -->
+        <!-- <Alert :alert-message="alertMessage" :alert-type="alertType"></Alert> -->
 
         <Header></Header>
 
@@ -130,8 +131,9 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
 
-                        <button type="submit" class="btn btn-primary" @click="createCity"
-                            :disabled="!newCityName">Добавить</button>
+                        <button type="submit" class="btn btn-primary" @click="createCity" :disabled="!newCityName"
+                            data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip"
+                            :data-bs-title="!newCityName ? 'Заполните все поля.' : ''">Добавить</button>
                     </div>
                 </div>
             </div>
@@ -153,6 +155,8 @@ import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import ModalUpdate from '@/components/ModalUpdate.vue';
 import ModalDelete from '@/components/ModalDelete.vue';
+// import Alert from '@/components/Alert.vue';
+
 
 
 export default {
@@ -162,6 +166,7 @@ export default {
             newCityName: '', // Добавьте новое поле для хранения названия нового города
             selectedCityId: null, // Добавляем поле для хранения идентификатора обновляемого города
             alertMessage: null, // Добавьте переменную для хранения сообщения
+            alertType: null,
         };
     },
 
@@ -169,7 +174,8 @@ export default {
         Header,
         Footer,
         ModalUpdate,
-        ModalDelete
+        ModalDelete,
+        // Alert
     },
 
     mounted() {
@@ -178,27 +184,32 @@ export default {
     },
 
     methods: {
-        showAlert(alertMessage, alertType) {
-            const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-            const wrapper = document.createElement('div');
+        // showAlert(alertMessage, alertType) {
+        //     const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+        //     const wrapper = document.createElement('div');
 
-            if (alertMessage) {
-                const icon = alertType === 'danger' ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill';
+        //     if (alertMessage) {
+        //         const icon = alertType === 'danger' ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill';
 
-                // Удалите слово "Ошибка" из текста уведомления при ошибке
-                alertMessage = alertType === 'danger' ? alertMessage.replace('Ошибка: ', '') : alertMessage;
+        //         // Удалите слово "Ошибка" из текста уведомления при ошибке
+        //         alertMessage = alertType === 'danger' ? alertMessage.replace('Ошибка: ', '') : alertMessage;
 
-                wrapper.innerHTML = `
-                    <div class="alert alert-${alertType} alert-dismissible" role="alert">
-                        <div><i class="bi ${icon}" id="i-check"></i>${alertMessage}</div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>`;
-                alertPlaceholder.append(wrapper);
-            }
-            // Добавляем код для автоматического закрытия уведомления через 5 секунд
-            setTimeout(() => {
-                wrapper.remove(); // Удаляем уведомление из DOM через 5 секунд
-            }, 5000);
+        //         wrapper.innerHTML = `
+        //             <div class="alert alert-${alertType} alert-dismissible" role="alert">
+        //                 <div><i class="bi ${icon}" id="i-check"></i>${alertMessage}</div>
+        //                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        //             </div>`;
+        //         alertPlaceholder.append(wrapper);
+        //     }
+        //     // Добавляем код для автоматического закрытия уведомления через 5 секунд
+        //     setTimeout(() => {
+        //         wrapper.remove(); // Удаляем уведомление из DOM через 5 секунд
+        //     }, 5000);
+        // },
+
+        showAlert(message, type) {
+            this.alertMessage = message;
+            this.alertType = type;
         },
 
         fetchData() {
@@ -264,6 +275,11 @@ export default {
 <style src="../styles/city.css"></style>
 
 <style scoped>
+.custom-tooltip {
+    --bs-tooltip-bg: var(--bd-violet-bg);
+    --bs-tooltip-color: var(--bs-white);
+}
+
 #table_container {
     padding: 50px 0;
 }
@@ -313,5 +329,12 @@ export default {
 #i-list {
     color: var(--primary-color);
     margin-right: 10px;
+}
+
+#btn-menu {
+	margin-right: 50px;
+	border-radius: 50%;
+	height: 35px;
+	width: 35px;
 }
 </style>

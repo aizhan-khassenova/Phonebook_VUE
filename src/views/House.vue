@@ -286,4 +286,11 @@ export default {
     color: var(--primary-color);
     margin-right: 10px;
 }
+
+#btn-menu {
+	margin-right: 50px;
+	border-radius: 50%;
+	height: 35px;
+	width: 35px;
+}
 </style>

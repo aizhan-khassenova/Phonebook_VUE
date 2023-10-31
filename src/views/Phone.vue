@@ -45,21 +45,20 @@
                                         </td>
 
                                         <td>
+                                            <div id="second_column_container">
                                             <ul id="no-bullets-list">
-                                                <li v-for="(phone, pIndex) in phone.phones" :key="pIndex">
-                                                    <div id="second_column_container">
+                                                    <div id="bullet_number_container">
                                                         <h6>
                                                             <i class="bi bi-telephone-fill" id="i-list" v-if="phone"></i>
                                                         </h6>
 
                                                         <h6>
                                                             <strong>
-                                                                {{ phone ? phone.phone_Number : 'Нет телефонов' }}
+                                                                {{ phone.phone_Number }}
                                                             </strong>
                                                         </h6>
 
                                                     </div>
-                                                </li>
                                             </ul>
 
                                             <div class="btn-group dropend">
@@ -92,6 +91,8 @@
                                                     </li>
                                                 </ul>
                                             </div>
+
+                                        </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -284,15 +285,29 @@ export default {
     margin: 0;
 }
 
-#second_column_container {
+#second_column_container{
+    display: flex;
+    /* border: 1px solid black; */
+    justify-content: space-between;
+}
+
+#bullet_number_container {
     display: flex;
     align-items: center;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    height: 35px;
+    /* border: 1px solid black; */
 }
 
 #i-list {
     color: var(--primary-color);
     margin-right: 10px;
+}
+
+#btn-menu {
+	/* margin-right: 50px; */
+	border-radius: 50%;
+	height: 35px;
+	width: 35px;
+	/* border: 1px solid black; */
 }
 </style>
