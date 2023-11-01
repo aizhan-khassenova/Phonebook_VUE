@@ -1,14 +1,13 @@
 <template>
     <div>
+        <Alert @alert="showAlert" :alert-message="alertMessage" :alert-type="alertType"></Alert>
         <Header></Header>
         <section>
             <div class="container">
-                <!-- <Title title="Телефоны"></Title> -->
-
                 <div class="row">
                     <div class="col-12">
                         <div class="col-3" id="title_container">
-                            <h1 class="text-start text-primary"><strong>Телефоны</strong></h1>
+                            <h1 class="text-start text-primary"><strong>Контакты</strong></h1>
 
                             <div class="btn-container">
                                 <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
@@ -42,12 +41,16 @@
 
 
                                             </div>
+                                            <div id="second_row_container">
+                                                    <i class="bi bi-geo-alt-fill" id="i-geo"></i>
+                                                    <h6><strong>Россия, Санкт-Петербург, Камергенский переулок, 11, 22</strong></h6>
+                                            </div>
                                         </td>
 
                                         <td>
-                                            <div id="second_column_container">
-                                            <ul id="no-bullets-list">
-                                                    <div id="bullet_number_container">
+                                            <div id="bullet_number_container">
+                                                <ul id="no-bullets-list">
+                                                    <div id="second_column_container">
                                                         <h6>
                                                             <i class="bi bi-telephone-fill" id="i-list" v-if="phone"></i>
                                                         </h6>
@@ -59,40 +62,40 @@
                                                         </h6>
 
                                                     </div>
-                                            </ul>
-
-                                            <div class="btn-group dropend">
-                                                <button class="btn btn-primary dropdown-toggle" type="button"
-                                                    data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu">
-                                                    <i class="bi bi-three-dots-vertical" id="i-menu"></i>
-                                                </button>
-
-                                                <ul class="dropdown-menu gap-1 p-2 rounded-3 mx-0 shadow w-220px">
-                                                    <li>
-                                                        <a class="dropdown-item rounded-2" data-bs-toggle="modal"
-                                                            data-bs-target="#modal-update" id="dropdown-upd"
-                                                            @click="prepareId(phone.phone_ID)" href="#">
-                                                            <i class="bi bi-pen-fill" id="i-dropdown"></i>
-                                                            Обновить контакт
-                                                        </a>
-                                                    </li>
-
-                                                    <li>
-                                                        <hr class="dropdown-divider">
-                                                    </li>
-
-                                                    <li>
-                                                        <a class="dropdown-item rounded-2" data-bs-toggle="modal"
-                                                            data-bs-target="#modal-delete" id="dropdown-del"
-                                                            @click="prepareId(phone.phone_ID)" href="#">
-                                                            <i class="bi bi-trash-fill" id="i-dropdown"></i>
-                                                            Удалить контакт
-                                                        </a>
-                                                    </li>
                                                 </ul>
-                                            </div>
 
-                                        </div>
+                                                <div class="btn-group dropend">
+                                                    <button class="btn btn-primary dropdown-toggle" type="button"
+                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu-phone">
+                                                        <i class="bi bi-three-dots-vertical" id="i-menu"></i>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu gap-1 p-2 rounded-3 mx-0 shadow w-220px">
+                                                        <li>
+                                                            <a class="dropdown-item rounded-2" data-bs-toggle="modal"
+                                                                data-bs-target="#modal-update" id="dropdown-upd"
+                                                                @click="prepareId(phone.phone_ID)" href="#">
+                                                                <i class="bi bi-pen-fill" id="i-dropdown"></i>
+                                                                Обновить контакт
+                                                            </a>
+                                                        </li>
+
+                                                        <li>
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+
+                                                        <li>
+                                                            <a class="dropdown-item rounded-2" data-bs-toggle="modal"
+                                                                data-bs-target="#modal-delete" id="dropdown-del"
+                                                                @click="prepareId(phone.phone_ID)" href="#">
+                                                                <i class="bi bi-trash-fill" id="i-dropdown"></i>
+                                                                Удалить контакт
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -105,7 +108,7 @@
 
         <Footer></Footer>
 
-            <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -161,8 +164,8 @@
         <!-- <ModalUpdate @item-updated="onPhoneUpdated" :itemId="updatedPhoneId" title="Обновление контакта" inputLabel="Контакт:" apiEndpoint="phone" name="phone_Number" inputplaceholder="Введите контакт"></ModalUpdate> -->
 
         <ModalDelete @item-deleted="onPhoneChanged" :itemId="selectedPhoneId" title="Удалить контакт?"
-            inputLabel="Удаление этого контакта также приведет к удалению его данных." apiEndpoint="phone" name="phone_Number"
-            inputplaceholder="Введите название"></ModalDelete>
+            inputLabel="Удаление этого контакта также приведет к удалению его данных." apiEndpoint="phone"
+            name="phone_Number" inputplaceholder="Введите название" alertMessage="Квартира удалена"></ModalDelete>
     </div>
 </template>
 
@@ -174,7 +177,7 @@ import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 // import ModalUpdate from '@/components/ModalUpdate.vue';
 import ModalDelete from '@/components/ModalDelete.vue';
-
+import Alert from '@/components/Alert.vue';
 
 export default {
     data() {
@@ -183,6 +186,7 @@ export default {
             newPhoneName: '', // Добавьте новое поле для хранения названия нового города
             selectedPhoneId: null, // Добавляем поле для хранения идентификатора обновляемого города
             alertMessage: null, // Добавьте переменную для хранения сообщения
+            alertType: null,
         };
     },
 
@@ -192,7 +196,8 @@ export default {
         Footer,
         // ModalCreate,
         // ModalUpdate
-        ModalDelete
+        ModalDelete,
+        Alert
     },
 
     mounted() {
@@ -201,6 +206,11 @@ export default {
     },
 
     methods: {
+        showAlert(message, type) {
+            this.alertMessage = message;
+            this.alertType = type;
+            // console.log("city.vue show alert", message, type);
+        },
         fetchData() {
             axios.get('https://localhost:5001/api/phone') // Выполняем GET-запрос к серверу
                 .then(response => {
@@ -222,13 +232,16 @@ export default {
                 })
         },
 
-        onStreetChanged() {
-            this.fetchData(); // Запрашиваем актуальные данные с сервера
-        },
+        
 
         prepareId(phoneId) {
             this.selectedPhoneId = phoneId;
             console.log(phoneId)
+        },
+
+        onPhoneChanged(message, type) {
+            this.showAlert(message, type); // Вызываем showAlert с переданным типом уведомления
+            this.fetchData(); // Запрашиваем актуальные данные с сервера
         },
     }
 }
@@ -239,75 +252,20 @@ export default {
 <style src="../styles/city.css"></style>
 
 <style scoped>
-#val-cont {
+/* phone */
+#bullet_number_container{
     display: flex;
+    /* border: 1px solid green; */
     justify-content: space-between;
-}
-#val-item {
-    text-align: left;
-    width: 45%;
-} 
-
-#table_container {
-    padding: 50px 0;
-}
-
-#first_column_container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-}
-
-#sort_name_container {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    /* border: 1px solid black; */
-}
-
-#sort_icon {
-    margin-right: 30px;
-    text-align: center;
-    width: 30px;
-    height: 30px;
-    border: 2px solid var(--primary-color);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--primary-color);
-    line-height: 30px;
-}
-
-#no-bullets-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-#second_column_container{
-    display: flex;
-    /* border: 1px solid black; */
-    justify-content: space-between;
-}
-
-#bullet_number_container {
-    display: flex;
     align-items: center;
     height: 35px;
-    /* border: 1px solid black; */
 }
-
-#i-list {
-    color: var(--primary-color);
-    margin-right: 10px;
-}
-
-#btn-menu {
-	/* margin-right: 50px; */
+#btn-menu-phone {
 	border-radius: 50%;
 	height: 35px;
 	width: 35px;
-	/* border: 1px solid black; */
+}
+#btn-menu-phone::after {
+	display: none;
 }
 </style>

@@ -42,7 +42,6 @@ export default {
             data: null, // Инициализируем переменную для хранения данных
             newItem: '', // Добавьте новое поле для хранения названия нового города
             updatedItemId: null, // Добавляем поле для хранения идентификатора обновляемого города
-            // alertMessage: null, // Добавьте переменную для хранения сообщения
         };
     },
 
@@ -53,17 +52,12 @@ export default {
         apiEndpoint: String, // Добавьте это свойство
         name: String,
         inputplaceholder: String,
-        itemId: String
+        itemId: String,
+        alertMessage: String
     },
 
     methods: {
-        // prepareUpdate(itemId) {
-        //     this.updatedItemId = itemId;
-        // },
-
         updateData() {
-            // this.alertMessage = null; // Сброс сообщения перед выполнением запроса
-
             const itemData = {
                 [this.name]: this.newItem,
             };
@@ -71,20 +65,19 @@ export default {
             // Посылаем PUT-запрос на сервер для обновления города
             axios.put('https://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, itemData)
                 .then(response => {
-                    this.$emit('item-updated'); // Отправляем событие с новым элементом (городом или улицей)
+                    // this.$emit('item-updated'); // Отправляем событие с новым элементом (городом или улицей)
                     console.log(response.data);
-                    // Обновляем данные на клиенте
-                    // this.fetchData();
-                    // Сбрасываем значения
-                    // this.updatedItemId = null;
                     this.newItem = '';
-                    // this.alertMessage = 'Город обновлен'; // Установите сообщение об успешном обновлении
-                    // this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
+
+                    // this.alertMessage = 'Город обновлен';
+                    // this.showAlert(this.alertMessage, 'success');
+                    this.$emit('item-updated', this.alertMessage, 'success'); // Передаем сообщение и тип уведомления
                 })
                 .catch(error => {
                     console.error('Ошибка при выполнении PUT запроса:', error);
-                    // this.alertMessage = error.response.data; // Установите сообщение об ошибке из response.data
-                    // this.showAlert(this.alertMessage, 'danger'); // Отображение уведомления с типом 'danger'
+                    // this.alertMessage = error.response.data;
+                    // this.showAlert(this.alertMessage, 'danger');
+                    this.$emit('item-updated', error.response.data, 'danger'); // Передаем сообщение и тип уведомления
                 });
 
             document.querySelector('[data-bs-target="#modal-update"]').click();
@@ -96,56 +89,3 @@ export default {
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
 <style src="../styles/city.css"></style>
-
-<style scoped>
-#table_container {
-    padding: 50px 0;
-}
-
-#first_column_container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    /* border: 1px solid black; */
-
-}
-
-#sort_name_container {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    /* border: 1px solid black; */
-}
-
-#sort_icon {
-    margin-right: 30px;
-    text-align: center;
-    width: 30px;
-    height: 30px;
-    border: 2px solid var(--primary-color);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--primary-color);
-    line-height: 30px;
-}
-
-#no-bullets-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-#second_column_container {
-    height: 35px;
-    display: flex;
-    align-items: center;
-    /* border: 1px solid black; */
-}
-
-#i-list {
-    color: var(--primary-color);
-    margin-right: 10px;
-}
-</style>

@@ -1,7 +1,6 @@
 <template>
     <div>
-        <!-- <div id="liveAlertPlaceholder"></div> -->
-        <!-- <Alert :alert-message="alertMessage" :alert-type="alertType"></Alert> -->
+        <Alert @alert="showAlert" :alert-message="alertMessage" :alert-type="alertType"></Alert>
 
         <Header></Header>
 
@@ -73,6 +72,11 @@
                                                     </ul>
                                                 </div>
                                             </div>
+
+                                            <div id="second_row_container">
+                                                    <i class="bi bi-geo-alt-fill" id="i-geo"></i>
+                                                    <h6><strong>Россия</strong></h6>
+                                            </div>
                                         </td>
 
 
@@ -140,11 +144,11 @@
         </div>
 
         <ModalUpdate @item-updated="onCityChanged" :itemId="selectedCityId" title="Обновление города" inputLabel="Город:"
-            apiEndpoint="city" name="city_Name" inputplaceholder="Введите название"></ModalUpdate>
+            apiEndpoint="city" name="city_Name" inputplaceholder="Введите название" alertMessage="Город обновлен"></ModalUpdate>
 
         <ModalDelete @item-deleted="onCityChanged" :itemId="selectedCityId" title="Удалить город?"
             inputLabel="Удаление этого города также приведет к удалению его данных." apiEndpoint="city" name="city_Name"
-            inputplaceholder="Введите название"></ModalDelete>
+            inputplaceholder="Введите название" alertMessage="Город удален"></ModalDelete>
     </div>
 </template>
 
@@ -155,9 +159,7 @@ import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import ModalUpdate from '@/components/ModalUpdate.vue';
 import ModalDelete from '@/components/ModalDelete.vue';
-// import Alert from '@/components/Alert.vue';
-
-
+import Alert from '@/components/Alert.vue';
 
 export default {
     data() {
@@ -175,7 +177,7 @@ export default {
         Footer,
         ModalUpdate,
         ModalDelete,
-        // Alert
+        Alert
     },
 
     mounted() {
@@ -184,32 +186,10 @@ export default {
     },
 
     methods: {
-        // showAlert(alertMessage, alertType) {
-        //     const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-        //     const wrapper = document.createElement('div');
-
-        //     if (alertMessage) {
-        //         const icon = alertType === 'danger' ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill';
-
-        //         // Удалите слово "Ошибка" из текста уведомления при ошибке
-        //         alertMessage = alertType === 'danger' ? alertMessage.replace('Ошибка: ', '') : alertMessage;
-
-        //         wrapper.innerHTML = `
-        //             <div class="alert alert-${alertType} alert-dismissible" role="alert">
-        //                 <div><i class="bi ${icon}" id="i-check"></i>${alertMessage}</div>
-        //                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        //             </div>`;
-        //         alertPlaceholder.append(wrapper);
-        //     }
-        //     // Добавляем код для автоматического закрытия уведомления через 5 секунд
-        //     setTimeout(() => {
-        //         wrapper.remove(); // Удаляем уведомление из DOM через 5 секунд
-        //     }, 5000);
-        // },
-
         showAlert(message, type) {
             this.alertMessage = message;
             this.alertType = type;
+            // console.log("city.vue show alert", message, type);
         },
 
         fetchData() {
@@ -230,17 +210,18 @@ export default {
                 })
         },
 
-
         prepareId(cityId) {
             this.selectedCityId = cityId;
         },
 
-        onCityChanged() {
+        onCityChanged(message, type) {
+            // this.alertMessage = message;
+            this.showAlert(message, type); // Вызываем showAlert с переданным типом уведомления
             this.fetchData(); // Запрашиваем актуальные данные с сервера
         },
 
         createCity() {
-            this.alertMessage = null; // Сброс сообщения перед выполнением запроса
+            // this.alertMessage = null; // Сброс сообщения перед выполнением запроса
 
             const cityData = {
                 City_Name: this.newCityName, // Используйте значение из поля ввода
@@ -262,7 +243,6 @@ export default {
                     this.showAlert(this.alertMessage, 'danger'); // Отображение уведомления с типом 'danger'
                 });
 
-
             // Закрыть модальное окно с использованием data-bs-dismiss
             document.querySelector('[data-bs-dismiss="modal"]').click();
         },
@@ -278,63 +258,5 @@ export default {
 .custom-tooltip {
     --bs-tooltip-bg: var(--bd-violet-bg);
     --bs-tooltip-color: var(--bs-white);
-}
-
-#table_container {
-    padding: 50px 0;
-}
-
-#first_column_container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    /* border: 1px solid black; */
-
-}
-
-#sort_name_container {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    /* border: 1px solid black; */
-}
-
-#sort_icon {
-    margin-right: 30px;
-    text-align: center;
-    width: 30px;
-    height: 30px;
-    border: 2px solid var(--primary-color);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--primary-color);
-    line-height: 30px;
-}
-
-#no-bullets-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-#second_column_container {
-    height: 35px;
-    display: flex;
-    align-items: center;
-    /* border: 1px solid black; */
-}
-
-#i-list {
-    color: var(--primary-color);
-    margin-right: 10px;
-}
-
-#btn-menu {
-	margin-right: 50px;
-	border-radius: 50%;
-	height: 35px;
-	width: 35px;
 }
 </style>

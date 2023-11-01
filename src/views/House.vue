@@ -1,5 +1,6 @@
 <template>
     <div>
+        <Alert @alert="showAlert" :alert-message="alertMessage" :alert-type="alertType"></Alert>
         <Header></Header>
         <section>
             <div class="container">
@@ -45,10 +46,10 @@
                                                     </button>
 
                                                     <ul class="dropdown-menu gap-1 p-2 rounded-3 mx-0 shadow w-220px">
-                                                        <!-- <li>
+                                                        <li title="Дома не обновляются.">
                                                             <a class="dropdown-item rounded-2" data-bs-toggle="modal"
                                                                 data-bs-target="#modal-update" id="dropdown-upd"
-                                                                @click="prepareId(house.house_ID)" href="#">
+                                                                @click="prepareId(house.house_ID)" href="#" >
                                                                 <i class="bi bi-pen-fill" id="i-dropdown"></i>
                                                                 Обновить дом
                                                             </a>
@@ -56,7 +57,7 @@
 
                                                         <li>
                                                             <hr class="dropdown-divider">
-                                                        </li> -->
+                                                        </li>
 
                                                         <li>
                                                             <a class="dropdown-item rounded-2" data-bs-toggle="modal"
@@ -68,6 +69,11 @@
                                                         </li>
                                                     </ul>
                                                 </div>
+                                            </div>
+
+                                            <div id="second_row_container">
+                                                    <i class="bi bi-geo-alt-fill" id="i-geo"></i>
+                                                    <h6><strong>Россия, Санкт-Петербург, Камергенский переулок</strong></h6>
                                             </div>
                                         </td>
 
@@ -154,7 +160,7 @@
 
         <ModalDelete @item-deleted="onHouseChanged" :itemId="selectedHouseId" title="Удалить дом?"
             inputLabel="Удаление этого дома также приведет к удалению его данных." apiEndpoint="house" name="house_Number"
-            inputplaceholder="Введите название"></ModalDelete>
+            inputplaceholder="Введите название" alertMessage="Дом удален"></ModalDelete>
     </div>
 </template>
 
@@ -165,7 +171,7 @@ import Header from '@/components/Header.vue';
 // import Title from '@/components/Title.vue';
 import Footer from '@/components/Footer.vue';
 import ModalDelete from '@/components/ModalDelete.vue';
-
+import Alert from '@/components/Alert.vue';
 
 export default {
     data() {
@@ -174,6 +180,7 @@ export default {
             newHouseName: '', // Добавьте новое поле для хранения названия нового города
             selectedHouseId: null, // Добавляем поле для хранения идентификатора обновляемого города
             alertMessage: null, // Добавьте переменную для хранения сообщения
+            alertType: null,
         };
     },
 
@@ -182,7 +189,8 @@ export default {
         // Title,
         Footer,
         // ModalCreate,
-        ModalDelete
+        ModalDelete,
+        Alert
     },
 
     mounted() {
@@ -191,6 +199,11 @@ export default {
     },
 
     methods: {
+        showAlert(message, type) {
+            this.alertMessage = message;
+            this.alertType = type;
+            // console.log("city.vue show alert", message, type);
+        },
         fetchData() {
             axios.get('https://localhost:5001/api/house') // Выполняем GET-запрос к серверу
                 .then(response => {
@@ -212,14 +225,17 @@ export default {
                 })
         },
 
-        onHouseChanged() {
-            this.fetchData(); // Запрашиваем актуальные данные с сервера
-        },
-
         prepareId(houseId) {
             this.selectedHouseId = houseId;
             console.log(houseId)
         },
+
+        onHouseChanged(message, type) {
+            this.showAlert(message, type); // Вызываем showAlert с переданным типом уведомления
+            this.fetchData(); // Запрашиваем актуальные данные с сервера
+        },
+
+
     }
 }
 </script>
@@ -229,68 +245,12 @@ export default {
 <style src="../styles/city.css"></style>
 
 <style scoped>
-#val-cont {
-    display: flex;
-    justify-content: space-between;
-}
-#val-item {
-    text-align: left;
-    width: 45%;
-} 
-
-#table_container {
-    padding: 50px 0;
+#dropdown-upd {
+    pointer-events: none; /* Делаем кнопку неактивной */
+    color: var(--secondary-color);; /* Задаем серый цвет текста */
 }
 
-#first_column_container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-}
-
-#sort_name_container {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    /* border: 1px solid black; */
-}
-
-#sort_icon {
-    margin-right: 30px;
-    text-align: center;
-    width: 30px;
-    height: 30px;
-    border: 2px solid var(--primary-color);
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--primary-color);
-    line-height: 30px;
-}
-
-#no-bullets-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-#second_column_container {
-    display: flex;
-    align-items: center;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-#i-list {
-    color: var(--primary-color);
-    margin-right: 10px;
-}
-
-#btn-menu {
-	margin-right: 50px;
-	border-radius: 50%;
-	height: 35px;
-	width: 35px;
+#dropdown-upd:hover {
+    background-color: initial; /* Убираем hover-эффект */
 }
 </style>

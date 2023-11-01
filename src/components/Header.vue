@@ -5,7 +5,7 @@
         </a>
 
         <ul class="nav nav-pills">
-            <li class="nav-item"><router-link to="/" class="nav-link"><strong>Телефоны</strong></router-link></li>
+            <li class="nav-item"><router-link to="/" class="nav-link"><strong>Контакты</strong></router-link></li>
             <li class="nav-item"><router-link to="/apartment" class="nav-link"><strong>Квартиры</strong></router-link></li>
             <li class="nav-item"><router-link to="/house" class="nav-link"><strong>Дома</strong></router-link></li>
             <li class="nav-item"><router-link to="/street" class="nav-link"><strong>Улицы</strong></router-link></li>
@@ -14,3 +14,14 @@
         </ul>
     </header>
 </template>
+
+<style src="../styles/bootstrap.min.css"></style>
+<style src="../styles/bootstrap-icons.css"></style>
+<style src="../styles/city.css"></style>
+
+<style scoped>
+/* header */
+header {
+	background-color: var(--gray-color);
+}
+</style>

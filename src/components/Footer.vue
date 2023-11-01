@@ -8,3 +8,14 @@
         </footer>
     </div>
 </template>
+
+<style src="../styles/bootstrap.min.css"></style>
+<style src="../styles/bootstrap-icons.css"></style>
+<style src="../styles/city.css"></style>
+
+<style scoped>
+/* footer */
+footer {
+	background-color: var(--gray-color);
+}
+</style>
