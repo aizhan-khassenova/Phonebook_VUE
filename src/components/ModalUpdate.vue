@@ -16,8 +16,7 @@
                             <input v-model="newItem" type="text"
                                 :class="{ 'form-control': true, 'is-invalid': !newItem, 'is-valid': newItem }"
                                 id="message-text" autocomplete="off"
-                                :title="newItem ? 'Все хорошо!' : 'Заполните это поле.'"
-                                :placeholder="inputplaceholder">
+                                :title="newItem ? 'Все хорошо!' : 'Заполните это поле.'" :placeholder="inputplaceholder">
                         </div>
                     </form>
                 </div>
@@ -25,7 +24,10 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
 
-                    <button type="submit" class="btn btn-primary" @click="updateData" :disabled="!newItem">Обновить</button>
+                    <div :title="!newItem ? 'Заполните все поля.' : ''">
+                        <button type="submit" class="btn btn-primary" @click="updateData"
+                            :disabled="!newItem">Обновить</button>
+                    </div>
                 </div>
             </div>
         </div>

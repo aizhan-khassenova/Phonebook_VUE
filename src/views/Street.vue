@@ -11,7 +11,7 @@
 
                             <div class="btn-container">
                                 <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
-                                    data-bs-target="#myModal" @click="fetchCities"><strong>+</strong></button>
+                                    data-bs-target="#myModal" @click="fetchCities" title="Добавить улицу"><strong>+</strong></button>
                             </div>
                         </div>
                     </div>
@@ -39,9 +39,19 @@
                                                     </h4>
                                                 </div>
 
+
+                                            </div>
+                                            <div id="second_row_container">
+                                                <i class="bi bi-geo-alt-fill" id="i-geo"></i>
+                                                <h6><strong>Россия, Санкт-Петербург</strong></h6>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div id="first_row_container">
                                                 <div class="btn-group dropend">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
-                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu">
+                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu" title="Редактировать улицу">
                                                         <i class="bi bi-three-dots-vertical" id="i-menu"></i>
                                                     </button>
 
@@ -70,13 +80,6 @@
                                                     </ul>
                                                 </div>
                                             </div>
-                                            <div id="second_row_container">
-                                                    <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                    <h6><strong>Россия, Санкт-Петербург</strong></h6>
-                                            </div>
-                                        </td>
-
-                                        <td>
                                             <ul id="no-bullets-list">
                                                 <li v-for="(house, hIndex) in street.houses" :key="hIndex">
                                                     <div id="second_column_container">
@@ -129,7 +132,7 @@
 
                             <div class="mb-3" id="val-cont">
                                 <div class="col-md-5" id="val-item">
-                                    <label for="validationServer04" class="form-label">Город:</label>
+                                    <label for="validationServer04" class="col-form-label">Город:</label>
 
                                     <select class="form-select" id="validationServer04" required v-model="selectedCity"
                                         :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
@@ -148,15 +151,18 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
 
+                        <div :title="!selectedCity || !newStreetName ? 'Заполните все поля.' : ''">
                         <button type="submit" class="btn btn-primary" @click="createStreet"
                             :disabled="!selectedCity || !newStreetName">Добавить</button>
                     </div>
+                </div>
                 </div>
             </div>
         </div>
 
         <ModalUpdate @item-updated="onStreetChanged" :itemId="selectedStreetId" title="Обновление улицы" inputLabel="Улица:"
-            apiEndpoint="street" name="street_Name" inputplaceholder="Введите название" alertMessage="Улица обновлена"></ModalUpdate>
+            apiEndpoint="street" name="street_Name" inputplaceholder="Введите название" alertMessage="Улица обновлена">
+        </ModalUpdate>
 
         <ModalDelete @item-deleted="onStreetChanged" :itemId="selectedStreetId" title="Удалить улицу?"
             inputLabel="Удаление этой улицы также приведет к удалению ее данных." apiEndpoint="street" name="street_Name"

@@ -52,6 +52,7 @@ td {
     justify-content: space-between;
     /* flex-wrap: wrap; */
     /* border: 1px solid black; */
+	height: 35px;
 }
 #sort_name_container {
     display: flex;
@@ -78,7 +79,7 @@ h6 {
 	margin: 0;
 }
 #btn-menu {
-    margin-right: 50px;
+    /* margin-right: 50px; */
     border-radius: 50%;
     height: 35px;
     width: 35px;
@@ -106,7 +107,7 @@ h6 {
 	color: white;
 }
 #i-dropdown {
-	margin-right: 10px;
+	margin-right: 15px;
 }
 #second_column_container {
     height: 35px;
@@ -121,7 +122,23 @@ h6 {
 }
 #i-list {
     color: var(--primary-color);
-    margin-right: 10px;
+    margin-right: 15px;
+}
+#second_row_container{
+    display: flex;
+    height: 35px;
+    align-items: center;
+	/* border: 1px solid black; */
+}
+#first_row_container{
+	/* border: 1px solid black; */
+	display: flex;
+	justify-content: flex-end;
+}
+#i-geo {
+    color: var(--primary-color);
+    margin-right: 15px;
+    margin-left: 60px;
 }
 
 /* modalCreate, modalUpdate */
@@ -133,31 +150,22 @@ h6 {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-
 }
 
 /* modalCreate */
 #val-cont {
     display: flex;
     justify-content: space-between;
+	/* border: 1px solid black; */
+
 }
 #val-item {
     text-align: left;
     width: 45%;
+		/* border: 1px solid black; */
 }
 
 /* alert, но должн остаться в этом файле */
 #i-check {
 	margin-right: 15px;
-}
-
-#second_row_container{
-    display: flex;
-    height: 35px;
-    align-items: center
-}
-#i-geo {
-    color: var(--primary-color);
-    margin-right: 10px;
-    margin-left: 60px;
 }

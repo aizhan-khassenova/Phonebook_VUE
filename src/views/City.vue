@@ -13,7 +13,7 @@
 
                             <div class="btn-container">
                                 <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
-                                    data-bs-target="#myModal"><strong>+</strong></button>
+                                    data-bs-target="#myModal" title="Добавить город"><strong>+</strong></button>
                             </div>
                         </div>
                     </div>
@@ -41,9 +41,21 @@
                                                     </h4>
                                                 </div>
 
+
+                                            </div>
+
+                                            <div id="second_row_container">
+                                                <i class="bi bi-geo-alt-fill" id="i-geo"></i>
+                                                <h6><strong>Россия</strong></h6>
+                                            </div>
+                                        </td>
+
+
+                                        <td>
+                                            <div id="first_row_container">
                                                 <div class="btn-group dropend">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
-                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu">
+                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu" title="Редактировать город">
                                                         <i class="bi bi-three-dots-vertical" id="i-menu"></i>
                                                     </button>
 
@@ -73,14 +85,6 @@
                                                 </div>
                                             </div>
 
-                                            <div id="second_row_container">
-                                                    <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                    <h6><strong>Россия</strong></h6>
-                                            </div>
-                                        </td>
-
-
-                                        <td>
                                             <ul id="no-bullets-list">
                                                 <li v-for="(street, sIndex) in city.streets" :key="sIndex">
                                                     <div id="second_column_container">
@@ -96,6 +100,8 @@
                                                     </div>
                                                 </li>
                                             </ul>
+
+
                                         </td>
                                     </tr>
                                 </tbody>
@@ -126,7 +132,7 @@
                                 <input v-model="newCityName" type="text"
                                     :class="{ 'form-control': true, 'is-invalid': !newCityName, 'is-valid': newCityName }"
                                     id="message-text" autocomplete="off"
-                                    :title="newCityName ? 'Все хорошо!' : 'Заполните это поле.'"
+                                    :title="!newCityName ? 'Заполните это поле.' : 'Все хорошо!'"
                                     placeholder="Введите название">
                             </div>
                         </form>
@@ -135,16 +141,18 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
 
-                        <button type="submit" class="btn btn-primary" @click="createCity" :disabled="!newCityName"
-                            data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                            :data-bs-title="!newCityName ? 'Заполните все поля.' : ''">Добавить</button>
+                        <div :title="!newCityName ? 'Заполните все поля.' : ''">
+                            <button type="submit" class="btn btn-primary" @click="createCity"
+                                :disabled="!newCityName">Добавить</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <ModalUpdate @item-updated="onCityChanged" :itemId="selectedCityId" title="Обновление города" inputLabel="Город:"
-            apiEndpoint="city" name="city_Name" inputplaceholder="Введите название" alertMessage="Город обновлен"></ModalUpdate>
+            apiEndpoint="city" name="city_Name" inputplaceholder="Введите название" alertMessage="Город обновлен">
+        </ModalUpdate>
 
         <ModalDelete @item-deleted="onCityChanged" :itemId="selectedCityId" title="Удалить город?"
             inputLabel="Удаление этого города также приведет к удалению его данных." apiEndpoint="city" name="city_Name"
@@ -253,10 +261,3 @@ export default {
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
 <style src="../styles/city.css"></style>
-
-<style scoped>
-.custom-tooltip {
-    --bs-tooltip-bg: var(--bd-violet-bg);
-    --bs-tooltip-color: var(--bs-white);
-}
-</style>

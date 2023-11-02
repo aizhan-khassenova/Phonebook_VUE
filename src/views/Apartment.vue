@@ -11,7 +11,7 @@
 
                             <div class="btn-container">
                                 <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
-                                    data-bs-target="#myModal"><strong>+</strong></button>
+                                    data-bs-target="#myModal" title="Добавить квартиру"><strong>+</strong></button>
                             </div>
                         </div>
                     </div>
@@ -39,14 +39,25 @@
                                                     </h4>
                                                 </div>
 
+
+                                            </div>
+
+                                            <div id="second_row_container">
+                                                <i class="bi bi-geo-alt-fill" id="i-geo"></i>
+                                                <h6><strong>Россия, Санкт-Петербург, Камергенский переулок, 11</strong></h6>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div id="first_row_container">
                                                 <div class="btn-group dropend">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
-                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu">
+                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu" title="Редактировать квартиру">
                                                         <i class="bi bi-three-dots-vertical" id="i-menu"></i>
                                                     </button>
 
                                                     <ul class="dropdown-menu gap-1 p-2 rounded-3 mx-0 shadow w-220px">
-                                                        <li title="Квартиры не обновляются.">
+                                                        <li title="Квартиру нельзя обновить.">
                                                             <a class="dropdown-item rounded-2" data-bs-toggle="modal"
                                                                 data-bs-target="#modal-update" id="dropdown-upd"
                                                                 @click="prepareId(house.house_ID)" href="#">
@@ -70,14 +81,6 @@
                                                     </ul>
                                                 </div>
                                             </div>
-
-                                            <div id="second_row_container">
-                                                    <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                    <h6><strong>Россия, Санкт-Петербург, Камергенский переулок, 11</strong></h6>
-                                            </div>
-                                        </td>
-
-                                        <td>
                                             <ul id="no-bullets-list">
                                                 <li v-for="(phone, oIndex) in apartment.phones" :key="oIndex">
                                                     <div id="second_column_container">
@@ -109,41 +112,69 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Добавить улицу</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Добавление квартиры</h1>
 
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
                         <form @submit.prevent="createStreet">
+
+
+                            <div class="mb-3" id="message-text_container">
+                                <label for="message-text" class="col-form-label">Квартира:</label>
+
+                                <input v-model="newStreetName" type="text"
+                                    :class="{ 'form-control': true, 'is-invalid': !newStreetName, 'is-valid': newStreetName }"
+                                    id="message-text" autocomplete="off"
+                                    :title="newStreetName ? 'Все хорошо!' : 'Заполните это поле.'"
+                                    placeholder="Введите номер">
+                            </div>
+
                             <div class="mb-3" id="val-cont">
                                 <div class="col-md-5" id="val-item">
-                                    <label for="validationServer04" class="form-label">Город:</label>
-                                    <select class="form-select is-invalid" id="validationServer04" required
-                                        v-model="selectedCity">
-                                        <option selected disabled value="">Выберите...</option>
+                                    <label for="validationServer04" class="col-form-label">Город:</label>
+
+                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
+                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
+                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+
+                                        <option selected disabled :value="null">Выберите...</option>
+
                                         <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
                                             city.city_Name }}</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-5" id="val-item">
-                                    <label for="validationServer04" class="form-label">Город:</label>
-                                    <select class="form-select is-invalid" id="validationServer04" required
-                                        v-model="selectedCity">
-                                        <option selected disabled value="">Выберите...</option>
+                                    <label for="validationServer04" class="col-form-label">Улица:</label>
+
+                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
+                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
+                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+
+                                        <option selected disabled :value="null">Выберите...</option>
+
                                         <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
                                             city.city_Name }}</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="mb-3" id="message-text_container">
-                                <label for="message-text" class="col-form-label">Введите название:</label>
+                            <div class="mb-3" id="val-cont">
+                                <div class="col-md-5" id="val-item">
+                                    <label for="validationServer04" class="col-form-label">Дом:</label>
 
-                                <input v-model="newStreetName" type="text"
-                                    :class="{ 'form-control': true, 'is-invalid': !newStreetName, 'is-valid': newStreetName }"
-                                    id="message-text" autocomplete="off">
+                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
+                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
+                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+
+                                        <option selected disabled :value="null">Выберите...</option>
+
+                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
+                                            city.city_Name }}</option>
+                                    </select>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -151,8 +182,10 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
 
+                        <div :title="!selectedCity || !newStreetName ? 'Заполните все поля.' : ''">
                         <button type="submit" class="btn btn-primary" @click="createStreet"
-                            :disabled="!newStreetName">Добавить</button>
+                            :disabled="!selectedCity || !newStreetName">Добавить</button>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -243,14 +276,4 @@ export default {
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
 <style src="../styles/city.css"></style>
-
-<style scoped>
-#dropdown-upd {
-    pointer-events: none; /* Делаем кнопку неактивной */
-    color: var(--secondary-color);; /* Задаем серый цвет текста */
-}
-
-#dropdown-upd:hover {
-    background-color: initial; /* Убираем hover-эффект */
-}
-</style>
+<style src="../styles/updateHouseApartment.css" scoped></style>

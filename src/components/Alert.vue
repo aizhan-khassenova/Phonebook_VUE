@@ -47,9 +47,9 @@ export default {
             }
 
             // Добавляем код для автоматического закрытия уведомления через 5 секунд
-            // setTimeout(() => {
-            //     wrapper.remove(); // Удаляем уведомление из DOM через 5 секунд
-            // }, 5000);
+            setTimeout(() => {
+                wrapper.remove(); // Удаляем уведомление из DOM через 5 секунд
+            }, 2500);
         },
     },
 };
@@ -64,7 +64,7 @@ export default {
 #liveAlertPlaceholder {
 	position: fixed;
 	/* z-index: 1; */
-	top: 15px;
+	bottom: 0px;
 	/* Устанавливаем отступ снизу */
 	left: 15px;
 	/* Устанавливаем отступ слева */

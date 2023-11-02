@@ -1,18 +1,37 @@
 <template>
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <span class="fs-4"><strong>Телефонный Справочник</strong></span>
-        </a>
+    <div id="container">
+        <header>
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <h3>
+                    <strong id="phone">Телефoнный</strong>
+                </h3>
+                <h3>
+                    <strong id="book">Справ</strong>
+                </h3>
+                <h5>
+                    <i class="bi bi-person-circle" id="book"></i>
+                </h5>
+                <h3>
+                    <strong id="book">чник</strong>
+                </h3>
+                <h3>
+                    <strong id="dote">.</strong></h3>
+            </a>
 
-        <ul class="nav nav-pills">
-            <li class="nav-item"><router-link to="/" class="nav-link"><strong>Контакты</strong></router-link></li>
-            <li class="nav-item"><router-link to="/apartment" class="nav-link"><strong>Квартиры</strong></router-link></li>
-            <li class="nav-item"><router-link to="/house" class="nav-link"><strong>Дома</strong></router-link></li>
-            <li class="nav-item"><router-link to="/street" class="nav-link"><strong>Улицы</strong></router-link></li>
-            <li class="nav-item"><router-link to="/city" class="nav-link"><strong>Города</strong></router-link>
-            </li>
-        </ul>
-    </header>
+            <ul class="nav nav-tabs">
+                <li class="nav-item"><router-link to="/" class="nav-link"
+                        :class="{ 'active': $route.path === '/' }"><strong>Контакты</strong></router-link></li>
+                <li class="nav-item"><router-link to="/apartment" class="nav-link"
+                        :class="{ 'active': $route.path === '/apartment' }"><strong>Квартиры</strong></router-link></li>
+                <li class="nav-item"><router-link to="/house" class="nav-link"
+                        :class="{ 'active': $route.path === '/house' }"><strong>Дома</strong></router-link></li>
+                <li class="nav-item"><router-link to="/street" class="nav-link"
+                        :class="{ 'active': $route.path === '/street' }"><strong>Улицы</strong></router-link></li>
+                <li class="nav-item"><router-link to="/city" class="nav-link"
+                        :class="{ 'active': $route.path === '/city' }"><strong>Города</strong></router-link></li>
+            </ul>
+        </header>
+    </div>
 </template>
 
 <style src="../styles/bootstrap.min.css"></style>
@@ -20,8 +39,38 @@
 <style src="../styles/city.css"></style>
 
 <style scoped>
-/* header */
+#container{
+    background-color: var(--bs-primary);
+    display: flex;
+    justify-content: center;
+}
 header {
-	background-color: var(--gray-color);
+    width: 1320px;
+    height: 73px;
+    display: flex;
+    align-items:flex-end;
+    justify-content: center;
+    flex-wrap: wrap;
+    background-color: var(--bs-primary);
+}
+/* Стили для неактивных вкладок */
+.nav-tabs .nav-link {
+    background-color: var(--bs-secondary-bg);
+    border: 2px solid var(--bs-primary);
+    border-bottom: 3px solid var(--bs-primary);;
+}
+.nav-tabs .nav-link.active {
+    background-color: var(--gray-color);
+    color: #2c3e50;
+    border-bottom: 3px solid var(--gray-color);
+}
+#phone{
+    color: var(--bs-body-color);
+}
+#book{
+    color: var(--gray-color);
+}
+#dote{
+    color: var(--bs-body-color);
 }
 </style>
