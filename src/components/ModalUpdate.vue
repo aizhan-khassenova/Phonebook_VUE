@@ -10,6 +10,16 @@
 
                 <div class="modal-body">
                     <form @submit.prevent="updateData">
+                        <div class="mb-3" id="message-text_container" v-if="apiEndpoint === 'phone'">
+                            <label for="message-text" class="col-form-label">{{ inputLabelOwner }}</label>
+
+                            <input v-model="secondParameter" type="text"
+                                :class="{ 'form-control': true, 'is-invalid': !secondParameter, 'is-valid': secondParameter }"
+                                id="message-text" autocomplete="off"
+                                :title="secondParameter ? 'Все хорошо!' : 'Заполните это поле.'"
+                                :placeholder="inputplaceholderOwner">
+                        </div>
+
                         <div class="mb-3" id="message-text_container">
                             <label for="message-text" class="col-form-label">{{ inputLabel }}</label>
 
@@ -22,11 +32,12 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancel">Отмена</button>
 
-                    <div :title="!newItem ? 'Заполните все поля.' : ''">
+                    <div
+                        :title="apiEndpoint === 'phone' ? (!newItem || !secondParameter ? 'Заполните все поля.' : '') : (!newItem ? 'Заполните все поля.' : '')">
                         <button type="submit" class="btn btn-primary" @click="updateData"
-                            :disabled="!newItem">Обновить</button>
+                            :disabled="apiEndpoint === 'phone' ? (!newItem || !secondParameter) : (!newItem)">Обновить</button>
                     </div>
                 </div>
             </div>
@@ -43,6 +54,7 @@ export default {
         return {
             data: null, // Инициализируем переменную для хранения данных
             newItem: '', // Добавьте новое поле для хранения названия нового города
+            secondParameter: '',
             updatedItemId: null, // Добавляем поле для хранения идентификатора обновляемого города
         };
     },
@@ -53,9 +65,12 @@ export default {
         submitButtonText: String, // Определяем свойство для текста кнопки отправки
         apiEndpoint: String, // Добавьте это свойство
         name: String,
+        nameOwner: String,
         inputplaceholder: String,
         itemId: String,
-        alertMessage: String
+        alertMessage: String,
+        inputLabelOwner: String,
+        inputplaceholderOwner: String
     },
 
     methods: {
@@ -64,25 +79,44 @@ export default {
                 [this.name]: this.newItem,
             };
 
-            // Посылаем PUT-запрос на сервер для обновления города
-            axios.put('https://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, itemData)
-                .then(response => {
-                    // this.$emit('item-updated'); // Отправляем событие с новым элементом (городом или улицей)
-                    console.log(response.data);
-                    this.newItem = '';
+            if (this.apiEndpoint === 'phone') {
+                const secondItemData = {
+                    [this.nameOwner]: this.secondParameter, // Ваш второй параметр
+                };
 
-                    // this.alertMessage = 'Город обновлен';
-                    // this.showAlert(this.alertMessage, 'success');
-                    this.$emit('item-updated', this.alertMessage, 'success'); // Передаем сообщение и тип уведомления
-                })
-                .catch(error => {
-                    console.error('Ошибка при выполнении PUT запроса:', error);
-                    // this.alertMessage = error.response.data;
-                    // this.showAlert(this.alertMessage, 'danger');
-                    this.$emit('item-updated', error.response.data, 'danger'); // Передаем сообщение и тип уведомления
-                });
+                axios.put('https://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, { ...itemData, ...secondItemData })
+                    .then(response => {
+                        console.log(response.data);
+                        this.newItem = '';
+                        this.secondParameter = ''
+                        this.$emit('item-updated', this.alertMessage, 'success');
+                        // document.querySelector('[data-bs-target="#modal-update"]').click();
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при выполнении PUT запроса:', error);
+                        this.$emit('item-updated', error.response.data, 'danger');
+                    });
+            } else {
+                axios.put('https://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, itemData)
+                    .then(response => {
+                        console.log(response.data);
+                        this.newItem = '';
+                        this.$emit('item-updated', this.alertMessage, 'success'); // Передаем сообщение и тип уведомления
+                        // document.querySelector('[data-bs-target="#modal-update"]').click();
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при выполнении PUT запроса:', error);
+                        this.$emit('item-updated', error.response.data, 'danger'); // Передаем сообщение и тип уведомления
+                    });
+            }
 
             document.querySelector('[data-bs-target="#modal-update"]').click();
+            // document.querySelector('[data-bs-dismiss="modal"]').click();
+        },
+
+        cancel() {
+            this.newItem = ''; // Сброс значения поля
+            this.secondParameter = ''; // Сброс значения поля
         },
     },
 };

@@ -1,8 +1,9 @@
 <template>
     <div>
         <Alert @alert="showAlert" :alert-message="alertMessage" :alert-type="alertType"></Alert>
+        <Loader v-if="loading"></Loader>
         <Header></Header>
-        <section>
+        <section v-if="!loading">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -42,17 +43,19 @@
 
                                             </div>
                                             <div id="second_row_container">
-                                                    <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                    <h6><strong>Россия, Санкт-Петербург, Камергенский переулок, 11, 22</strong></h6>
+                                                <i class="bi bi-geo-alt-fill" id="i-geo"></i>
+                                                <h6><strong>Россия, Санкт-Петербург, Камергенский переулок, 11, 22</strong>
+                                                </h6>
                                             </div>
                                         </td>
 
                                         <td>
                                             <!-- <div id="bullet_number_container"> -->
-                                                <div id="first_row_container">
-                                                    <div class="btn-group dropend">
+                                            <div id="first_row_container">
+                                                <div class="btn-group dropend">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
-                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu" title="Редактировать контакт">
+                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu"
+                                                        title="Редактировать контакт">
                                                         <i class="bi bi-three-dots-vertical" id="i-menu"></i>
                                                     </button>
 
@@ -80,23 +83,23 @@
                                                         </li>
                                                     </ul>
                                                 </div>
+                                            </div>
+                                            <ul id="no-bullets-list">
+                                                <div id="second_column_container">
+                                                    <h6>
+                                                        <i class="bi bi-telephone-fill" id="i-list" v-if="phone"></i>
+                                                    </h6>
+
+                                                    <h6>
+                                                        <strong>
+                                                            {{ phone.phone_Number }}
+                                                        </strong>
+                                                    </h6>
+
                                                 </div>
-                                                <ul id="no-bullets-list">
-                                                    <div id="second_column_container">
-                                                        <h6>
-                                                            <i class="bi bi-telephone-fill" id="i-list" v-if="phone"></i>
-                                                        </h6>
+                                            </ul>
 
-                                                        <h6>
-                                                            <strong>
-                                                                {{ phone.phone_Number }}
-                                                            </strong>
-                                                        </h6>
 
-                                                    </div>
-                                                </ul>
-
-                                                
 
                                             <!-- </div> -->
                                         </td>
@@ -109,7 +112,7 @@
             </div>
         </section>
 
-        <Footer></Footer>
+        <Footer v-if="!loading"></Footer>
 
         <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -127,69 +130,25 @@
                             <div class="mb-3" id="message-text_container">
                                 <label for="message-text" class="col-form-label">Имя:</label>
 
-                                <input v-model="newStreetName" type="text"
-                                    :class="{ 'form-control': true, 'is-invalid': !newStreetName, 'is-valid': newStreetName }"
+                                <input v-model="newOwnerName" type="text"
+                                    :class="{ 'form-control': true, 'is-invalid': !newOwnerName, 'is-valid': newOwnerName }"
                                     id="message-text" autocomplete="off"
-                                    :title="newStreetName ? 'Все хорошо!' : 'Заполните это поле.'"
+                                    :title="newOwnerName ? 'Все хорошо!' : 'Заполните это поле.'"
                                     placeholder="Введите имя">
                             </div>
 
                             <div class="mb-3" id="message-text_container">
                                 <label for="message-text" class="col-form-label">Телефон:</label>
 
-                                <input v-model="newStreetName" type="text"
-                                    :class="{ 'form-control': true, 'is-invalid': !newStreetName, 'is-valid': newStreetName }"
+                                <input v-model="newPhoneName" type="text"
+                                    :class="{ 'form-control': true, 'is-invalid': !newPhoneName, 'is-valid': newPhoneName }"
                                     id="message-text" autocomplete="off"
-                                    :title="newStreetName ? 'Все хорошо!' : 'Заполните это поле.'"
+                                    :title="newPhoneName ? 'Все хорошо!' : 'Заполните это поле.'"
                                     placeholder="Введите номер">
                             </div>
 
                             <div class="mb-3" id="val-cont">
-                                <div class="col-md-5" id="val-item">
-                                    <label for="validationServer04" class="col-form-label">Город:</label>
-
-                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
-                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
-                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
-
-                                        <option selected disabled :value="null">Выберите...</option>
-
-                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
-                                            city.city_Name }}</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-5" id="val-item">
-                                    <label for="validationServer04" class="col-form-label">Улица:</label>
-
-                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
-                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
-                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
-
-                                        <option selected disabled :value="null">Выберите...</option>
-
-                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
-                                            city.city_Name }}</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="mb-3" id="val-cont">
-                                <div class="col-md-5" id="val-item">
-                                    <label for="validationServer04" class="col-form-label">Дом:</label>
-
-                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
-                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
-                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
-
-                                        <option selected disabled :value="null">Выберите...</option>
-
-                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
-                                            city.city_Name }}</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-5" id="val-item">
+                                <!-- <div class="col-md-5" id="val-item"> -->
                                     <label for="validationServer04" class="col-form-label">Квартира:</label>
 
                                     <select class="form-select" id="validationServer04" required v-model="selectedCity"
@@ -201,30 +160,32 @@
                                         <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
                                             city.city_Name }}</option>
                                     </select>
-                                </div>
+                                <!-- </div> -->
                             </div>
                         </form>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancel">Отмена</button>
 
-                        <div :title="!selectedCity || !newStreetName ? 'Заполните все поля.' : ''">
+                        <div :title="!selectedCity || !newOwnerName || !newPhoneName ? 'Заполните все поля.' : ''">
 
-                        <button type="submit" class="btn btn-primary" @click="createStreet"
-                            :disabled="!selectedCity || !newStreetName">Добавить</button>
+                            <button type="submit" class="btn btn-primary" @click="createStreet"
+                                :disabled="!selectedCity || !newOwnerName || !newPhoneName">Добавить</button>
+                        </div>
                     </div>
-                </div>
 
                 </div>
             </div>
         </div>
 
-        <!-- <ModalUpdate @item-updated="onPhoneUpdated" :itemId="updatedPhoneId" title="Обновление контакта" inputLabel="Контакт:" apiEndpoint="phone" name="phone_Number" inputplaceholder="Введите контакт"></ModalUpdate> -->
+        <ModalUpdate @item-updated="onPhoneChanged" :itemId="selectedPhoneId" title="Обновление контакта" inputLabelOwner="Имя:"
+            inputLabel="Телефон:" apiEndpoint="phone" name="phone_Number" nameOwner="owner_Name" inputplaceholder="Введите номер"
+            inputplaceholderOwner="Введите имя" alertMessage="Контакт обновлен"></ModalUpdate>
 
         <ModalDelete @item-deleted="onPhoneChanged" :itemId="selectedPhoneId" title="Удалить контакт?"
             inputLabel="Удаление этого контакта также приведет к удалению его данных." apiEndpoint="phone"
-            name="phone_Number" inputplaceholder="Введите название" alertMessage="Квартира удалена"></ModalDelete>
+            name="phone_Number" inputplaceholder="Введите название" alertMessage="Контакт удален"></ModalDelete>
     </div>
 </template>
 
@@ -234,18 +195,22 @@ import '@/scripts/bootstrap.bundle.min.js';
 import Header from '@/components/Header.vue';
 // import Title from '@/components/Title.vue';
 import Footer from '@/components/Footer.vue';
-// import ModalUpdate from '@/components/ModalUpdate.vue';
+import ModalUpdate from '@/components/ModalUpdate.vue';
 import ModalDelete from '@/components/ModalDelete.vue';
 import Alert from '@/components/Alert.vue';
+import Loader from '@/components/Loader.vue';
+
 
 export default {
     data() {
         return {
             data: null, // Инициализируем переменную для хранения данных
             newPhoneName: '', // Добавьте новое поле для хранения названия нового города
+            newOwnerName: '',
             selectedPhoneId: null, // Добавляем поле для хранения идентификатора обновляемого города
             alertMessage: null, // Добавьте переменную для хранения сообщения
             alertType: null,
+            loading: true,
         };
     },
 
@@ -254,14 +219,17 @@ export default {
         // Title,
         Footer,
         // ModalCreate,
-        // ModalUpdate
+        ModalUpdate,
         ModalDelete,
-        Alert
+        Alert,
+        Loader
     },
 
     mounted() {
         // Вызываем fetchData при загрузке компонента
-        this.fetchData();
+        setTimeout(() => {
+      this.fetchData();
+    }, 100);
     },
 
     methods: {
@@ -273,25 +241,20 @@ export default {
         fetchData() {
             axios.get('https://localhost:5001/api/phone') // Выполняем GET-запрос к серверу
                 .then(response => {
-                    // const sortedData = response.data.map(phone => {
-                    //     phone.phones = phone.phones.sort((a, b) => {
-                    //         const phoneNumberA = parseInt(a.phone_Number, 10);
-                    //         const phoneNumberB = parseInt(b.phone_Number, 10);
-                    //         return phoneNumberA - phoneNumberB;
-                    //     });
-                    //     return phone;
-                    // });
-
-                    // this.data = sortedData.sort((a, b) => a.phone_Number.localeCompare(b.phone_Number));
                     this.data = response.data;
+                    // Сортируем данные по алфавиту
+            this.data.sort((a, b) => a.owner_Name.localeCompare(b.owner_Name));
                 })
 
                 .catch(error => {
                     console.error('Ошибка при выполнении GET запроса:', error); // Выводим ошибку в случае неудачи
                 })
+                .finally(() => {
+                    this.loading = false; // Завершаем загрузку
+                });
         },
 
-        
+
 
         prepareId(phoneId) {
             this.selectedPhoneId = phoneId;
@@ -301,6 +264,12 @@ export default {
         onPhoneChanged(message, type) {
             this.showAlert(message, type); // Вызываем showAlert с переданным типом уведомления
             this.fetchData(); // Запрашиваем актуальные данные с сервера
+        },
+
+        cancel() {
+            this.newPhoneName = ''; // Сброс значения поля
+            this.newOwnerName = ''; // Сброс значения поля
+            this.selectedCity = null; // Сброс значения поля
         },
     }
 }

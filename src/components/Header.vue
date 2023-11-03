@@ -1,6 +1,6 @@
 <template>
     <div id="container">
-        <header>
+        <header class="fixed-header">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
                 <h3>
                     <strong id="phone">Телефoнный</strong>
@@ -15,7 +15,8 @@
                     <strong id="book">чник</strong>
                 </h3>
                 <h3>
-                    <strong id="dote">.</strong></h3>
+                    <strong id="dote">.</strong>
+                </h3>
             </a>
 
             <ul class="nav nav-tabs">
@@ -39,38 +40,50 @@
 <style src="../styles/city.css"></style>
 
 <style scoped>
-#container{
+#container {
     background-color: var(--bs-primary);
     display: flex;
     justify-content: center;
+    width: 100vw;
 }
+
 header {
     width: 1320px;
     height: 73px;
     display: flex;
-    align-items:flex-end;
-    justify-content: center;
+    align-items: flex-end;
     flex-wrap: wrap;
-    background-color: var(--bs-primary);
 }
-/* Стили для неактивных вкладок */
+
+
 .nav-tabs .nav-link {
     background-color: var(--bs-secondary-bg);
     border: 2px solid var(--bs-primary);
-    border-bottom: 3px solid var(--bs-primary);;
+    border-bottom: 3px solid var(--bs-primary);
 }
+
+.nav-tabs:hover .nav-link:hover {
+    background-color: var(--secondary-color);
+}
+
 .nav-tabs .nav-link.active {
     background-color: var(--gray-color);
     color: #2c3e50;
     border-bottom: 3px solid var(--gray-color);
 }
-#phone{
+
+.nav-tabs:hover .nav-link.active:hover {
+    background-color: var(--gray-color);
+}
+
+#phone {
     color: var(--bs-body-color);
 }
-#book{
+
+#book {
     color: var(--gray-color);
 }
-#dote{
+
+#dote {
     color: var(--bs-body-color);
-}
-</style>
+}</style>

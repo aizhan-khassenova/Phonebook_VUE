@@ -1,10 +1,11 @@
 <template>
     <div>
         <Alert @alert="showAlert" :alert-message="alertMessage" :alert-type="alertType"></Alert>
+        <Loader v-if="loading"></Loader>
 
         <Header></Header>
 
-        <section>
+        <section v-if="!loading">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -55,7 +56,8 @@
                                             <div id="first_row_container">
                                                 <div class="btn-group dropend">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
-                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu" title="Редактировать город">
+                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu"
+                                                        title="Редактировать город">
                                                         <i class="bi bi-three-dots-vertical" id="i-menu"></i>
                                                     </button>
 
@@ -113,7 +115,7 @@
         </section>
 
 
-        <Footer></Footer>
+        <Footer v-if="!loading"></Footer>
 
         <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -139,7 +141,8 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            @click="cancel">Отмена</button>
 
                         <div :title="!newCityName ? 'Заполните все поля.' : ''">
                             <button type="submit" class="btn btn-primary" @click="createCity"
@@ -168,6 +171,7 @@ import Footer from '@/components/Footer.vue';
 import ModalUpdate from '@/components/ModalUpdate.vue';
 import ModalDelete from '@/components/ModalDelete.vue';
 import Alert from '@/components/Alert.vue';
+import Loader from '@/components/Loader.vue';
 
 export default {
     data() {
@@ -177,6 +181,7 @@ export default {
             selectedCityId: null, // Добавляем поле для хранения идентификатора обновляемого города
             alertMessage: null, // Добавьте переменную для хранения сообщения
             alertType: null,
+            loading: true,
         };
     },
 
@@ -185,12 +190,17 @@ export default {
         Footer,
         ModalUpdate,
         ModalDelete,
-        Alert
+        Alert,
+        Loader
     },
 
     mounted() {
         // Вызываем fetchData при загрузке компонента
-        this.fetchData();
+        // this.fetchData();
+        // Вызываем fetchData с задержкой 5 секунд
+        setTimeout(() => {
+            this.fetchData();
+        }, 100);
     },
 
     methods: {
@@ -216,6 +226,9 @@ export default {
                 .catch(error => {
                     console.error('Ошибка при выполнении GET запроса:', error); // Выводим ошибку в случае неудачи
                 })
+                .finally(() => {
+                    this.loading = false; // Завершаем загрузку
+                });
         },
 
         prepareId(cityId) {
@@ -253,6 +266,10 @@ export default {
 
             // Закрыть модальное окно с использованием data-bs-dismiss
             document.querySelector('[data-bs-dismiss="modal"]').click();
+        },
+
+        cancel() {
+            this.newCityName = ''; // Сброс значения поля
         },
     },
 };

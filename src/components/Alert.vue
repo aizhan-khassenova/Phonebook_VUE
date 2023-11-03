@@ -37,6 +37,7 @@ export default {
         
                 // Удалите слово "Ошибка" из текста уведомления при ошибке
                 this.localMessage = this.localType === 'danger' ? this.localMessage.replace('Ошибка: ', '') : this.localMessage;
+                this.localMessage = this.localType === 'danger' ? this.localMessage.replace('Телефон', 'Контакт') : this.localMessage;
 
                 wrapper.innerHTML = `
                     <div class="alert alert-${this.localType} alert-dismissible" role="alert">
@@ -49,7 +50,7 @@ export default {
             // Добавляем код для автоматического закрытия уведомления через 5 секунд
             setTimeout(() => {
                 wrapper.remove(); // Удаляем уведомление из DOM через 5 секунд
-            }, 2500);
+            }, 1000);
         },
     },
 };

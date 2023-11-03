@@ -1,8 +1,8 @@
 :root {
 	--primary-color: #0d6efd;
-	--secondary-color: #595c5f;
+	--secondary-color: #dee2e6;
 	--green-color: #41B883;
-	--black-color: #35495E;
+	--black-color: #2c3e50;
 	--gray-color: #FCFCFD;
 }
 .colorGreen {
@@ -11,6 +11,10 @@
 .colorBlack {
 	color: var(--black-color);
 }
+
+body {
+	overflow-x: hidden; /* Hide horizontal scrollbar */
+  }
 
 /* title */
 #title_container {
@@ -153,19 +157,26 @@ h6 {
 }
 
 /* modalCreate */
-#val-cont {
+/* #val-cont {
     display: flex;
     justify-content: space-between;
-	/* border: 1px solid black; */
+	border: 1px solid black;
 
-}
-#val-item {
+} */
+#val-cont {
     text-align: left;
-    width: 45%;
-		/* border: 1px solid black; */
+    /* width: 45%;
+		border: 1px solid black; */
 }
 
 /* alert, но должн остаться в этом файле */
 #i-check {
 	margin-right: 15px;
 }
+
+/* loader
+body.loading {
+	overflow: hidden;
+	visibility: hidden;
+  } */
+  

@@ -1,12 +1,10 @@
 <template>
-    <div class="container">
-        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-            <div class="col-md-4 d-flex align-items-center">
-                <span class="mb-3 mb-md-0 text-body-secondary">Телефонный Справочник <strong>&middot;</strong> 2023</span>
-            </div>
-
-        </footer>
-    </div>
+    <div id="container">
+  <footer>
+    <a href="/" class="nav-link px-2"><h4><i class="bi bi-person-circle" id="book"></i></h4></a>
+    <a href="/" class="nav-link px-2"><h6 class="text-center">Телефонный Справочник <strong>&middot;</strong> 2023</h6></a>
+  </footer>
+</div>
 </template>
 
 <style src="../styles/bootstrap.min.css"></style>
@@ -14,8 +12,21 @@
 <style src="../styles/city.css"></style>
 
 <style scoped>
+#container{
+    background-color: var(--black-color);
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+}
 /* footer */
 footer {
-	background-color: var(--gray-color);
+    height: 60px;
+    width: 1320px;
+	background-color: var(--black-color);
+    color: var(--gray-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
 }
 </style>

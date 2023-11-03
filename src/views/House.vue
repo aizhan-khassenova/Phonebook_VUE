@@ -1,8 +1,9 @@
 <template>
     <div>
         <Alert @alert="showAlert" :alert-message="alertMessage" :alert-type="alertType"></Alert>
+        <Loader v-if="loading"></Loader>
         <Header></Header>
-        <section>
+        <section v-if="!loading">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -52,7 +53,8 @@
                                             <div id="first_row_container">
                                                 <div class="btn-group dropend">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
-                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu" title="Редактировать дом">
+                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu"
+                                                        title="Редактировать дом">
                                                         <i class="bi bi-three-dots-vertical" id="i-menu"></i>
                                                     </button>
 
@@ -107,7 +109,7 @@
             </div>
         </section>
 
-        <Footer></Footer>
+        <Footer v-if="!loading"></Footer>
 
         <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -125,51 +127,39 @@
                             <div class="mb-3" id="message-text_container">
                                 <label for="message-text" class="col-form-label">Дом:</label>
 
-                                <input v-model="newStreetName" type="text"
-                                    :class="{ 'form-control': true, 'is-invalid': !newStreetName, 'is-valid': newStreetName }"
+                                <input v-model="newHouseName" type="text"
+                                    :class="{ 'form-control': true, 'is-invalid': !newHouseName, 'is-valid': newHouseName }"
                                     id="message-text" autocomplete="off"
-                                    :title="newStreetName ? 'Все хорошо!' : 'Заполните это поле.'"
+                                    :title="newHouseName ? 'Все хорошо!' : 'Заполните это поле.'"
                                     placeholder="Введите номер">
                             </div>
 
                             <div class="mb-3" id="val-cont">
-                                <div class="col-md-5" id="val-item">
-                                    <label for="validationServer04" class="col-form-label">Город:</label>
+                                <!-- <div class="col-md-5" id="val-item"> -->
+                                <label for="validationServer04" class="col-form-label">Улица:</label>
 
-                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
-                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
-                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+                                <select class="form-select" id="validationServer04" required v-model="selectedCity"
+                                    :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
+                                    :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
 
-                                        <option selected disabled :value="null">Выберите...</option>
+                                    <option selected disabled :value="null">Выберите...</option>
 
-                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
-                                            city.city_Name }}</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-5" id="val-item">
-                                    <label for="validationServer04" class="col-form-label">Улица:</label>
-
-                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
-                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
-                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
-
-                                        <option selected disabled :value="null">Выберите...</option>
-
-                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
-                                            city.city_Name }}</option>
-                                    </select>
-                                </div>
+                                    <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
+                                        city.city_Name }}</option>
+                                </select>
+                                <!-- </div> -->
                             </div>
                         </form>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            @click="cancel">Отмена</button>
 
-                        <div :title="!selectedCity || !newStreetName ? 'Заполните все поля.' : ''">
-                        <button type="submit" class="btn btn-primary" @click="createStreet"
-                            :disabled="!selectedCity || !newStreetName">Добавить</button></div>
+                        <div :title="!selectedCity || !newHouseName ? 'Заполните все поля.' : ''">
+                            <button type="submit" class="btn btn-primary" @click="createStreet"
+                                :disabled="!selectedCity || !newHouseName">Добавить</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -189,6 +179,8 @@ import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import ModalDelete from '@/components/ModalDelete.vue';
 import Alert from '@/components/Alert.vue';
+import Loader from '@/components/Loader.vue';
+
 
 export default {
     data() {
@@ -198,6 +190,7 @@ export default {
             selectedHouseId: null, // Добавляем поле для хранения идентификатора обновляемого города
             alertMessage: null, // Добавьте переменную для хранения сообщения
             alertType: null,
+            loading: true,
         };
     },
 
@@ -207,12 +200,15 @@ export default {
         Footer,
         // ModalCreate,
         ModalDelete,
-        Alert
+        Alert,
+        Loader
     },
 
     mounted() {
         // Вызываем fetchData при загрузке компонента
-        this.fetchData();
+        setTimeout(() => {
+      this.fetchData();
+    }, 100);
     },
 
     methods: {
@@ -240,6 +236,9 @@ export default {
                 .catch(error => {
                     console.error('Ошибка при выполнении GET запроса:', error); // Выводим ошибку в случае неудачи
                 })
+                .finally(() => {
+                    this.loading = false; // Завершаем загрузку
+                });
         },
 
         prepareId(houseId) {
@@ -250,6 +249,11 @@ export default {
         onHouseChanged(message, type) {
             this.showAlert(message, type); // Вызываем showAlert с переданным типом уведомления
             this.fetchData(); // Запрашиваем актуальные данные с сервера
+        },
+
+        cancel() {
+            this.newHouseName = ''; // Сброс значения поля
+            this.selectedCity = null; // Сброс значения поля
         },
     }
 }
