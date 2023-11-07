@@ -1,18 +1,25 @@
 <template>
     <div>
         <Alert @alert="showAlert" :alert-message="alertMessage" :alert-type="alertType"></Alert>
+
         <Loader v-if="loading"></Loader>
+
         <Header></Header>
+
         <section v-if="!loading">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
                         <div class="col-3" id="title_container">
-                            <h1 class="text-start text-primary"><strong>Квартиры</strong></h1>
+                            <h1 class="text-start text-primary">
+                                <strong>Квартиры</strong>
+                            </h1>
 
                             <div class="btn-container">
                                 <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
-                                    data-bs-target="#myModal" title="Добавить квартиру"><strong>+</strong></button>
+                                    data-bs-target="#myModal" title="Добавить квартиру">
+                                    <strong>+</strong>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -28,25 +35,22 @@
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
                                                     <h6 v-if="apartment.apartment_Number" id="sort_icon">
-                                                        <strong>
-                                                            <i class="bi bi-key-fill"></i>
-                                                            <!-- {{ apartment.apartment_Number }} -->
-                                                        </strong>
+                                                        <strong><i class="bi bi-key-fill"></i></strong>
                                                     </h6>
 
                                                     <h4>
-                                                        <strong>
-                                                            {{ apartment.apartment_Number }}
-                                                        </strong>
+                                                        <strong>{{ apartment.apartment_Number }}</strong>
                                                     </h4>
                                                 </div>
-
-
                                             </div>
 
                                             <div id="second_row_container">
                                                 <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                <h6><strong>Россия, {{ city.city_Name }}, {{ street.street_Name }}, {{ house.house_Number }}</strong></h6>
+
+                                                <h6>
+                                                    <strong>Россия, {{ city.city_Name }}, {{ street.street_Name }}, {{
+                                                        house.house_Number }}</strong>
+                                                </h6>
                                             </div>
                                         </td>
 
@@ -54,7 +58,8 @@
                                             <div id="first_row_container">
                                                 <div class="btn-group dropend">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
-                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu" title="Редактировать квартиру">
+                                                        data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu"
+                                                        title="Редактировать квартиру">
                                                         <i class="bi bi-three-dots-vertical" id="i-menu"></i>
                                                     </button>
 
@@ -64,6 +69,7 @@
                                                                 data-bs-target="#modal-update" id="dropdown-upd"
                                                                 @click="prepareId(house.house_ID)" href="#">
                                                                 <i class="bi bi-pen-fill" id="i-dropdown"></i>
+
                                                                 Обновить квартиру
                                                             </a>
                                                         </li>
@@ -77,25 +83,25 @@
                                                                 data-bs-target="#modal-delete" id="dropdown-del"
                                                                 @click="prepareId(apartment.apartment_ID)" href="#">
                                                                 <i class="bi bi-trash-fill" id="i-dropdown"></i>
+
                                                                 Удалить квартиру
                                                             </a>
                                                         </li>
                                                     </ul>
                                                 </div>
                                             </div>
+
                                             <ul id="no-bullets-list">
                                                 <li v-for="(phone, oIndex) in apartment.phones" :key="oIndex">
                                                     <div id="second_column_container">
                                                         <h6>
-                                                            <i class="bi bi-person-fill" id="i-list" v-if="phone.owner_Name"></i>
+                                                            <i class="bi bi-person-fill" id="i-list"
+                                                                v-if="phone.owner_Name"></i>
                                                         </h6>
 
                                                         <h6>
-                                                            <strong>
-                                                                <!-- {{ phone ? phone.owner_Name : 'Нет контактов' }} -->
-                                                                <!-- {{ phone !== NULL ? phone.owner_Name : 'Нет контактов' }} -->
-                                                                {{ phone !== null && phone.owner_Name !== null ? phone.owner_Name : 'Нет контактов' }}
-                                                            </strong>
+                                                            <strong>{{ phone !== null && phone.owner_Name !== null ?
+                                                                phone.owner_Name : 'Нет контактов' }}</strong>
                                                         </h6>
                                                     </div>
                                                 </li>
@@ -123,10 +129,10 @@
 
                     <div class="modal-body">
                         <form @submit.prevent="createStreet">
-
-
                             <div class="mb-3" id="message-text_container">
-                                <label for="message-text" class="col-form-label">Квартира:</label>
+                                <label for="message-text" class="col-form-label">
+                                    Квартира:
+                                </label>
 
                                 <input v-model="newApartmentName" type="text"
                                     :class="{ 'form-control': true, 'is-invalid': !newApartmentName, 'is-valid': newApartmentName }"
@@ -136,30 +142,79 @@
                             </div>
 
                             <div class="mb-3" id="val-cont">
-                                <!-- <div class="col-md-5" id="val-item"> -->
-                                    <label for="validationServer04" class="col-form-label">Дом:</label>
+                                <div class="col-md-5" id="val-item">
+                                    <label for="validationServer04" class="col-form-label">
+                                        Город:
+                                    </label>
 
                                     <select class="form-select" id="validationServer04" required v-model="selectedCity"
                                         :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
                                         :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
 
-                                        <option selected disabled :value="null">Выберите...</option>
+                                        <option selected disabled :value="null">
+                                            Выберите...
+                                        </option>
 
-                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
-                                            city.city_Name }}</option>
+                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">
+                                            {{ city.city_Name }}
+                                        </option>
                                     </select>
-                                <!-- </div> -->
+                                </div>
+
+                                <div class="col-md-5" id="val-item">
+                                    <label for="validationServer04" class="col-form-label">
+                                        Улица:
+                                    </label>
+
+                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
+                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
+                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+
+                                        <option selected disabled :value="null">
+                                            Выберите...
+                                        </option>
+
+                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">
+                                            {{ city.city_Name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3" id="val-cont">
+                                <div class="col-md-5" id="val-item">
+                                    <label for="validationServer04" class="col-form-label">
+                                        Дом:
+                                    </label>
+
+                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
+                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
+                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+
+                                        <option selected disabled :value="null">
+                                            Выберите...
+                                        </option>
+
+                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">
+                                            {{ city.city_Name }}
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                         </form>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancel">Отмена</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancel">
+                            Отмена
+                        </button>
 
                         <div :title="!selectedCity || !newApartmentName ? 'Заполните все поля.' : ''">
-                        <button type="submit" class="btn btn-primary" @click="createStreet"
-                            :disabled="!selectedCity || !newApartmentName">Добавить</button>
-                    </div>
+                            <button type="submit" class="btn btn-primary" @click="createStreet"
+                                :disabled="!selectedCity || !newApartmentName">
+                                Добавить
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -175,20 +230,18 @@
 import axios from 'axios';
 import '@/scripts/bootstrap.bundle.min.js';
 import Header from '@/components/Header.vue';
-// import Title from '@/components/Title.vue';
 import Footer from '@/components/Footer.vue';
 import ModalDelete from '@/components/ModalDelete.vue';
 import Alert from '@/components/Alert.vue';
 import Loader from '@/components/Loader.vue';
 
-
 export default {
     data() {
         return {
-            data: null, // Инициализируем переменную для хранения данных
-            newApartmentName: '', // Добавьте новое поле для хранения названия нового города
-            selectedApartmentId: null, // Добавляем поле для хранения идентификатора обновляемого города
-            alertMessage: null, // Добавьте переменную для хранения сообщения
+            data: null,
+            newApartmentName: '',
+            selectedApartmentId: null,
+            alertMessage: null,
             alertType: null,
             loading: true,
         };
@@ -196,51 +249,23 @@ export default {
 
     components: {
         Header,
-        // Title,
         Footer,
-        // ModalCreate,
         ModalDelete,
         Alert,
         Loader
     },
 
     mounted() {
-        // Вызываем fetchData при загрузке компонента
         setTimeout(() => {
-      this.fetchData();
-    }, 100);
+            this.fetchData();
+        }, 100);
     },
 
     methods: {
         showAlert(message, type) {
             this.alertMessage = message;
             this.alertType = type;
-            // console.log("city.vue show alert", message, type);
         },
-        fetchData() {
-            axios.get('https://localhost:5001/api/phonebook/listByCity') // Выполняем GET-запрос к серверу
-                .then(response => {
-                    // const sortedData = response.data.map(apartment => {
-                    //     apartment.phones = apartment.phones.sort((a, b) => {
-                    //         const phoneNumberA = parseInt(a.owner_Name, 10);
-                    //         const phoneNumberB = parseInt(b.owner_Name, 10);
-                    //         return phoneNumberA - phoneNumberB;
-                    //     });
-                    //     return apartment;
-                    // });
-
-                    // this.data = sortedData.sort((a, b) => a.apartment_Number.localeCompare(b.apartment_Number));
-                    this.data = response.data;
-                })
-
-                .catch(error => {
-                    console.error('Ошибка при выполнении GET запроса:', error); // Выводим ошибку в случае неудачи
-                })
-                .finally(() => {
-                    this.loading = false; // Завершаем загрузку
-                });
-        },
-
 
         prepareId(apartmentId) {
             this.selectedApartmentId = apartmentId;
@@ -248,13 +273,28 @@ export default {
         },
 
         onApartmentChanged(message, type) {
-            this.showAlert(message, type); // Вызываем showAlert с переданным типом уведомления
-            this.fetchData(); // Запрашиваем актуальные данные с сервера
+            this.showAlert(message, type);
+            this.fetchData();
         },
 
         cancel() {
-            this.newApartmentName = ''; // Сброс значения поля
-            this.selectedCity = null; // Сброс значения поля
+            this.newApartmentName = '';
+            this.selectedCity = null;
+        },
+
+        fetchData() {
+            axios.get('https://localhost:5001/api/phonebook/listByCity') 
+                .then(response => {
+                    this.data = response.data;
+                })
+
+                .catch(error => {
+                    console.error('Ошибка при выполнении GET запроса:', error);
+                })
+
+                .finally(() => {
+                    this.loading = false;
+                });
         },
     }
 }

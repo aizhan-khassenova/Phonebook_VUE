@@ -14,7 +14,6 @@ body {
 	height: auto;
 	resize: none;
 }
-
 #message-text_container {
 	display: flex;
 	flex-direction: column;
@@ -26,10 +25,9 @@ body {
 	display: flex;
 	justify-content: space-between;
 }
-
 #val-item {
 	text-align: left;
-	width: 45%;
+	width: 48%;
 }
 
 /* alert */
@@ -42,7 +40,6 @@ body {
 	display: flex;
 	align-items: center;
 }
-
 #btn-create {
 	border-radius: 50%;
 	height: 35px;

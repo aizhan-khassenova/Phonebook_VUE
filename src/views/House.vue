@@ -1,19 +1,26 @@
 <template>
     <div>
         <Alert @alert="showAlert" :alert-message="alertMessage" :alert-type="alertType"></Alert>
+
         <Loader v-if="loading"></Loader>
+
         <Header></Header>
+
         <section v-if="!loading">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
                         <div class="col-3" id="title_container">
-                            <h1 class="text-start text-primary"><strong>Дома</strong></h1>
+                            <h1 class="text-start text-primary">
+                                <strong>Дома</strong>
+                            </h1>
 
-                            <div class="btn-container">
+                            <div class="btn-container" @click="fetchCities">
                                 <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
-                                    data-bs-target="#myModal" @click="fetchChoises"
-                                    title="Добавить дом"><strong>+</strong></button>
+                                    data-bs-target="#myModal" @click="fetchStreets"
+                                    title="Добавить дом">
+                                    <strong>+</strong>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -29,25 +36,20 @@
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
                                                     <h6 v-if="house.house_Number" id="sort_icon">
-                                                        <strong>
-                                                            <!-- {{ house.house_Number }} -->
-                                                            <i class="bi bi-house-door-fill"></i>
-                                                        </strong>
+                                                        <strong><i class="bi bi-house-door-fill"></i></strong>
                                                     </h6>
 
                                                     <h4>
-                                                        <strong>
-                                                            {{ house.house_Number }}
-                                                        </strong>
+                                                        <strong>{{ house.house_Number }}</strong>
                                                     </h4>
                                                 </div>
-
-
                                             </div>
 
                                             <div id="second_row_container">
                                                 <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                <h6><strong>Россия, {{ city.city_Name }}, {{ street.street_Name }}</strong>
+                                                
+                                                <h6>
+                                                    <strong>Россия, {{ city.city_Name }}, {{ street.street_Name }}</strong>
                                                 </h6>
                                             </div>
                                         </td>
@@ -67,6 +69,7 @@
                                                                 data-bs-target="#modal-update" id="dropdown-upd"
                                                                 @click="prepareId(house.house_ID)" href="#">
                                                                 <i class="bi bi-pen-fill" id="i-dropdown"></i>
+
                                                                 Обновить дом
                                                             </a>
                                                         </li>
@@ -80,6 +83,7 @@
                                                                 data-bs-target="#modal-delete" id="dropdown-del"
                                                                 @click="prepareId(house.house_ID)" href="#">
                                                                 <i class="bi bi-trash-fill" id="i-dropdown"></i>
+
                                                                 Удалить дом
                                                             </a>
                                                         </li>
@@ -91,15 +95,11 @@
                                                 <li v-for="(apartment, aIndex) in house.apartments" :key="aIndex">
                                                     <div id="second_column_container">
                                                         <h6>
-                                                            <i class="bi bi-key-fill" id="i-list"
-                                                                v-if="apartment.apartment_Number"></i>
+                                                            <i class="bi bi-key-fill" id="i-list" v-if="apartment.apartment_Number"></i>
                                                         </h6>
 
                                                         <h6>
-                                                            <strong>
-                                                                {{ apartment !== null && apartment.apartment_Number !== 0 ?
-                                                                    apartment.apartment_Number : 'Нет квартир' }}
-                                                            </strong>
+                                                            <strong>{{ apartment !== null && apartment.apartment_Number !== 0 ? apartment.apartment_Number : 'Нет квартир' }}</strong>
                                                         </h6>
                                                     </div>
                                                 </li>
@@ -120,17 +120,19 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Добавление дома</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">
+                            Добавление дома
+                        </h1>
 
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
                         <form @submit.prevent="createHouse">
-
-
                             <div class="mb-3" id="message-text_container">
-                                <label for="message-text" class="col-form-label">Дом:</label>
+                                <label for="message-text" class="col-form-label">
+                                    Дом:
+                                </label>
 
                                 <input v-model="newHouseName" type="text"
                                     :class="{ 'form-control': true, 'is-invalid': !newHouseName, 'is-valid': newHouseName }"
@@ -141,31 +143,58 @@
 
                             <div class="mb-3" id="val-cont">
                                 <div class="col-md-5" id="val-item">
-                                    <label for="validationServer04" class="col-form-label">Улица:</label>
+                                    <label for="validationServer04" class="col-form-label">
+                                        Город:
+                                    </label>
+
+                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
+                                        @change="loadStreetsForCity"
+                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
+                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+
+                                        <option selected disabled :value="null">
+                                            Выберите...
+                                        </option>
+
+                                        <option v-for="city in cities" :key="city.street_ID" :value="city.city_ID">
+                                            {{ city.city_Name }}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-5" id="val-item">
+                                    <label for="validationServer04" class="col-form-label">
+                                        Улица:
+                                    </label>
 
                                     <select class="form-select" id="validationServer04" required v-model="selectedStreet"
                                         :class="{ 'is-invalid': !selectedStreet, 'is-valid': selectedStreet }"
                                         :title="selectedStreet ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
 
-                                        <option selected disabled :value="null">Выберите...</option>
+                                        <option selected disabled :value="null">
+                                            Выберите...
+                                        </option>
 
-                                        <option v-for="street in choises" :key="street.street_ID" :value="street.street_ID">
-                                            {{ street.street_Name }}</option>
+                                        <option v-for="street in filteredStreets" :key="street.street_ID" :value="street.street_ID">
+                                            {{ street.street_Name }}
+                                        </option>
                                     </select>
                                 </div>
-
                             </div>
-
                         </form>
                     </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                            @click="cancel">Отмена</button>
+                            @click="cancel">
+                            Отмена
+                        </button>
 
                         <div :title="!selectedStreet || !newHouseName ? 'Заполните все поля.' : ''">
                             <button type="submit" class="btn btn-primary" @click="createHouse"
-                                :disabled="!selectedStreet || !newHouseName">Добавить</button>
+                                :disabled="!selectedStreet || !newHouseName">
+                                Добавить
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -182,40 +211,39 @@
 import axios from 'axios';
 import '@/scripts/bootstrap.bundle.min.js';
 import Header from '@/components/Header.vue';
-// import Title from '@/components/Title.vue';
 import Footer from '@/components/Footer.vue';
 import ModalDelete from '@/components/ModalDelete.vue';
 import Alert from '@/components/Alert.vue';
 import Loader from '@/components/Loader.vue';
 
-
 export default {
     data() {
         return {
-            data: null, // Инициализируем переменную для хранения данных
-            newHouseName: '', // Добавьте новое поле для хранения названия нового города
-            selectedHouseId: null, // Добавляем поле для хранения идентификатора обновляемого города
-            alertMessage: null, // Добавьте переменную для хранения сообщения
+            data: null,
+            newHouseName: '',
+            selectedHouseId: null,
+            alertMessage: null,
             alertType: null,
             loading: true,
+            streets: [],
             streetId: null,
-            choises: [],
             selectedStreet: null,
+            filteredStreets: [],
+            cityId: null,
+            cities: [],
+            selectedCity: null,
         };
     },
 
     components: {
         Header,
-        // Title,
         Footer,
-        // ModalCreate,
         ModalDelete,
         Alert,
         Loader
     },
 
     mounted() {
-        // Вызываем fetchData при загрузке компонента
         setTimeout(() => {
             this.fetchData();
         }, 100);
@@ -225,30 +253,6 @@ export default {
         showAlert(message, type) {
             this.alertMessage = message;
             this.alertType = type;
-            // console.log("street.vue show alert", message, type);
-        },
-        fetchData() {
-            axios.get('https://localhost:5001/api/phonebook/listByCity') // Выполняем GET-запрос к серверу
-                .then(response => {
-                    // const sortedData = response.data.map(house => {
-                    //     house.apartments = house.apartments.sort((a, b) => {
-                    //         const apartmentNumberA = parseInt(a.apartment_Number, 10);
-                    //         const apartmentNumberB = parseInt(b.apartment_Number, 10);
-                    //         return apartmentNumberA - apartmentNumberB;
-                    //     });
-                    //     return house;
-                    // });
-
-                    // this.data = sortedData.sort((a, b) => a.house_Number.localeCompare(b.house_Number));
-                    this.data = response.data;
-                })
-
-                .catch(error => {
-                    console.error('Ошибка при выполнении GET запроса:', error); // Выводим ошибку в случае неудачи
-                })
-                .finally(() => {
-                    this.loading = false; // Завершаем загрузку
-                });
         },
 
         prepareId(houseId) {
@@ -257,18 +261,71 @@ export default {
         },
 
         onHouseChanged(message, type) {
-            this.showAlert(message, type); // Вызываем showAlert с переданным типом уведомления
-            this.fetchData(); // Запрашиваем актуальные данные с сервера
+            this.showAlert(message, type);
+            this.fetchData();
         },
 
-        fetchChoises() {
+        cancel() {
+            this.newHouseName = '';
+            this.selectedStreet = null;
+        },
+
+        fetchData() {
             axios.get('https://localhost:5001/api/phonebook/listByCity')
                 .then(response => {
-                    this.choises = response.data; // Предполагается, что полученные данные содержат список городов
-                    // Сортируем города по алфавиту
-                    // this.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
-                    console.log(this.choises); // Вывод отсортированных городов в консоль
+                    this.data = response.data;
                 })
+
+                .catch(error => {
+                    console.error('Ошибка при выполнении GET запроса:', error);
+                })
+
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
+
+        loadStreetsForCity() {
+            if (this.selectedCity) {
+                const cityId = this.selectedCity;
+
+                axios.get('https://localhost:5001/api/phonebook/listByCity')
+                    .then(response => {
+                        console.log("Все улицы:", response.data);
+                        const streetsForSelectedCity = response.data.filter(city => city.city_ID === cityId);
+                        console.log("Выбранные улицы:", streetsForSelectedCity[0].streets);
+                        this.filteredStreets = streetsForSelectedCity[0].streets;
+                        this.selectedStreet = null;
+                    })
+                    
+                    .catch(error => {
+                        console.error('Ошибка при выполнении GET запроса для получения улиц:', error);
+                    });
+            } else {
+                this.filteredStreets = [];
+            }
+        },
+
+        fetchCities() {
+            axios.get('https://localhost:5001/api/city')
+                .then(response => {
+                    this.cities = response.data;
+                    this.cities.sort((a, b) => a.city_Name.localeCompare(b.city_Name));
+                    console.log(this.cities);
+                })
+                .catch(error => {
+                    console.error('Ошибка при выполнении GET запроса для получения городов:', error);
+                });
+        },
+
+        fetchStreets() {
+            axios.get('https://localhost:5001/api/street')
+                .then(response => {
+                    this.streets = response.data;
+                    this.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
+                    console.log(this.streets);
+                })
+
                 .catch(error => {
                     console.error('Ошибка при выполнении GET запроса для получения городов:', error);
                 });
@@ -276,43 +333,35 @@ export default {
 
         createHouse() {
             this.fetchChoises();
-            this.alertMessage = null; // Сброс сообщения перед выполнением запроса
+            this.alertMessage = null;
 
             const houseData = {
-                House_Number: this.newHouseName, // Используйте значение из поля ввода
+                House_Number: this.newHouseName,
             };
 
             const streetIdData = {
-                Street_ID: this.selectedStreet, // Используйте значение из поля ввода
+                Street_ID: this.selectedStreet,
             };
 
-            console.log(streetIdData); // Вывод выбранного города в консоль
+            console.log(streetIdData);
 
-            axios.post(`https://localhost:5001/api/house/${streetIdData.Street_ID}/`, houseData) // Отправьте POST-запрос
+            axios.post(`https://localhost:5001/api/house/${streetIdData.Street_ID}/`, houseData)
                 .then(response => {
                     console.log(response.data);
                     this.data.push(response.data);
                     this.newHouseName = '';
                     this.selectedStreet = null;
                     this.fetchData();
-                    this.alertMessage = 'Дом добавлен'; // Установите сообщение об успешном добавлении
-                    this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
+                    this.alertMessage = 'Дом добавлен';
+                    this.showAlert(this.alertMessage, 'success');
                 })
 
                 .catch(error => {
                     console.error('Ошибка при выполнении POST запроса:', error);
-                    // this.alertMessage = 'Улица уже существует'; // Установите сообщение об ошибке из response.data
-                    this.showAlert(error.response.data, 'danger'); // Отображение уведомления с типом 'danger'
+                    this.showAlert(error.response.data, 'danger');
                 });
 
-            // Закрыть модальное окно с использованием data-bs-dismiss
             document.querySelector('[data-bs-dismiss="modal"]').click();
-        },
-
-        cancel() {
-            this.newHouseName = ''; // Сброс значения поля
-            this.selectedStreet = null; // Сброс значения поля
-            // this.selectedStreet = null; // Сброс значения поля
         },
     }
 }

@@ -29,21 +29,25 @@
                         <strong>Контакты</strong>
                     </router-link>
                 </li>
+                
                 <li class="nav-item">
                     <router-link to="/apartment" class="nav-link" :class="{ 'active': $route.path === '/apartment' }">
                         <strong>Квартиры</strong>
                     </router-link>
                 </li>
+
                 <li class="nav-item">
                     <router-link to="/house" class="nav-link" :class="{ 'active': $route.path === '/house' }">
                         <strong>Дома</strong>
                     </router-link>
                 </li>
+
                 <li class="nav-item">
                     <router-link to="/street" class="nav-link" :class="{ 'active': $route.path === '/street' }">
                         <strong>Улицы</strong>
                     </router-link>
                 </li>
+
                 <li class="nav-item">
                     <router-link to="/city" class="nav-link" :class="{ 'active': $route.path === '/city' }">
                         <strong>Города</strong>

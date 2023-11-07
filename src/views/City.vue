@@ -1,6 +1,7 @@
 <template>
     <div>
         <Alert @alert="showAlert" :alert-message="alertMessage" :alert-type="alertType"></Alert>
+
         <Loader v-if="loading"></Loader>
 
         <Header></Header>
@@ -10,11 +11,15 @@
                 <div class="row">
                     <div class="col-12">
                         <div id="title_container">
-                            <h1 class="text-start text-primary"><strong>Города</strong></h1>
+                            <h1 class="text-start text-primary">
+                                <strong>Города</strong>
+                            </h1>
 
                             <div class="btn-container">
                                 <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
-                                    data-bs-target="#myModal" title="Добавить город"><strong>+</strong></button>
+                                    data-bs-target="#myModal" title="Добавить город">
+                                    <strong>+</strong>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -30,27 +35,23 @@
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
                                                     <h6 v-if="city.city_Name" id="sort_icon">
-                                                        <strong>
-                                                            {{ city.city_Name.charAt(0) }}
-                                                        </strong>
+                                                        <strong>{{ city.city_Name.charAt(0) }}</strong>
                                                     </h6>
 
                                                     <h4>
-                                                        <strong>
-                                                            {{ city.city_Name }}
-                                                        </strong>
+                                                        <strong>{{ city.city_Name }}</strong>
                                                     </h4>
                                                 </div>
-
-
                                             </div>
 
                                             <div id="second_row_container">
                                                 <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                <h6><strong>Россия</strong></h6>
+
+                                                <h6>
+                                                    <strong>Россия</strong>
+                                                </h6>
                                             </div>
                                         </td>
-
 
                                         <td>
                                             <div id="first_row_container">
@@ -67,6 +68,7 @@
                                                                 data-bs-target="#modal-update" id="dropdown-upd"
                                                                 @click="prepareId(city.city_ID)" href="#">
                                                                 <i class="bi bi-pen-fill" id="i-dropdown"></i>
+
                                                                 Обновить город
                                                             </a>
                                                         </li>
@@ -80,6 +82,7 @@
                                                                 data-bs-target="#modal-delete" id="dropdown-del"
                                                                 @click="prepareId(city.city_ID)" href="#">
                                                                 <i class="bi bi-trash-fill" id="i-dropdown"></i>
+
                                                                 Удалить город
                                                             </a>
                                                         </li>
@@ -95,15 +98,11 @@
                                                         </h6>
 
                                                         <h6>
-                                                            <strong>
-                                                                {{ street ? street.street_Name : 'Нет улиц' }}
-                                                            </strong>
+                                                            <strong>{{ street ? street.street_Name : 'Нет улиц' }}</strong>
                                                         </h6>
                                                     </div>
                                                 </li>
                                             </ul>
-
-
                                         </td>
                                     </tr>
                                 </tbody>
@@ -114,14 +113,15 @@
             </div>
         </section>
 
-
         <Footer v-if="!loading"></Footer>
 
         <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Добавление города</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">
+                            Добавление города
+                        </h1>
 
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -129,7 +129,9 @@
                     <div class="modal-body">
                         <form @submit.prevent="createCity">
                             <div class="mb-3" id="message-text_container">
-                                <label for="message-text" class="col-form-label">Город:</label>
+                                <label for="message-text" class="col-form-label">
+                                    Город:
+                                </label>
 
                                 <input v-model="newCityName" type="text"
                                     :class="{ 'form-control': true, 'is-invalid': !newCityName, 'is-valid': newCityName }"
@@ -141,12 +143,15 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                            @click="cancel">Отмена</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancel">
+                            Отмена
+                        </button>
 
                         <div :title="!newCityName ? 'Заполните все поля.' : ''">
                             <button type="submit" class="btn btn-primary" @click="createCity"
-                                :disabled="!newCityName">Добавить</button>
+                                :disabled="!newCityName">
+                                Добавить
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -176,10 +181,10 @@ import Loader from '@/components/Loader.vue';
 export default {
     data() {
         return {
-            data: null, // Инициализируем переменную для хранения данных
-            newCityName: '', // Добавьте новое поле для хранения названия нового города
-            selectedCityId: null, // Добавляем поле для хранения идентификатора обновляемого города
-            alertMessage: null, // Добавьте переменную для хранения сообщения
+            data: null,
+            newCityName: '',
+            selectedCityId: null,
+            alertMessage: null,
             alertType: null,
             loading: true,
         };
@@ -195,9 +200,6 @@ export default {
     },
 
     mounted() {
-        // Вызываем fetchData при загрузке компонента
-        // this.fetchData();
-        // Вызываем fetchData с задержкой 5 секунд
         setTimeout(() => {
             this.fetchData();
         }, 100);
@@ -207,28 +209,6 @@ export default {
         showAlert(message, type) {
             this.alertMessage = message;
             this.alertType = type;
-            // console.log("city.vue show alert", message, type);
-        },
-
-        fetchData() {
-            axios.get('https://localhost:5001/api/city') // Выполняем GET-запрос к серверу
-                .then(response => {
-                    const sortedData = response.data.map(city => {
-                        // Сортируем улицы для каждого города
-                        city.streets = city.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
-                        return city;
-                    });
-
-                    // Сортируем города по имени
-                    this.data = sortedData.sort((a, b) => a.city_Name.localeCompare(b.city_Name));
-                })
-
-                .catch(error => {
-                    console.error('Ошибка при выполнении GET запроса:', error); // Выводим ошибку в случае неудачи
-                })
-                .finally(() => {
-                    this.loading = false; // Завершаем загрузку
-                });
         },
 
         prepareId(cityId) {
@@ -236,40 +216,55 @@ export default {
         },
 
         onCityChanged(message, type) {
-            // this.alertMessage = message;
-            this.showAlert(message, type); // Вызываем showAlert с переданным типом уведомления
-            this.fetchData(); // Запрашиваем актуальные данные с сервера
+            this.showAlert(message, type);
+            this.fetchData();
+        },
+
+        cancel() {
+            this.newCityName = '';
+        },
+
+        fetchData() {
+            axios.get('https://localhost:5001/api/city')
+                .then(response => {
+                    const sortedData = response.data.map(city => {
+                        city.streets = city.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
+                        return city;
+                    });
+
+                    this.data = sortedData.sort((a, b) => a.city_Name.localeCompare(b.city_Name));
+                })
+
+                .catch(error => {
+                    console.error('Ошибка при выполнении GET запроса:', error);
+                })
+
+                .finally(() => {
+                    this.loading = false;
+                });
         },
 
         createCity() {
-            // this.alertMessage = null; // Сброс сообщения перед выполнением запроса
-
             const cityData = {
-                City_Name: this.newCityName, // Используйте значение из поля ввода
+                City_Name: this.newCityName,
             };
 
-            axios.post('https://localhost:5001/api/city', cityData) // Отправьте POST-запрос
+            axios.post('https://localhost:5001/api/city', cityData)
                 .then(response => {
                     console.log(response.data);
                     this.data.push(response.data);
                     this.newCityName = '';
                     this.fetchData();
-                    this.alertMessage = 'Город добавлен'; // Установите сообщение об успешном добавлении
-                    this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
+                    this.alertMessage = 'Город добавлен';
+                    this.showAlert(this.alertMessage, 'success');
                 })
 
                 .catch(error => {
                     console.error('Ошибка при выполнении POST запроса:', error);
-                    // this.alertMessage = error.response.data; // Установите сообщение об ошибке из response.data
-                    this.showAlert(error.response.data, 'danger'); // Отображение уведомления с типом 'danger'
+                    this.showAlert(error.response.data, 'danger');
                 });
 
-            // Закрыть модальное окно с использованием data-bs-dismiss
             document.querySelector('[data-bs-dismiss="modal"]').click();
-        },
-
-        cancel() {
-            this.newCityName = ''; // Сброс значения поля
         },
     },
 };

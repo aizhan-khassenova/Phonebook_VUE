@@ -1,19 +1,25 @@
 <template>
     <div>
         <Alert @alert="showAlert" :alert-message="alertMessage" :alert-type="alertType"></Alert>
+
         <Loader v-if="loading"></Loader>
+
         <Header></Header>
+
         <section v-if="!loading">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
                         <div id="title_container">
-                            <h1 class="text-start text-primary"><strong>Улицы</strong></h1>
+                            <h1 class="text-start text-primary">
+                                <strong>Улицы</strong>
+                            </h1>
 
                             <div class="btn-container">
                                 <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
-                                    data-bs-target="#myModal" @click="fetchCities"
-                                    title="Добавить улицу"><strong>+</strong></button>
+                                    data-bs-target="#myModal" @click="fetchCities" title="Добавить улицу">
+                                    <strong>+</strong>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -21,32 +27,29 @@
 
                 <div class="row" id="table_container">
                     <div class="col-12">
-                        <div v-if="streetData">
+                        <div v-if="data">
                             <table>
-                                <tbody>
-                                <!-- <tbody v-for="(city, index) in data" :key="index"> -->
-                                    <tr v-for="(street, index) in streetData" :key="index">
+                                <tbody v-for="(city, index) in data" :key="index">
+                                    <tr v-for="(street, index) in city.streets" :key="index">
                                         <td v-if="street.street_Name !== null">
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
                                                     <h6 v-if="street.street_Name" id="sort_icon">
-                                                        <strong>
-                                                            {{ street.street_Name.charAt(0) }}
-                                                        </strong>
+                                                        <strong>{{ street.street_Name.charAt(0) }}</strong>
                                                     </h6>
 
                                                     <h4>
-                                                        <strong>
-                                                            {{ street.street_Name }}
-                                                        </strong>
+                                                        <strong>{{ street.street_Name }}</strong>
                                                     </h4>
                                                 </div>
-
-
                                             </div>
+
                                             <div id="second_row_container">
                                                 <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                <h6><strong>Россия, {{ street.cityName  }}</strong></h6>
+
+                                                <h6>
+                                                    <strong>Россия, {{ city.city_Name }}</strong>
+                                                </h6>
                                             </div>
                                         </td>
 
@@ -65,6 +68,7 @@
                                                                 data-bs-target="#modal-update" id="dropdown-upd"
                                                                 @click="prepareId(street.street_ID)" href="#">
                                                                 <i class="bi bi-pen-fill" id="i-dropdown"></i>
+
                                                                 Обновить улицу
                                                             </a>
                                                         </li>
@@ -78,24 +82,25 @@
                                                                 data-bs-target="#modal-delete" id="dropdown-del"
                                                                 @click="prepareId(street.street_ID)" href="#">
                                                                 <i class="bi bi-trash-fill" id="i-dropdown"></i>
+
                                                                 Удалить улицу
                                                             </a>
                                                         </li>
                                                     </ul>
                                                 </div>
                                             </div>
+
                                             <ul id="no-bullets-list">
                                                 <li v-for="(house, hIndex) in street.houses" :key="hIndex">
                                                     <div id="second_column_container">
                                                         <h6>
-                                                            <i class="bi bi-house-door-fill" id="i-list" v-if="house.house_Number"></i>
+                                                            <i class="bi bi-house-door-fill" id="i-list"
+                                                                v-if="house.house_Number"></i>
                                                         </h6>
 
                                                         <h6>
-                                                            <strong>
-                                                                {{ house !== null && house.house_Number !== 0 ?
-                                                                    house.house_Number : 'Нет домов' }}
-                                                            </strong>
+                                                            <strong>{{ house !== null && house.house_Number !== 0 ?
+                                                                house.house_Number : 'Нет домов' }}</strong>
                                                         </h6>
                                                     </div>
                                                 </li>
@@ -116,17 +121,19 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Добавление улицы</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">
+                            Добавление улицы
+                        </h1>
 
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
                         <form @submit.prevent="createStreet">
-
-
                             <div class="mb-3" id="message-text_container">
-                                <label for="message-text" class="col-form-label">Улица:</label>
+                                <label for="message-text" class="col-form-label">
+                                    Улица:
+                                </label>
 
                                 <input v-model="newStreetName" type="text"
                                     :class="{ 'form-control': true, 'is-invalid': !newStreetName, 'is-valid': newStreetName }"
@@ -137,29 +144,37 @@
 
                             <div class="mb-3" id="val-cont">
                                 <div class="mb-3" id="val-item">
-                                <label for="validationServer04" class="col-form-label">Город:</label>
+                                    <label for="validationServer04" class="col-form-label">
+                                        Город:
+                                    </label>
 
-                                <select class="form-select" id="validationServer04" required v-model="selectedCity"
-                                    :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
-                                    :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
+                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
+                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
 
-                                    <option selected disabled :value="null">Выберите...</option>
+                                        <option selected disabled :value="null">
+                                            Выберите...
+                                        </option>
 
-                                    <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
-                                        city.city_Name }}</option>
-                                </select>
+                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">
+                                            {{ city.city_Name }}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                         </form>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                            @click="cancel">Отмена</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancel">
+                            Отмена
+                        </button>
 
                         <div :title="!selectedCity || !newStreetName ? 'Заполните все поля.' : ''">
                             <button type="submit" class="btn btn-primary" @click="createStreet"
-                                :disabled="!selectedCity || !newStreetName">Добавить</button>
+                                :disabled="!selectedCity || !newStreetName">
+                                Добавить
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -186,20 +201,18 @@ import ModalDelete from '@/components/ModalDelete.vue';
 import Alert from '@/components/Alert.vue';
 import Loader from '@/components/Loader.vue';
 
-
 export default {
     data() {
         return {
-            data: null, // Инициализируем переменную для хранения данных
-            streetData: null, // Инициализируем переменную для хранения данных
-            newStreetName: '', // Добавьте новое поле для хранения названия нового города
+            data: null,
+            streetData: null,
+            newStreetName: '',
             cityId: null,
             cities: [],
             selectedCity: null,
-            // updatedStreetId: null, // Добавляем поле для хранения идентификатора обновляемого города
-            alertMessage: null, // Добавьте переменную для хранения сообщения
+            alertMessage: null,
             alertType: null,
-            selectedStreetId: null, // Добавляем поле для хранения идентификатора обновляемого города
+            selectedStreetId: null,
             loading: true,
         };
     },
@@ -214,7 +227,6 @@ export default {
     },
 
     mounted() {
-        // Вызываем fetchData при загрузке компонента
         setTimeout(() => {
             this.fetchData();
         }, 100);
@@ -224,61 +236,6 @@ export default {
         showAlert(message, type) {
             this.alertMessage = message;
             this.alertType = type;
-            // console.log("city.vue show alert", message, type);
-        },
-
-        fetchData() {
-            axios.get('https://localhost:5001/api/phonebook/listByCity') // Выполняем GET-запрос к серверу
-                .then(response => {
-                    /*
-                    const sortedData = response.data.map(city => {
-                        if (city.streets) {
-                            city.streets = city.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
-
-                            city.streets = city.streets.map(street => {
-                                if (street.houses) {
-                                    street.houses = street.houses.sort((a, b) => {
-                                        const houseNumberA = parseInt(a.house_Number, 10);
-                                        const houseNumberB = parseInt(b.house_Number, 10);
-                                        return houseNumberA - houseNumberB;
-                                    });
-                                }
-                                return street;
-                            });
-                        }
-                        return city;
-                    })
-                    this.data = sortedData;*/
-
-                    const streetsArray = response.data.reduce((acc, city) => {
-                    if (city.streets) {
-                    //city.streets = city.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
-                    city.streets = city.streets.map(street => {
-                        /*
-                        if (street.houses) {
-                        street.houses = street.houses.sort((a, b) => {
-                            const houseNumberA = parseInt(a.house_Number, 10);
-                            const houseNumberB = parseInt(b.house_Number, 10);
-                            return houseNumberA - houseNumberB;
-                        });
-                        }*/
-                        street.cityName = city.city_Name; 
-                        return street;
-                    });
-                    acc.push(...city.streets);
-                    // сортировка здесь
-                    }
-                    return acc;
-                }, []);
-
-                this.streetData = streetsArray;
-                })
-                .catch(error => {
-                    console.error('Ошибка при выполнении GET запроса:', error); // Выводим ошибку в случае неудачи
-                })
-                .finally(() => {
-                    this.loading = false; // Завершаем загрузку
-                });
         },
 
         prepareId(streetId) {
@@ -287,20 +244,38 @@ export default {
         },
 
         onStreetChanged(message, type) {
-            this.showAlert(message, type); // Вызываем showAlert с переданным типом уведомления
-            this.fetchData(); // Запрашиваем актуальные данные с сервера
+            this.showAlert(message, type);
+            this.fetchData();
         },
 
+        cancel() {
+            this.newStreetName = '';
+            this.selectedCity = null;
+        },
 
+        fetchData() {
+            axios.get('https://localhost:5001/api/phonebook/listByCity')
+                .then(response => {
+                    this.data = response.data;
+                })
+
+                .catch(error => {
+                    console.error('Ошибка при выполнении GET запроса:', error);
+                })
+
+                .finally(() => {
+                    this.loading = false;
+                });
+        },
 
         fetchCities() {
             axios.get('https://localhost:5001/api/city')
                 .then(response => {
-                    this.cities = response.data; // Предполагается, что полученные данные содержат список городов
-                    // Сортируем города по алфавиту
+                    this.cities = response.data;
                     this.cities.sort((a, b) => a.city_Name.localeCompare(b.city_Name));
-                    console.log(this.cities); // Вывод отсортированных городов в консоль
+                    console.log(this.cities);
                 })
+
                 .catch(error => {
                     console.error('Ошибка при выполнении GET запроса для получения городов:', error);
                 });
@@ -308,42 +283,35 @@ export default {
 
         createStreet() {
             this.fetchCities();
-            this.alertMessage = null; // Сброс сообщения перед выполнением запроса
+            this.alertMessage = null;
 
             const streetData = {
-                Street_Name: this.newStreetName, // Используйте значение из поля ввода
+                Street_Name: this.newStreetName,
             };
 
             const cityIdData = {
-                City_ID: this.selectedCity, // Используйте значение из поля ввода
+                City_ID: this.selectedCity,
             };
 
-            console.log(cityIdData); // Вывод выбранного города в консоль
+            console.log(cityIdData);
 
-            axios.post(`https://localhost:5001/api/street/${cityIdData.City_ID}/`, streetData) // Отправьте POST-запрос
+            axios.post(`https://localhost:5001/api/street/${cityIdData.City_ID}/`, streetData)
                 .then(response => {
                     console.log(response.data);
-                    // this.data.push(response.data);
-                    // this.newStreetName = '';
+                    this.newStreetName = '';
                     this.selectedCity = null;
                     this.fetchData();
-                    this.alertMessage = 'Улица добавлена'; // Установите сообщение об успешном добавлении
-                    this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
+                    this.alertMessage = 'Улица добавлена';
+                    this.showAlert(this.alertMessage, 'success');
                 })
 
                 .catch(error => {
                     console.error('Ошибка при выполнении POST запроса:', error);
-                    this.alertMessage = 'Улица уже существует'; // Установите сообщение об ошибке из response.data
-                    this.showAlert(this.alertMessage, 'danger'); // Отображение уведомления с типом 'danger'
+                    this.alertMessage = 'Улица уже существует';
+                    this.showAlert(this.alertMessage, 'danger');
                 });
 
-            // Закрыть модальное окно с использованием data-bs-dismiss
             document.querySelector('[data-bs-dismiss="modal"]').click();
-        },
-
-        cancel() {
-            this.newStreetName = ''; // Сброс значения поля
-            this.selectedCity = null; // Сброс значения поля
         },
     }
 }
