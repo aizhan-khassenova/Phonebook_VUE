@@ -12,7 +12,8 @@
 
                             <div class="btn-container">
                                 <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
-                                    data-bs-target="#myModal" title="Добавить дом"><strong>+</strong></button>
+                                    data-bs-target="#myModal" @click="fetchChoises"
+                                    title="Добавить дом"><strong>+</strong></button>
                             </div>
                         </div>
                     </div>
@@ -21,15 +22,16 @@
                 <div class="row" id="table_container">
                     <div class="col-12">
                         <div v-if="data">
-                            <table>
-                                <tbody>
-                                    <tr v-for="(house, index) in data" :key="index">
-                                        <td>
+                            <table v-for="(city, index) in data" :key="index">
+                                <tbody v-for="(street, index) in city.streets" :key="index">
+                                    <tr v-for="(house, index) in street.houses" :key="index">
+                                        <td v-if="house.house_Number !== 0">
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
                                                     <h6 v-if="house.house_Number" id="sort_icon">
                                                         <strong>
-                                                            {{ house.house_Number }}
+                                                            <!-- {{ house.house_Number }} -->
+                                                            <i class="bi bi-house-door-fill"></i>
                                                         </strong>
                                                     </h6>
 
@@ -45,11 +47,12 @@
 
                                             <div id="second_row_container">
                                                 <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                <h6><strong>Россия, Санкт-Петербург, Камергенский переулок</strong></h6>
+                                                <h6><strong>Россия, {{ city.city_Name }}, {{ street.street_Name }}</strong>
+                                                </h6>
                                             </div>
                                         </td>
 
-                                        <td>
+                                        <td v-if="house.house_Number !== 0">
                                             <div id="first_row_container">
                                                 <div class="btn-group dropend">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
@@ -88,12 +91,14 @@
                                                 <li v-for="(apartment, aIndex) in house.apartments" :key="aIndex">
                                                     <div id="second_column_container">
                                                         <h6>
-                                                            <i class="bi bi-key-fill" id="i-list" v-if="apartment"></i>
+                                                            <i class="bi bi-key-fill" id="i-list"
+                                                                v-if="apartment.apartment_Number"></i>
                                                         </h6>
 
                                                         <h6>
                                                             <strong>
-                                                                {{ apartment ? apartment.apartment_Number : 'Нет квартир' }}
+                                                                {{ apartment !== null && apartment.apartment_Number !== 0 ?
+                                                                    apartment.apartment_Number : 'Нет квартир' }}
                                                             </strong>
                                                         </h6>
                                                     </div>
@@ -121,7 +126,7 @@
                     </div>
 
                     <div class="modal-body">
-                        <form @submit.prevent="createStreet">
+                        <form @submit.prevent="createHouse">
 
 
                             <div class="mb-3" id="message-text_container">
@@ -135,20 +140,22 @@
                             </div>
 
                             <div class="mb-3" id="val-cont">
-                                <!-- <div class="col-md-5" id="val-item"> -->
-                                <label for="validationServer04" class="col-form-label">Улица:</label>
+                                <div class="col-md-5" id="val-item">
+                                    <label for="validationServer04" class="col-form-label">Улица:</label>
 
-                                <select class="form-select" id="validationServer04" required v-model="selectedCity"
-                                    :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
-                                    :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+                                    <select class="form-select" id="validationServer04" required v-model="selectedStreet"
+                                        :class="{ 'is-invalid': !selectedStreet, 'is-valid': selectedStreet }"
+                                        :title="selectedStreet ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
 
-                                    <option selected disabled :value="null">Выберите...</option>
+                                        <option selected disabled :value="null">Выберите...</option>
 
-                                    <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
-                                        city.city_Name }}</option>
-                                </select>
-                                <!-- </div> -->
+                                        <option v-for="street in choises" :key="street.street_ID" :value="street.street_ID">
+                                            {{ street.street_Name }}</option>
+                                    </select>
+                                </div>
+
                             </div>
+
                         </form>
                     </div>
 
@@ -156,9 +163,9 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                             @click="cancel">Отмена</button>
 
-                        <div :title="!selectedCity || !newHouseName ? 'Заполните все поля.' : ''">
-                            <button type="submit" class="btn btn-primary" @click="createStreet"
-                                :disabled="!selectedCity || !newHouseName">Добавить</button>
+                        <div :title="!selectedStreet || !newHouseName ? 'Заполните все поля.' : ''">
+                            <button type="submit" class="btn btn-primary" @click="createHouse"
+                                :disabled="!selectedStreet || !newHouseName">Добавить</button>
                         </div>
                     </div>
                 </div>
@@ -191,6 +198,9 @@ export default {
             alertMessage: null, // Добавьте переменную для хранения сообщения
             alertType: null,
             loading: true,
+            streetId: null,
+            choises: [],
+            selectedStreet: null,
         };
     },
 
@@ -207,18 +217,18 @@ export default {
     mounted() {
         // Вызываем fetchData при загрузке компонента
         setTimeout(() => {
-      this.fetchData();
-    }, 100);
+            this.fetchData();
+        }, 100);
     },
 
     methods: {
         showAlert(message, type) {
             this.alertMessage = message;
             this.alertType = type;
-            // console.log("city.vue show alert", message, type);
+            // console.log("street.vue show alert", message, type);
         },
         fetchData() {
-            axios.get('https://localhost:5001/api/house') // Выполняем GET-запрос к серверу
+            axios.get('https://localhost:5001/api/phonebook/listByCity') // Выполняем GET-запрос к серверу
                 .then(response => {
                     // const sortedData = response.data.map(house => {
                     //     house.apartments = house.apartments.sort((a, b) => {
@@ -251,9 +261,58 @@ export default {
             this.fetchData(); // Запрашиваем актуальные данные с сервера
         },
 
+        fetchChoises() {
+            axios.get('https://localhost:5001/api/phonebook/listByCity')
+                .then(response => {
+                    this.choises = response.data; // Предполагается, что полученные данные содержат список городов
+                    // Сортируем города по алфавиту
+                    // this.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
+                    console.log(this.choises); // Вывод отсортированных городов в консоль
+                })
+                .catch(error => {
+                    console.error('Ошибка при выполнении GET запроса для получения городов:', error);
+                });
+        },
+
+        createHouse() {
+            this.fetchChoises();
+            this.alertMessage = null; // Сброс сообщения перед выполнением запроса
+
+            const houseData = {
+                House_Number: this.newHouseName, // Используйте значение из поля ввода
+            };
+
+            const streetIdData = {
+                Street_ID: this.selectedStreet, // Используйте значение из поля ввода
+            };
+
+            console.log(streetIdData); // Вывод выбранного города в консоль
+
+            axios.post(`https://localhost:5001/api/house/${streetIdData.Street_ID}/`, houseData) // Отправьте POST-запрос
+                .then(response => {
+                    console.log(response.data);
+                    this.data.push(response.data);
+                    this.newHouseName = '';
+                    this.selectedStreet = null;
+                    this.fetchData();
+                    this.alertMessage = 'Дом добавлен'; // Установите сообщение об успешном добавлении
+                    this.showAlert(this.alertMessage, 'success'); // Отображение уведомления с типом 'success'
+                })
+
+                .catch(error => {
+                    console.error('Ошибка при выполнении POST запроса:', error);
+                    // this.alertMessage = 'Улица уже существует'; // Установите сообщение об ошибке из response.data
+                    this.showAlert(error.response.data, 'danger'); // Отображение уведомления с типом 'danger'
+                });
+
+            // Закрыть модальное окно с использованием data-bs-dismiss
+            document.querySelector('[data-bs-dismiss="modal"]').click();
+        },
+
         cancel() {
             this.newHouseName = ''; // Сброс значения поля
-            this.selectedCity = null; // Сброс значения поля
+            this.selectedStreet = null; // Сброс значения поля
+            // this.selectedStreet = null; // Сброс значения поля
         },
     }
 }
@@ -261,5 +320,15 @@ export default {
 
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
-<style src="../styles/city.css"></style>
-<style src="../styles/updateHouseApartment.css" scoped></style>
+<style src="../styles/style.css"></style>
+
+<style scoped>
+#dropdown-upd {
+    pointer-events: none;
+    color: var(--bs-secondary-color);
+}
+
+#dropdown-upd:hover {
+    background-color: initial;
+}
+</style>

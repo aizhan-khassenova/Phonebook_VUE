@@ -5,31 +5,50 @@
                 <h3>
                     <strong id="phone">Телефoнный</strong>
                 </h3>
+
                 <h3>
                     <strong id="book">Справ</strong>
                 </h3>
+
                 <h5>
                     <i class="bi bi-person-circle" id="book"></i>
                 </h5>
+
                 <h3>
                     <strong id="book">чник</strong>
                 </h3>
+
                 <h3>
                     <strong id="dote">.</strong>
                 </h3>
             </a>
 
             <ul class="nav nav-tabs">
-                <li class="nav-item"><router-link to="/" class="nav-link"
-                        :class="{ 'active': $route.path === '/' }"><strong>Контакты</strong></router-link></li>
-                <li class="nav-item"><router-link to="/apartment" class="nav-link"
-                        :class="{ 'active': $route.path === '/apartment' }"><strong>Квартиры</strong></router-link></li>
-                <li class="nav-item"><router-link to="/house" class="nav-link"
-                        :class="{ 'active': $route.path === '/house' }"><strong>Дома</strong></router-link></li>
-                <li class="nav-item"><router-link to="/street" class="nav-link"
-                        :class="{ 'active': $route.path === '/street' }"><strong>Улицы</strong></router-link></li>
-                <li class="nav-item"><router-link to="/city" class="nav-link"
-                        :class="{ 'active': $route.path === '/city' }"><strong>Города</strong></router-link></li>
+                <li class="nav-item">
+                    <router-link to="/" class="nav-link" :class="{ 'active': $route.path === '/' }">
+                        <strong>Контакты</strong>
+                    </router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link to="/apartment" class="nav-link" :class="{ 'active': $route.path === '/apartment' }">
+                        <strong>Квартиры</strong>
+                    </router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link to="/house" class="nav-link" :class="{ 'active': $route.path === '/house' }">
+                        <strong>Дома</strong>
+                    </router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link to="/street" class="nav-link" :class="{ 'active': $route.path === '/street' }">
+                        <strong>Улицы</strong>
+                    </router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link to="/city" class="nav-link" :class="{ 'active': $route.path === '/city' }">
+                        <strong>Города</strong>
+                    </router-link>
+                </li>
             </ul>
         </header>
     </div>
@@ -37,7 +56,6 @@
 
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
-<style src="../styles/city.css"></style>
 
 <style scoped>
 #container {
@@ -54,7 +72,6 @@ header {
     align-items: flex-end;
     flex-wrap: wrap;
 }
-
 
 .nav-tabs .nav-link {
     background-color: var(--bs-secondary-bg);
@@ -86,4 +103,5 @@ header {
 
 #dote {
     color: var(--bs-body-color);
-}</style>
+}
+</style>

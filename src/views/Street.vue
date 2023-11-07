@@ -21,11 +21,12 @@
 
                 <div class="row" id="table_container">
                     <div class="col-12">
-                        <div v-if="data">
+                        <div v-if="streetData">
                             <table>
                                 <tbody>
-                                    <tr v-for="(street, index) in data" :key="index">
-                                        <td>
+                                <!-- <tbody v-for="(city, index) in data" :key="index"> -->
+                                    <tr v-for="(street, index) in streetData" :key="index">
+                                        <td v-if="street.street_Name !== null">
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
                                                     <h6 v-if="street.street_Name" id="sort_icon">
@@ -45,11 +46,11 @@
                                             </div>
                                             <div id="second_row_container">
                                                 <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                <h6><strong>Россия, Санкт-Петербург</strong></h6>
+                                                <h6><strong>Россия, {{ street.cityName  }}</strong></h6>
                                             </div>
                                         </td>
 
-                                        <td>
+                                        <td v-if="street.street_Name !== null">
                                             <div id="first_row_container">
                                                 <div class="btn-group dropend">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
@@ -87,12 +88,13 @@
                                                 <li v-for="(house, hIndex) in street.houses" :key="hIndex">
                                                     <div id="second_column_container">
                                                         <h6>
-                                                            <i class="bi bi-house-door-fill" id="i-list" v-if="house"></i>
+                                                            <i class="bi bi-house-door-fill" id="i-list" v-if="house.house_Number"></i>
                                                         </h6>
 
                                                         <h6>
                                                             <strong>
-                                                                {{ house ? house.house_Number : 'Нет домов' }}
+                                                                {{ house !== null && house.house_Number !== 0 ?
+                                                                    house.house_Number : 'Нет домов' }}
                                                             </strong>
                                                         </h6>
                                                     </div>
@@ -134,7 +136,7 @@
                             </div>
 
                             <div class="mb-3" id="val-cont">
-                                <!-- <div class="mb-3" id="val-item"> -->
+                                <div class="mb-3" id="val-item">
                                 <label for="validationServer04" class="col-form-label">Город:</label>
 
                                 <select class="form-select" id="validationServer04" required v-model="selectedCity"
@@ -146,13 +148,14 @@
                                     <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">{{
                                         city.city_Name }}</option>
                                 </select>
-                                <!-- </div> -->
+                                </div>
                             </div>
                         </form>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancel">Отмена</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            @click="cancel">Отмена</button>
 
                         <div :title="!selectedCity || !newStreetName ? 'Заполните все поля.' : ''">
                             <button type="submit" class="btn btn-primary" @click="createStreet"
@@ -188,6 +191,7 @@ export default {
     data() {
         return {
             data: null, // Инициализируем переменную для хранения данных
+            streetData: null, // Инициализируем переменную для хранения данных
             newStreetName: '', // Добавьте новое поле для хранения названия нового города
             cityId: null,
             cities: [],
@@ -212,8 +216,8 @@ export default {
     mounted() {
         // Вызываем fetchData при загрузке компонента
         setTimeout(() => {
-      this.fetchData();
-    }, 100);
+            this.fetchData();
+        }, 100);
     },
 
     methods: {
@@ -224,22 +228,51 @@ export default {
         },
 
         fetchData() {
-            axios.get('https://localhost:5001/api/street') // Выполняем GET-запрос к серверу
+            axios.get('https://localhost:5001/api/phonebook/listByCity') // Выполняем GET-запрос к серверу
                 .then(response => {
-                    const sortedData = response.data.map(street => {
+                    /*
+                    const sortedData = response.data.map(city => {
+                        if (city.streets) {
+                            city.streets = city.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
+
+                            city.streets = city.streets.map(street => {
+                                if (street.houses) {
+                                    street.houses = street.houses.sort((a, b) => {
+                                        const houseNumberA = parseInt(a.house_Number, 10);
+                                        const houseNumberB = parseInt(b.house_Number, 10);
+                                        return houseNumberA - houseNumberB;
+                                    });
+                                }
+                                return street;
+                            });
+                        }
+                        return city;
+                    })
+                    this.data = sortedData;*/
+
+                    const streetsArray = response.data.reduce((acc, city) => {
+                    if (city.streets) {
+                    //city.streets = city.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
+                    city.streets = city.streets.map(street => {
+                        /*
+                        if (street.houses) {
                         street.houses = street.houses.sort((a, b) => {
-                            // Преобразуем house_Number в числа и сравниваем их
                             const houseNumberA = parseInt(a.house_Number, 10);
                             const houseNumberB = parseInt(b.house_Number, 10);
                             return houseNumberA - houseNumberB;
                         });
+                        }*/
+                        street.cityName = city.city_Name; 
                         return street;
                     });
+                    acc.push(...city.streets);
+                    // сортировка здесь
+                    }
+                    return acc;
+                }, []);
 
-                    // Сортируем города по имени
-                    this.data = sortedData.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
+                this.streetData = streetsArray;
                 })
-
                 .catch(error => {
                     console.error('Ошибка при выполнении GET запроса:', error); // Выводим ошибку в случае неудачи
                 })
@@ -290,8 +323,8 @@ export default {
             axios.post(`https://localhost:5001/api/street/${cityIdData.City_ID}/`, streetData) // Отправьте POST-запрос
                 .then(response => {
                     console.log(response.data);
-                    this.data.push(response.data);
-                    this.newStreetName = '';
+                    // this.data.push(response.data);
+                    // this.newStreetName = '';
                     this.selectedCity = null;
                     this.fetchData();
                     this.alertMessage = 'Улица добавлена'; // Установите сообщение об успешном добавлении
@@ -309,13 +342,13 @@ export default {
         },
 
         cancel() {
-      this.newStreetName = ''; // Сброс значения поля
-      this.selectedCity = null; // Сброс значения поля
-    },
+            this.newStreetName = ''; // Сброс значения поля
+            this.selectedCity = null; // Сброс значения поля
+        },
     }
 }
 </script>
 
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
-<style src="../styles/city.css"></style>
+<style src="../styles/style.css"></style>

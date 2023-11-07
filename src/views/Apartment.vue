@@ -19,17 +19,18 @@
                 </div>
 
                 <div class="row" id="table_container">
-                    <div class="col-12">
-                        <div v-if="data">
-                            <table>
-                                <tbody>
-                                    <tr v-for="(apartment, index) in data" :key="index">
-                                        <td>
+                    <div class="col-12" v-if="data">
+                        <div v-for="(city, index) in data" :key="index">
+                            <table v-for="(street, index) in city.streets" :key="index">
+                                <tbody v-for="(house, index) in street.houses" :key="index">
+                                    <tr v-for="(apartment, index) in house.apartments" :key="index">
+                                        <td v-if="apartment.apartment_Number !== 0">
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
                                                     <h6 v-if="apartment.apartment_Number" id="sort_icon">
                                                         <strong>
-                                                            {{ apartment.apartment_Number }}
+                                                            <i class="bi bi-key-fill"></i>
+                                                            <!-- {{ apartment.apartment_Number }} -->
                                                         </strong>
                                                     </h6>
 
@@ -45,11 +46,11 @@
 
                                             <div id="second_row_container">
                                                 <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                <h6><strong>Россия, Санкт-Петербург, Камергенский переулок, 11</strong></h6>
+                                                <h6><strong>Россия, {{ city.city_Name }}, {{ street.street_Name }}, {{ house.house_Number }}</strong></h6>
                                             </div>
                                         </td>
 
-                                        <td>
+                                        <td v-if="apartment.apartment_Number !== 0">
                                             <div id="first_row_container">
                                                 <div class="btn-group dropend">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
@@ -86,12 +87,14 @@
                                                 <li v-for="(phone, oIndex) in apartment.phones" :key="oIndex">
                                                     <div id="second_column_container">
                                                         <h6>
-                                                            <i class="bi bi-person-fill" id="i-list" v-if="phone"></i>
+                                                            <i class="bi bi-person-fill" id="i-list" v-if="phone.owner_Name"></i>
                                                         </h6>
 
                                                         <h6>
                                                             <strong>
-                                                                {{ phone ? phone.owner_Name : 'Нет контактов' }}
+                                                                <!-- {{ phone ? phone.owner_Name : 'Нет контактов' }} -->
+                                                                <!-- {{ phone !== NULL ? phone.owner_Name : 'Нет контактов' }} -->
+                                                                {{ phone !== null && phone.owner_Name !== null ? phone.owner_Name : 'Нет контактов' }}
                                                             </strong>
                                                         </h6>
                                                     </div>
@@ -215,7 +218,7 @@ export default {
             // console.log("city.vue show alert", message, type);
         },
         fetchData() {
-            axios.get('https://localhost:5001/api/apartment') // Выполняем GET-запрос к серверу
+            axios.get('https://localhost:5001/api/phonebook/listByCity') // Выполняем GET-запрос к серверу
                 .then(response => {
                     // const sortedData = response.data.map(apartment => {
                     //     apartment.phones = apartment.phones.sort((a, b) => {
@@ -259,5 +262,15 @@ export default {
 
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
-<style src="../styles/city.css"></style>
-<style src="../styles/updateHouseApartment.css" scoped></style>
+<style src="../styles/style.css"></style>
+
+<style scoped>
+#dropdown-upd {
+    pointer-events: none;
+    color: var(--bs-secondary-color);
+}
+
+#dropdown-upd:hover {
+    background-color: initial;
+}
+</style>

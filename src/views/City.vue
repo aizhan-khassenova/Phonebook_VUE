@@ -260,8 +260,8 @@ export default {
 
                 .catch(error => {
                     console.error('Ошибка при выполнении POST запроса:', error);
-                    this.alertMessage = error.response.data; // Установите сообщение об ошибке из response.data
-                    this.showAlert(this.alertMessage, 'danger'); // Отображение уведомления с типом 'danger'
+                    // this.alertMessage = error.response.data; // Установите сообщение об ошибке из response.data
+                    this.showAlert(error.response.data, 'danger'); // Отображение уведомления с типом 'danger'
                 });
 
             // Закрыть модальное окно с использованием data-bs-dismiss
@@ -277,4 +277,4 @@ export default {
 
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
-<style src="../styles/city.css"></style>
+<style src="../styles/style.css"></style>

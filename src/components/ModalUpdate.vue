@@ -3,7 +3,9 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">{{ title }}</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        {{ title }}
+                    </h1>
 
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -11,7 +13,9 @@
                 <div class="modal-body">
                     <form @submit.prevent="updateData">
                         <div class="mb-3" id="message-text_container" v-if="apiEndpoint === 'phone'">
-                            <label for="message-text" class="col-form-label">{{ inputLabelOwner }}</label>
+                            <label for="message-text" class="col-form-label">
+                                {{ inputLabelOwner }}
+                            </label>
 
                             <input v-model="secondParameter" type="text"
                                 :class="{ 'form-control': true, 'is-invalid': !secondParameter, 'is-valid': secondParameter }"
@@ -21,7 +25,9 @@
                         </div>
 
                         <div class="mb-3" id="message-text_container">
-                            <label for="message-text" class="col-form-label">{{ inputLabel }}</label>
+                            <label for="message-text" class="col-form-label">
+                                {{ inputLabel }}
+                            </label>
 
                             <input v-model="newItem" type="text"
                                 :class="{ 'form-control': true, 'is-invalid': !newItem, 'is-valid': newItem }"
@@ -32,12 +38,16 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancel">Отмена</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancel">
+                        Отмена
+                    </button>
 
                     <div
                         :title="apiEndpoint === 'phone' ? (!newItem || !secondParameter ? 'Заполните все поля.' : '') : (!newItem ? 'Заполните все поля.' : '')">
                         <button type="submit" class="btn btn-primary" @click="updateData"
-                            :disabled="apiEndpoint === 'phone' ? (!newItem || !secondParameter) : (!newItem)">Обновить</button>
+                            :disabled="apiEndpoint === 'phone' ? (!newItem || !secondParameter) : (!newItem)">
+                            Обновить
+                        </button>
                     </div>
                 </div>
             </div>
@@ -52,18 +62,16 @@ import '@/scripts/bootstrap.bundle.min.js';
 export default {
     data() {
         return {
-            data: null, // Инициализируем переменную для хранения данных
-            newItem: '', // Добавьте новое поле для хранения названия нового города
+            data: null,
+            newItem: '',
             secondParameter: '',
-            updatedItemId: null, // Добавляем поле для хранения идентификатора обновляемого города
         };
     },
 
     props: {
-        title: String, // Определяем свойство title
-        inputLabel: String, // Определяем свойство для текстовой метки поля ввода
-        submitButtonText: String, // Определяем свойство для текста кнопки отправки
-        apiEndpoint: String, // Добавьте это свойство
+        title: String,
+        inputLabel: String,
+        apiEndpoint: String,
         name: String,
         nameOwner: String,
         inputplaceholder: String,
@@ -81,7 +89,7 @@ export default {
 
             if (this.apiEndpoint === 'phone') {
                 const secondItemData = {
-                    [this.nameOwner]: this.secondParameter, // Ваш второй параметр
+                    [this.nameOwner]: this.secondParameter,
                 };
 
                 axios.put('https://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, { ...itemData, ...secondItemData })
@@ -90,8 +98,8 @@ export default {
                         this.newItem = '';
                         this.secondParameter = ''
                         this.$emit('item-updated', this.alertMessage, 'success');
-                        // document.querySelector('[data-bs-target="#modal-update"]').click();
                     })
+
                     .catch(error => {
                         console.error('Ошибка при выполнении PUT запроса:', error);
                         this.$emit('item-updated', error.response.data, 'danger');
@@ -101,22 +109,21 @@ export default {
                     .then(response => {
                         console.log(response.data);
                         this.newItem = '';
-                        this.$emit('item-updated', this.alertMessage, 'success'); // Передаем сообщение и тип уведомления
-                        // document.querySelector('[data-bs-target="#modal-update"]').click();
+                        this.$emit('item-updated', this.alertMessage, 'success');
                     })
+
                     .catch(error => {
                         console.error('Ошибка при выполнении PUT запроса:', error);
-                        this.$emit('item-updated', error.response.data, 'danger'); // Передаем сообщение и тип уведомления
+                        this.$emit('item-updated', error.response.data, 'danger');
                     });
             }
 
             document.querySelector('[data-bs-target="#modal-update"]').click();
-            // document.querySelector('[data-bs-dismiss="modal"]').click();
         },
 
         cancel() {
-            this.newItem = ''; // Сброс значения поля
-            this.secondParameter = ''; // Сброс значения поля
+            this.newItem = '';
+            this.secondParameter = '';
         },
     },
 };
@@ -124,4 +131,3 @@ export default {
 
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
-<style src="../styles/city.css"></style>

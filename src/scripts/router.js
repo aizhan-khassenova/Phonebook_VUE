@@ -6,18 +6,22 @@ const routes = [
     path: '/',
     component: Phone
   },
+
   {
     path: '/city',
     component: () => import('@/views/City.vue')
   },
+
   {
     path: '/street',
     component: () => import('@/views/Street.vue')
   },
+
   {
     path: '/house',
     component: () => import('@/views/House.vue')
   },
+  
   {
     path: '/apartment',
     component: () => import('@/views/Apartment.vue')

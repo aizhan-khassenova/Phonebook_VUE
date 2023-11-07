@@ -18,13 +18,13 @@
                     </div>
                 </div>
 
-                <div class="row" id="table_container">
-                    <div class="col-12">
-                        <div v-if="data">
-                            <table>
-                                <tbody>
-                                    <tr v-for="(phone, index) in data" :key="index">
-                                        <td>
+                <div class="row" id="table_container" v-if="data">
+                    <div class="col-12" v-for="(city, index) in data" :key="index">
+                        <div v-for="(street, index) in city.streets" :key="index">
+                            <table v-for="(house, index) in street.houses" :key="index">
+                                <tbody v-for="(apartment, index) in house.apartments" :key="index">
+                                    <tr v-for="(phone, index) in apartment.phones" :key="index">
+                                        <td v-if="phone.owner_Name !== null">
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
                                                     <h6 v-if="phone.owner_Name" id="sort_icon">
@@ -44,12 +44,12 @@
                                             </div>
                                             <div id="second_row_container">
                                                 <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                <h6><strong>Россия, Санкт-Петербург, Камергенский переулок, 11, 22</strong>
+                                                <h6><strong>Россия, {{ city.city_Name }}, {{ street.street_Name }}, {{ house.house_Number }}, {{ apartment.apartment_Number }}</strong>
                                                 </h6>
                                             </div>
                                         </td>
 
-                                        <td>
+                                        <td v-if="phone.owner_Name !== null">
                                             <!-- <div id="bullet_number_container"> -->
                                             <div id="first_row_container">
                                                 <div class="btn-group dropend">
@@ -239,11 +239,9 @@ export default {
             // console.log("city.vue show alert", message, type);
         },
         fetchData() {
-            axios.get('https://localhost:5001/api/phone') // Выполняем GET-запрос к серверу
+            axios.get('https://localhost:5001/api/phonebook/listByCity') // Выполняем GET-запрос к серверу
                 .then(response => {
                     this.data = response.data;
-                    // Сортируем данные по алфавиту
-            this.data.sort((a, b) => a.owner_Name.localeCompare(b.owner_Name));
                 })
 
                 .catch(error => {
@@ -277,4 +275,4 @@ export default {
 
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
-<style src="../styles/city.css"></style>
+<style src="../styles/style.css"></style>
