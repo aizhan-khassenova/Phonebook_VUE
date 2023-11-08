@@ -15,10 +15,9 @@
                                 <strong>Дома</strong>
                             </h1>
 
-                            <div class="btn-container" @click="fetchCities">
+                            <div class="btn-container">
                                 <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
-                                    data-bs-target="#myModal" @click="fetchStreets"
-                                    title="Добавить дом">
+                                    data-bs-target="#myModal" @click="fetchCities" title="Добавить дом">
                                     <strong>+</strong>
                                 </button>
                             </div>
@@ -47,7 +46,7 @@
 
                                             <div id="second_row_container">
                                                 <i class="bi bi-geo-alt-fill" id="i-geo"></i>
-                                                
+
                                                 <h6>
                                                     <strong>Россия, {{ city.city_Name }}, {{ street.street_Name }}</strong>
                                                 </h6>
@@ -64,7 +63,7 @@
                                                     </button>
 
                                                     <ul class="dropdown-menu gap-1 p-2 rounded-3 mx-0 shadow w-220px">
-                                                        <li title="Дом нельзя обновить.">
+                                                        <!-- <li title="Дом нельзя обновить.">
                                                             <a class="dropdown-item rounded-2" data-bs-toggle="modal"
                                                                 data-bs-target="#modal-update" id="dropdown-upd"
                                                                 @click="prepareId(house.house_ID)" href="#">
@@ -76,7 +75,7 @@
 
                                                         <li>
                                                             <hr class="dropdown-divider">
-                                                        </li>
+                                                        </li> -->
 
                                                         <li>
                                                             <a class="dropdown-item rounded-2" data-bs-toggle="modal"
@@ -95,11 +94,13 @@
                                                 <li v-for="(apartment, aIndex) in house.apartments" :key="aIndex">
                                                     <div id="second_column_container">
                                                         <h6>
-                                                            <i class="bi bi-key-fill" id="i-list" v-if="apartment.apartment_Number"></i>
+                                                            <i class="bi bi-key-fill" id="i-list"
+                                                                v-if="apartment.apartment_Number"></i>
                                                         </h6>
 
                                                         <h6>
-                                                            <strong>{{ apartment !== null && apartment.apartment_Number !== 0 ? apartment.apartment_Number : 'Нет квартир' }}</strong>
+                                                            <strong>{{ apartment !== null && apartment.apartment_Number !==
+                                                                0 ? apartment.apartment_Number : 'Нет квартир' }}</strong>
                                                         </h6>
                                                     </div>
                                                 </li>
@@ -134,7 +135,7 @@
                                     Дом:
                                 </label>
 
-                                <input v-model="newHouseName" type="text"
+                                <input v-model="newHouseName" type="text" @keydown.enter.prevent
                                     :class="{ 'form-control': true, 'is-invalid': !newHouseName, 'is-valid': newHouseName }"
                                     id="message-text" autocomplete="off"
                                     :title="newHouseName ? 'Все хорошо!' : 'Заполните это поле.'"
@@ -156,7 +157,8 @@
                                             Выберите...
                                         </option>
 
-                                        <option v-for="city in cities" :key="city.street_ID" :value="city.city_ID">
+                                        <option v-for="city in cities.filter(city => city.streets[0] !== null)"
+                                            :key="city.street_ID" :value="city.city_ID">
                                             {{ city.city_Name }}
                                         </option>
                                     </select>
@@ -169,13 +171,15 @@
 
                                     <select class="form-select" id="validationServer04" required v-model="selectedStreet"
                                         :class="{ 'is-invalid': !selectedStreet, 'is-valid': selectedStreet }"
-                                        :title="selectedStreet ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+                                        :title="!selectedCity ? 'Сначала выберите город.' : (selectedStreet ? 'Все хорошо!' : 'Выберите один из пунктов списка.')"
+                                        :disabled="!selectedCity">
 
                                         <option selected disabled :value="null">
                                             Выберите...
                                         </option>
 
-                                        <option v-for="street in filteredStreets" :key="street.street_ID" :value="street.street_ID">
+                                        <option v-for="street in filteredStreets" :key="street.street_ID"
+                                            :value="street.street_ID">
                                             {{ street.street_Name }}
                                         </option>
                                     </select>
@@ -185,8 +189,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                            @click="cancel">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancel">
                             Отмена
                         </button>
 
@@ -222,16 +225,20 @@ export default {
             data: null,
             newHouseName: '',
             selectedHouseId: null,
+
             alertMessage: null,
             alertType: null,
             loading: true,
+
+            cities: [],
+            cityId: null,
+            selectedCity: null,
+
             streets: [],
             streetId: null,
             selectedStreet: null,
+
             filteredStreets: [],
-            cityId: null,
-            cities: [],
-            selectedCity: null,
         };
     },
 
@@ -268,6 +275,7 @@ export default {
         cancel() {
             this.newHouseName = '';
             this.selectedStreet = null;
+            this.selectedCity = null;
         },
 
         fetchData() {
@@ -297,7 +305,7 @@ export default {
                         this.filteredStreets = streetsForSelectedCity[0].streets;
                         this.selectedStreet = null;
                     })
-                    
+
                     .catch(error => {
                         console.error('Ошибка при выполнении GET запроса для получения улиц:', error);
                     });
@@ -318,21 +326,7 @@ export default {
                 });
         },
 
-        fetchStreets() {
-            axios.get('https://localhost:5001/api/street')
-                .then(response => {
-                    this.streets = response.data;
-                    this.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
-                    console.log(this.streets);
-                })
-
-                .catch(error => {
-                    console.error('Ошибка при выполнении GET запроса для получения городов:', error);
-                });
-        },
-
         createHouse() {
-            this.fetchChoises();
             this.alertMessage = null;
 
             const houseData = {
@@ -351,6 +345,7 @@ export default {
                     this.data.push(response.data);
                     this.newHouseName = '';
                     this.selectedStreet = null;
+                    this.selectedCity = null;
                     this.fetchData();
                     this.alertMessage = 'Дом добавлен';
                     this.showAlert(this.alertMessage, 'success');
@@ -370,6 +365,7 @@ export default {
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
 <style src="../styles/style.css"></style>
+<!-- <style src="../styles/city.css"></style> -->
 
 <style scoped>
 #dropdown-upd {

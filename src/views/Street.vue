@@ -135,7 +135,7 @@
                                     Улица:
                                 </label>
 
-                                <input v-model="newStreetName" type="text"
+                                <input v-model="newStreetName" type="text" @keydown.enter.prevent
                                     :class="{ 'form-control': true, 'is-invalid': !newStreetName, 'is-valid': newStreetName }"
                                     id="message-text" autocomplete="off"
                                     :title="newStreetName ? 'Все хорошо!' : 'Заполните это поле.'"
@@ -205,15 +205,16 @@ export default {
     data() {
         return {
             data: null,
-            streetData: null,
             newStreetName: '',
+            selectedStreetId: null,
+
+            alertMessage: null,
+            alertType: null,
+            loading: true,
+
             cityId: null,
             cities: [],
             selectedCity: null,
-            alertMessage: null,
-            alertType: null,
-            selectedStreetId: null,
-            loading: true,
         };
     },
 

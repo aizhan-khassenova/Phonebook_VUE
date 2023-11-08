@@ -17,7 +17,7 @@
 
                             <div class="btn-container">
                                 <button type="button" class="btn btn-primary" id="btn-create" data-bs-toggle="modal"
-                                    data-bs-target="#myModal" title="Добавить контакт">
+                                    data-bs-target="#myModal" @click="fetchCities" title="Добавить контакт">
                                     <strong>+</strong>
                                 </button>
                             </div>
@@ -126,13 +126,13 @@
                     </div>
 
                     <div class="modal-body">
-                        <form @submit.prevent="createStreet">
+                        <form @submit.prevent="createPhone">
                             <div class="mb-3" id="message-text_container">
                                 <label for="message-text" class="col-form-label">
                                     Имя:
                                 </label>
 
-                                <input v-model="newOwnerName" type="text"
+                                <input v-model="newOwnerName" type="text" @keydown.enter.prevent
                                     :class="{ 'form-control': true, 'is-invalid': !newOwnerName, 'is-valid': newOwnerName }"
                                     id="message-text" autocomplete="off"
                                     :title="newOwnerName ? 'Все хорошо!' : 'Заполните это поле.'" placeholder="Введите имя">
@@ -143,7 +143,7 @@
                                     Телефон:
                                 </label>
 
-                                <input v-model="newPhoneName" type="text"
+                                <input v-model="newPhoneName" type="text" @keydown.enter.prevent
                                     :class="{ 'form-control': true, 'is-invalid': !newPhoneName, 'is-valid': newPhoneName }"
                                     id="message-text" autocomplete="off"
                                     :title="newPhoneName ? 'Все хорошо!' : 'Заполните это поле.'"
@@ -157,6 +157,7 @@
                                     </label>
 
                                     <select class="form-select" id="validationServer04" required v-model="selectedCity"
+                                        @change="loadStreetsForCity"
                                         :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
                                         :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
 
@@ -164,7 +165,9 @@
                                             Выберите...
                                         </option>
 
-                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">
+                                        <option
+                                            v-for="city in cities.filter(city => city.streets.some(street => street.houses.some(house => house.apartments[0].apartment_Number !== 0)))"
+                                            :key="city.street_ID" :value="city.city_ID">
                                             {{ city.city_Name }}
                                         </option>
                                     </select>
@@ -175,16 +178,20 @@
                                         Улица:
                                     </label>
 
-                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
-                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
-                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+                                    <select class="form-select" id="validationServer04" required v-model="selectedStreet"
+                                        @change="loadHousesForStreet"
+                                        :class="{ 'is-invalid': !selectedStreet, 'is-valid': selectedStreet }"
+                                        :title="!selectedCity ? 'Сначала выберите город.' : (selectedStreet ? 'Все хорошо!' : 'Выберите один из пунктов списка.')"
+                                        :disabled="!selectedCity">
 
                                         <option selected disabled :value="null">
                                             Выберите...
                                         </option>
 
-                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">
-                                            {{ city.city_Name }}
+                                        <option
+                                            v-for="street in filteredStreets.filter(street => street.houses.some(house => house.apartments[0].apartment_Number !== 0))"
+                                            :key="street.house_ID" :value="street.street_ID">
+                                            {{ street.street_Name }}
                                         </option>
                                     </select>
                                 </div>
@@ -196,16 +203,20 @@
                                         Дом:
                                     </label>
 
-                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
-                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
-                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+                                    <select class="form-select" id="validationServer04" required v-model="selectedHouse"
+                                        @change="loadApartmentsForHouse"
+                                        :class="{ 'is-invalid': !selectedHouse, 'is-valid': selectedHouse }"
+                                        :title="!selectedStreet ? 'Сначала выберите улицу.' : (selectedHouse ? 'Все хорошо!' : 'Выберите один из пунктов списка.')"
+                                        :disabled="!selectedStreet">
 
                                         <option selected disabled :value="null">
                                             Выберите...
                                         </option>
 
-                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">
-                                            {{ city.city_Name }}
+                                        <option
+                                            v-for="house in filteredHouses.filter(house => house.apartments[0].apartment_Number !== 0)"
+                                            :key="house.house_ID" :value="house.house_ID">
+                                            {{ house.house_Number }}
                                         </option>
                                     </select>
                                 </div>
@@ -215,16 +226,18 @@
                                         Квартира:
                                     </label>
 
-                                    <select class="form-select" id="validationServer04" required v-model="selectedCity"
-                                        :class="{ 'is-invalid': !selectedCity, 'is-valid': selectedCity }"
-                                        :title="selectedCity ? 'Все хорошо!' : 'Выберите один из пунктов списка.'">
+                                    <select class="form-select" id="validationServer04" required v-model="selectedApartment"
+                                        :class="{ 'is-invalid': !selectedApartment, 'is-valid': selectedApartment }"
+                                        :title="!selectedHouse ? 'Сначала выберите дом.' : (selectedApartment ? 'Все хорошо!' : 'Выберите один из пунктов списка.')"
+                                        :disabled="!selectedHouse">
 
                                         <option selected disabled :value="null">
                                             Выберите...
                                         </option>
 
-                                        <option v-for="city in cities" :key="city.city_ID" :value="city.city_ID">
-                                            {{ city.city_Name }}
+                                        <option v-for="apartment in filteredApartments" :key="apartment.apartment_ID"
+                                            :value="apartment.apartment_ID">
+                                            {{ apartment.apartment_Number }}
                                         </option>
                                     </select>
                                 </div>
@@ -237,9 +250,9 @@
                             Отмена
                         </button>
 
-                        <div :title="!selectedCity || !newOwnerName || !newPhoneName ? 'Заполните все поля.' : ''">
-                            <button type="submit" class="btn btn-primary" @click="createStreet"
-                                :disabled="!selectedCity || !newOwnerName || !newPhoneName">
+                        <div :title="!selectedApartment || !newOwnerName || !newPhoneName ? 'Заполните все поля.' : ''">
+                            <button type="submit" class="btn btn-primary" @click="createPhone"
+                                :disabled="!selectedApartment || !newOwnerName || !newPhoneName">
                                 Добавить
                             </button>
                         </div>
@@ -276,9 +289,29 @@ export default {
             newPhoneName: '',
             newOwnerName: '',
             selectedPhoneId: null,
+
             alertMessage: null,
             alertType: null,
             loading: true,
+
+            cities: [],
+            cityId: null,
+            selectedCity: null,
+
+            streets: [],
+            streetId: null,
+            selectedStreet: null,
+            filteredStreets: [],
+
+            houses: [],
+            houseId: null,
+            selectedHouse: null,
+            filteredHouses: [],
+
+            apartments: [],
+            apartmentId: null,
+            selectedApartment: null,
+            filteredApartments: [],
         };
     },
 
@@ -317,6 +350,9 @@ export default {
             this.newPhoneName = '';
             this.newOwnerName = '';
             this.selectedCity = null;
+            this.selectedStreet = null;
+            this.selectedHouse = null;
+            this.selectedApartment = null;
         },
 
         fetchData() {
@@ -332,6 +368,112 @@ export default {
                 .finally(() => {
                     this.loading = false;
                 });
+        },
+
+        loadStreetsForCity() {
+            if (this.selectedCity) {
+                const cityId = this.selectedCity;
+
+                axios.get('https://localhost:5001/api/phonebook/listByCity')
+                    .then(response => {
+                        console.log("Все улицы:", response.data);
+                        const streetsForSelectedCity = response.data.filter(city => city.city_ID === cityId);
+                        console.log("Выбранные улицы:", streetsForSelectedCity[0].streets);
+                        this.filteredStreets = streetsForSelectedCity[0].streets;
+                        this.selectedStreet = null;
+                        this.selectedHouse = null;
+                        this.selectedApartment = null;
+                    })
+
+                    .catch(error => {
+                        console.error('Ошибка при выполнении GET запроса для получения улиц:', error);
+                    });
+            } else {
+                this.filteredStreets = [];
+            }
+        },
+
+        loadHousesForStreet() {
+            if (this.selectedStreet) {
+                const selectedStreetId = this.selectedStreet;
+                const selectedStreet = this.filteredStreets.find(street => street.street_ID === selectedStreetId);
+
+                if (selectedStreet) {
+                    this.filteredHouses = selectedStreet.houses;
+                } else {
+                    this.filteredHouses = [];
+                }
+
+                this.selectedHouse = null;
+                this.selectedApartment = null;
+            } else {
+                this.filteredHouses = [];
+            }
+        },
+
+        loadApartmentsForHouse() {
+            if (this.selectedHouse) {
+                const selectedHouseId = this.selectedHouse;
+                const selectedHouse = this.filteredHouses.find(house => house.house_ID === selectedHouseId);
+
+                if (selectedHouse) {
+                    this.filteredApartments = selectedHouse.apartments;
+                } else {
+                    this.filteredApartments = [];
+                }
+
+                this.selectedApartment = null;
+            } else {
+                this.filteredApartments = [];
+            }
+        },
+
+        fetchCities() {
+            axios.get('https://localhost:5001/api/phonebook/listByCity')
+                .then(response => {
+                    this.cities = response.data;
+                    console.log(this.cities);
+                })
+                .catch(error => {
+                    console.error('Ошибка при выполнении GET запроса для получения городов:', error);
+                });
+        },
+
+        createPhone() {
+            this.alertMessage = null;
+
+            const phoneData = {
+                phone_Number: this.newPhoneName,
+                owner_Name: this.newOwnerName,
+            };
+
+            const apartmentIdData = {
+                Apartment_ID: this.selectedApartment,
+            };
+
+            console.log(apartmentIdData);
+
+            axios.post(`https://localhost:5001/api/phone/${apartmentIdData.Apartment_ID}/`, phoneData)
+                .then(response => {
+                    console.log(response.data);
+                    this.data.push(response.data);
+                    this.newPhoneName = '';
+                    this.newOwnerName = '';
+                    this.selectedStreet = null;
+                    this.selectedCity = null;
+                    this.selectedHouse = null;
+                    this.selectedApartment = null;
+                    this.fetchData();
+                    this.alertMessage = 'Контакт добавлен';
+                    this.showAlert(this.alertMessage, 'success');
+                })
+
+                .catch(error => {
+                    console.error('Ошибка при выполнении POST запроса:', error);
+                    this.showAlert(error.response.data, 'danger');
+                });
+
+            document.querySelector('[data-bs-dismiss="modal"]').click();
         },
     }
 }

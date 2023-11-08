@@ -17,7 +17,7 @@
                                 {{ inputLabelOwner }}
                             </label>
 
-                            <input v-model="secondParameter" type="text"
+                            <input v-model="secondParameter" type="text" @keydown.enter.prevent
                                 :class="{ 'form-control': true, 'is-invalid': !secondParameter, 'is-valid': secondParameter }"
                                 id="message-text" autocomplete="off"
                                 :title="secondParameter ? 'Все хорошо!' : 'Заполните это поле.'"
@@ -29,7 +29,7 @@
                                 {{ inputLabel }}
                             </label>
 
-                            <input v-model="newItem" type="text"
+                            <input v-model="newItem" type="text" @keydown.enter.prevent
                                 :class="{ 'form-control': true, 'is-invalid': !newItem, 'is-valid': newItem }"
                                 id="message-text" autocomplete="off"
                                 :title="newItem ? 'Все хорошо!' : 'Заполните это поле.'" :placeholder="inputplaceholder">

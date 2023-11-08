@@ -133,7 +133,7 @@
                                     Город:
                                 </label>
 
-                                <input v-model="newCityName" type="text"
+                                <input v-model="newCityName" type="text" @keydown.enter.prevent
                                     :class="{ 'form-control': true, 'is-invalid': !newCityName, 'is-valid': newCityName }"
                                     id="message-text" autocomplete="off"
                                     :title="!newCityName ? 'Заполните это поле.' : 'Все хорошо!'"
