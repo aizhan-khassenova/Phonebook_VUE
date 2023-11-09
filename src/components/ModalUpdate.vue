@@ -12,18 +12,6 @@
 
                 <div class="modal-body">
                     <form @submit.prevent="updateData">
-                        <div class="mb-3" id="message-text_container" v-if="apiEndpoint === 'phone'">
-                            <label for="message-text" class="col-form-label">
-                                {{ inputLabelOwner }}
-                            </label>
-
-                            <input v-model="secondParameter" type="text" @keydown.enter.prevent
-                                :class="{ 'form-control': true, 'is-invalid': !secondParameter, 'is-valid': secondParameter }"
-                                id="message-text" autocomplete="off"
-                                :title="secondParameter ? 'Все хорошо!' : 'Заполните это поле.'"
-                                :placeholder="inputplaceholderOwner">
-                        </div>
-
                         <div class="mb-3" id="message-text_container">
                             <label for="message-text" class="col-form-label">
                                 {{ inputLabel }}
@@ -33,6 +21,18 @@
                                 :class="{ 'form-control': true, 'is-invalid': !newItem, 'is-valid': newItem }"
                                 id="message-text" autocomplete="off"
                                 :title="newItem ? 'Все хорошо!' : 'Заполните это поле.'" :placeholder="inputplaceholder">
+                        </div>
+
+                        <div class="mb-3" id="message-text_container" v-if="apiEndpoint === 'phone'">
+                            <label for="message-text" class="col-form-label">
+                                {{ inputLabelPhone }}
+                            </label>
+
+                            <input v-model="secondParameter" type="text" @input="validateInput" @keydown.enter.prevent
+                                :class="{ 'form-control': true, 'is-invalid': !isInputValid, 'is-valid': isInputValid }"
+                                id="message-text" autocomplete="off"
+                                :title="isInputValid ? 'Все хорошо!' : 'Заполните это поле.'"
+                                :placeholder="inputplaceholderPhone">
                         </div>
                     </form>
                 </div>
@@ -73,30 +73,46 @@ export default {
         inputLabel: String,
         apiEndpoint: String,
         name: String,
-        nameOwner: String,
+        namePhone: String,
         inputplaceholder: String,
         itemId: String,
         alertMessage: String,
-        inputLabelOwner: String,
-        inputplaceholderOwner: String
+        inputLabelPhone: String,
+        inputplaceholderPhone: String,
     },
 
     methods: {
+        cancel() {
+            this.newItem = '';
+            this.secondParameter = '';
+            this.isInputValid = false;
+        },
+
+        validateInput() {
+            this.isInputValid = /^[\d\s+]+$/.test(this.secondParameter);
+        },
+
         updateData() {
+            if (!this.isInputValid) {
+                this.$emit('item-updated', 'Номер телефона должен содержать только цифры.', 'danger');
+                return;
+            }
+
             const itemData = {
                 [this.name]: this.newItem,
             };
 
             if (this.apiEndpoint === 'phone') {
                 const secondItemData = {
-                    [this.nameOwner]: this.secondParameter,
+                    [this.namePhone]: this.secondParameter,
                 };
 
-                axios.put('https://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, { ...itemData, ...secondItemData })
+                axios.put('https://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, { ...secondItemData, ...itemData })
                     .then(response => {
                         console.log(response.data);
                         this.newItem = '';
                         this.secondParameter = ''
+                        this.isInputValid = false;
                         this.$emit('item-updated', this.alertMessage, 'success');
                     })
 
@@ -119,11 +135,6 @@ export default {
             }
 
             document.querySelector('[data-bs-target="#modal-update"]').click();
-        },
-
-        cancel() {
-            this.newItem = '';
-            this.secondParameter = '';
         },
     },
 };

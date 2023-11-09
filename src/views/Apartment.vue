@@ -56,7 +56,7 @@
 
                                         <td v-if="apartment.apartment_Number !== 0">
                                             <div id="first_row_container">
-                                                <div class="btn-group dropend">
+                                                <div class="btn-group dropstart">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
                                                         data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu"
                                                         title="Редактировать квартиру">
@@ -136,10 +136,10 @@
                                     Квартира:
                                 </label>
 
-                                <input v-model="newApartmentName" type="text" @keydown.enter.prevent
-                                    :class="{ 'form-control': true, 'is-invalid': !newApartmentName, 'is-valid': newApartmentName }"
+                                <input v-model="newApartmentName" type="text" @input="validateInput" @keydown.enter.prevent
+                                    :class="{ 'form-control': true, 'is-invalid': !isInputValid, 'is-valid': isInputValid }"
                                     id="message-text" autocomplete="off"
-                                    :title="newApartmentName ? 'Все хорошо!' : 'Заполните это поле.'"
+                                    :title="isInputValid ? 'Все хорошо!' : 'Заполните это поле.'"
                                     placeholder="Введите номер">
                             </div>
 
@@ -307,6 +307,11 @@ export default {
             this.selectedStreet = null;
             this.selectedCity = null;
             this.selectedHouse = null;
+            this.isInputValid = false;
+        },
+
+        validateInput() {
+            this.isInputValid = /^\d+$/.test(this.newApartmentName);
         },
 
         fetchData() {
@@ -377,6 +382,12 @@ export default {
         createApartment() {
             this.alertMessage = null;
 
+            if (!this.isInputValid) {
+                this.alertMessage = 'Номер квартиры должен содержать только цифры.';
+                this.showAlert(this.alertMessage, 'danger');
+                return;
+            }
+
             const apartmentData = {
                 apartment_Number: this.newApartmentName,
             };
@@ -395,6 +406,7 @@ export default {
                     this.selectedStreet = null;
                     this.selectedCity = null;
                     this.selectedHouse = null;
+                    this.isInputValid = false;
                     this.fetchData();
                     this.alertMessage = 'Квартира добавлена';
                     this.showAlert(this.alertMessage, 'success');

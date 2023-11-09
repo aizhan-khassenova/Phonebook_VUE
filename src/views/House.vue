@@ -55,7 +55,7 @@
 
                                         <td v-if="house.house_Number !== 0">
                                             <div id="first_row_container">
-                                                <div class="btn-group dropend">
+                                                <div class="btn-group dropstart">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
                                                         data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu"
                                                         title="Редактировать дом">
@@ -135,10 +135,10 @@
                                     Дом:
                                 </label>
 
-                                <input v-model="newHouseName" type="text" @keydown.enter.prevent
-                                    :class="{ 'form-control': true, 'is-invalid': !newHouseName, 'is-valid': newHouseName }"
+                                <input v-model="newHouseName" type="text" @input="validateInput" @keydown.enter.prevent
+                                    :class="{ 'form-control': true, 'is-invalid': !isInputValid, 'is-valid': isInputValid }"
                                     id="message-text" autocomplete="off"
-                                    :title="newHouseName ? 'Все хорошо!' : 'Заполните это поле.'"
+                                    :title="isInputValid ? 'Все хорошо!' : 'Заполните это поле.'"
                                     placeholder="Введите номер">
                             </div>
 
@@ -276,6 +276,11 @@ export default {
             this.newHouseName = '';
             this.selectedStreet = null;
             this.selectedCity = null;
+            this.isInputValid = false;
+        },
+
+        validateInput() {
+            this.isInputValid = /^\d+$/.test(this.newHouseName);
         },
 
         fetchData() {
@@ -329,6 +334,12 @@ export default {
         createHouse() {
             this.alertMessage = null;
 
+            if (!this.isInputValid) {
+                this.alertMessage = 'Номер дома должен содержать только цифры.';
+                this.showAlert(this.alertMessage, 'danger');
+                return;
+            }
+
             const houseData = {
                 House_Number: this.newHouseName,
             };
@@ -346,6 +357,7 @@ export default {
                     this.newHouseName = '';
                     this.selectedStreet = null;
                     this.selectedCity = null;
+                    this.isInputValid = false;
                     this.fetchData();
                     this.alertMessage = 'Дом добавлен';
                     this.showAlert(this.alertMessage, 'success');

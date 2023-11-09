@@ -56,7 +56,7 @@
 
                                         <td v-if="phone.owner_Name !== null">
                                             <div id="first_row_container">
-                                                <div class="btn-group dropend">
+                                                <div class="btn-group dropstart">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
                                                         data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu"
                                                         title="Редактировать контакт">
@@ -143,10 +143,10 @@
                                     Телефон:
                                 </label>
 
-                                <input v-model="newPhoneName" type="text" @keydown.enter.prevent
-                                    :class="{ 'form-control': true, 'is-invalid': !newPhoneName, 'is-valid': newPhoneName }"
+                                <input v-model="newPhoneName" type="text" @input="validateInput" @keydown.enter.prevent
+                                    :class="{ 'form-control': true, 'is-invalid': !isInputValid, 'is-valid': isInputValid }"
                                     id="message-text" autocomplete="off"
-                                    :title="newPhoneName ? 'Все хорошо!' : 'Заполните это поле.'"
+                                    :title="isInputValid ? 'Все хорошо!' : 'Заполните это поле.'"
                                     placeholder="Введите номер">
                             </div>
 
@@ -262,8 +262,8 @@
         </div>
 
         <ModalUpdate @item-updated="onPhoneChanged" :itemId="selectedPhoneId" title="Обновление контакта"
-            inputLabelOwner="Имя:" inputLabel="Телефон:" apiEndpoint="phone" name="phone_Number" nameOwner="owner_Name"
-            inputplaceholder="Введите номер" inputplaceholderOwner="Введите имя" alertMessage="Контакт обновлен">
+            inputLabelPhone="Телефон:" inputLabel="Имя:" apiEndpoint="phone" name="owner_Name" namePhone="phone_Number"
+            inputplaceholder="Введите имя" inputplaceholderPhone="Введите номер" alertMessage="Контакт обновлен">
         </ModalUpdate>
 
         <ModalDelete @item-deleted="onPhoneChanged" :itemId="selectedPhoneId" title="Удалить контакт?"
@@ -353,6 +353,11 @@ export default {
             this.selectedStreet = null;
             this.selectedHouse = null;
             this.selectedApartment = null;
+            this.isInputValid = false;
+        },
+
+        validateInput() {
+            this.isInputValid = /^[\d\s+]+$/.test(this.newPhoneName);
         },
 
         fetchData() {
@@ -442,6 +447,12 @@ export default {
         createPhone() {
             this.alertMessage = null;
 
+            if (!this.isInputValid) {
+                this.alertMessage = 'Номер телефона должен содержать только цифры.';
+                this.showAlert(this.alertMessage, 'danger');
+                return;
+            }
+
             const phoneData = {
                 phone_Number: this.newPhoneName,
                 owner_Name: this.newOwnerName,
@@ -463,6 +474,7 @@ export default {
                     this.selectedCity = null;
                     this.selectedHouse = null;
                     this.selectedApartment = null;
+                    this.isInputValid = false;
                     this.fetchData();
                     this.alertMessage = 'Контакт добавлен';
                     this.showAlert(this.alertMessage, 'success');

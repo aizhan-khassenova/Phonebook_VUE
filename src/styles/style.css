@@ -65,7 +65,7 @@ table {
 td {
 	padding-top: 25px;
 	padding-bottom: 25px;
-	border-bottom: 2px solid var(--primary-color);
+	border-bottom: 1px solid var(--bs-secondary-color);
 	vertical-align: top;
 	text-align: left;
 	width: 50%;
@@ -108,7 +108,7 @@ h6 {
 	width: 35px;
 }
 
-#btn-menu::after {
+#btn-menu::before {
 	display: none;
 }
 

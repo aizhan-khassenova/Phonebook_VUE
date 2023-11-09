@@ -66,6 +66,7 @@ export default {
 <style scoped>
 #liveAlertPlaceholder {
     position: fixed;
+    z-index: 1055;
     bottom: 0px;
     left: 15px;
     text-align: left;

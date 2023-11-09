@@ -55,7 +55,7 @@
 
                                         <td>
                                             <div id="first_row_container">
-                                                <div class="btn-group dropend">
+                                                <div class="btn-group dropstart">
                                                     <button class="btn btn-primary dropdown-toggle" type="button"
                                                         data-bs-toggle="dropdown" aria-expanded="false" id="btn-menu"
                                                         title="Редактировать город">
