@@ -25,8 +25,17 @@
                     </div>
                 </div>
 
-                <div class="row" id="table_container" v-if="data">
-                    <div class="col-12" v-for="(city, index) in data" :key="index">
+                <nav class="navbar">
+                    <div class="container-fluid">
+                        <form class="d-flex" role="search">
+                            <input class="form-control border border-primary border-2" type="search" placeholder="Поиск"
+                                aria-label="Search" @input="updateSearchQuery($event.target.value)" @keydown.enter.prevent>
+                        </form>
+                    </div>
+                </nav>
+
+                <div class="row" id="table_container" v-if="filteredCities.length > 0">
+                    <div class="col-12" v-for="(city, index) in filteredCities" :key="index">
                         <div v-for="(street, index) in city.streets" :key="index">
                             <table v-for="(house, index) in street.houses" :key="index">
                                 <tbody v-for="(apartment, index) in house.apartments" :key="index">
@@ -108,6 +117,10 @@
                             </table>
                         </div>
                     </div>
+                </div>
+
+                <div v-else>
+                    <p>Совпадающих контактов не найдено.</p>
                 </div>
             </div>
         </section>
@@ -293,6 +306,7 @@ export default {
             alertMessage: null,
             alertType: null,
             loading: true,
+            searchQuery: '',
 
             cities: [],
             cityId: null,
@@ -330,7 +344,23 @@ export default {
         }, 100);
     },
 
+    computed: {
+        filteredCities() {
+            if (this.data) {
+                return this.data.filter(phone => {
+                    return phone.owner_Name.toLowerCase().includes(this.searchQuery.toLowerCase());
+                });
+            } else {
+                return [];
+            }
+        }
+    },
+
     methods: {
+        updateSearchQuery(value) {
+            this.searchQuery = value;
+        },
+
         showAlert(message, type) {
             this.alertMessage = message;
             this.alertType = type;

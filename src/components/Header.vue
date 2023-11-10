@@ -55,14 +55,6 @@
                         </router-link>
                     </li>
                 </ul>
-
-                <div class="search">
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2 bg-transparent d-inline-flex focus-ring focus-ring-light text-decoration-none border rounded-2" type="search" placeholder="Поиск..." aria-label="Поиск">
-                        <button class="btn btn-primary btn-search" type="submit"><i class="bi bi-search"></i></button>
-                    </form>
-                </div>
-
             </div>
         </div>
     </div>
@@ -72,15 +64,6 @@
 <style src="../styles/bootstrap-icons.css"></style>
 
 <style scoped>
-.btn-search {
-    background-color: var(--bs-btn-hover-bg);
-    border-radius: 50%;
-	height: 40px;
-	width: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 .header-container {
     width: 100vw;
     background-color: var(--bs-primary);
@@ -88,36 +71,14 @@
 
 .container {
     height: 73px;
-    width: 1320px;
     display: flex;
     align-items: flex-end;
-    padding-left: 0;
 }
 
 .header {
     width: 100%;
     display: flex;
     justify-content: space-between;
-}
-
-.search {
-    margin-top: 2px;
-    margin-bottom: 2px;
-    width: 360px;
-    /* border: 1px solid black; */
-}
-
-ul{
-    /* border: 1px solid black; */
-}
-
-a{
-    /* border: 1px solid black; */
-
-}
-
-.input{
-    color: white;
 }
 
 .nav-tabs .nav-link {

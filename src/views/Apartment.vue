@@ -25,9 +25,18 @@
                     </div>
                 </div>
 
+                <nav class="navbar">
+                    <div class="container-fluid">
+                        <form class="d-flex" role="search">
+                            <input class="form-control border border-primary border-2" type="search" placeholder="Поиск"
+                                aria-label="Search" @input="updateSearchQuery($event.target.value)" @keydown.enter.prevent>
+                        </form>
+                    </div>
+                </nav>
+
                 <div class="row" id="table_container">
-                    <div class="col-12" v-if="data">
-                        <div v-for="(city, index) in data" :key="index">
+                    <div class="col-12" v-if="filteredCities.length > 0">
+                        <div v-for="(city, index) in filteredCities" :key="index">
                             <table v-for="(street, index) in city.streets" :key="index">
                                 <tbody v-for="(house, index) in street.houses" :key="index">
                                     <tr v-for="(apartment, index) in house.apartments" :key="index">
@@ -112,6 +121,10 @@
                             </table>
                         </div>
                     </div>
+
+                    <div v-else>
+                        <p>Совпадающих квартир не найдено.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -158,7 +171,8 @@
                                             Выберите...
                                         </option>
 
-                                        <option v-for="city in cities.filter(city => city.streets.some(street => street.houses[0].house_Number !== 0))"
+                                        <option
+                                            v-for="city in cities.filter(city => city.streets.some(street => street.houses[0].house_Number !== 0))"
                                             :key="city.street_ID" :value="city.city_ID">
                                             {{ city.city_Name }}
                                         </option>
@@ -255,6 +269,7 @@ export default {
             alertMessage: null,
             alertType: null,
             loading: true,
+            searchQuery: '',
 
             cities: [],
             cityId: null,
@@ -277,7 +292,7 @@ export default {
         Footer,
         ModalDelete,
         Alert,
-        Loader
+        Loader,
     },
 
     mounted() {
@@ -286,7 +301,23 @@ export default {
         }, 100);
     },
 
+    computed: {
+        filteredCities() {
+            if (this.data) {
+                return this.data.filter(apartment => {
+                    return apartment.apartment_Number.toLowerCase().includes(this.searchQuery.toLowerCase());
+                });
+            } else {
+                return [];
+            }
+        }
+    },
+
     methods: {
+        updateSearchQuery(value) {
+            this.searchQuery = value;
+        },
+
         showAlert(message, type) {
             this.alertMessage = message;
             this.alertType = type;

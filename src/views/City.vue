@@ -25,12 +25,21 @@
                     </div>
                 </div>
 
+                <nav class="navbar">
+                    <div class="container-fluid">
+                        <form class="d-flex" role="search">
+                            <input class="form-control border border-primary border-2" type="search" placeholder="Поиск"
+                                aria-label="Search" @input="updateSearchQuery($event.target.value)" @keydown.enter.prevent>
+                        </form>
+                    </div>
+                </nav>
+
                 <div class="row" id="table_container">
                     <div class="col-12">
-                        <div v-if="data">
+                        <div v-if="filteredCities.length > 0">
                             <table>
                                 <tbody>
-                                    <tr v-for="(city, index) in data" :key="index">
+                                    <tr v-for="(city, index) in filteredCities" :key="index">
                                         <td>
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
@@ -108,6 +117,10 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <div v-else>
+                            <p>Совпадающих городов не найдено.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -148,8 +161,7 @@
                         </button>
 
                         <div :title="!newCityName ? 'Заполните все поля.' : ''">
-                            <button type="submit" class="btn btn-primary" @click="createCity"
-                                :disabled="!newCityName">
+                            <button type="submit" class="btn btn-primary" @click="createCity" :disabled="!newCityName">
                                 Добавить
                             </button>
                         </div>
@@ -187,6 +199,7 @@ export default {
             alertMessage: null,
             alertType: null,
             loading: true,
+            searchQuery: '',
         };
     },
 
@@ -196,7 +209,7 @@ export default {
         ModalUpdate,
         ModalDelete,
         Alert,
-        Loader
+        Loader,
     },
 
     mounted() {
@@ -205,7 +218,23 @@ export default {
         }, 100);
     },
 
+    computed: {
+        filteredCities() {
+            if (this.data) {
+                return this.data.filter(city => {
+                    return city.city_Name.toLowerCase().includes(this.searchQuery.toLowerCase());
+                });
+            } else {
+                return [];
+            }
+        }
+    },
+
     methods: {
+        updateSearchQuery(value) {
+            this.searchQuery = value;
+        },
+
         showAlert(message, type) {
             this.alertMessage = message;
             this.alertType = type;

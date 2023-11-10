@@ -25,10 +25,19 @@
                     </div>
                 </div>
 
+                <nav class="navbar">
+                    <div class="container-fluid">
+                        <form class="d-flex" role="search">
+                            <input class="form-control border border-primary border-2" type="search" placeholder="Поиск"
+                                aria-label="Search" @input="updateSearchQuery($event.target.value)" @keydown.enter.prevent>
+                        </form>
+                    </div>
+                </nav>
+
                 <div class="row" id="table_container">
                     <div class="col-12">
-                        <div v-if="data">
-                            <table v-for="(city, index) in data" :key="index">
+                        <div v-if="filteredCities.length > 0">
+                            <table v-for="(city, index) in filteredCities" :key="index">
                                 <tbody v-for="(street, index) in city.streets" :key="index">
                                     <tr v-for="(house, index) in street.houses" :key="index">
                                         <td v-if="house.house_Number !== 0">
@@ -109,6 +118,10 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div v-else>
+                            <p>Совпадающих домов не найдено.</p>
                         </div>
                     </div>
                 </div>
@@ -229,6 +242,7 @@ export default {
             alertMessage: null,
             alertType: null,
             loading: true,
+            searchQuery: '',
 
             cities: [],
             cityId: null,
@@ -256,7 +270,23 @@ export default {
         }, 100);
     },
 
+    computed: {
+        filteredCities() {
+            if (this.data) {
+                return this.data.filter(house => {
+                    return house.house_Number.toLowerCase().includes(this.searchQuery.toLowerCase());
+                });
+            } else {
+                return [];
+            }
+        }
+    },
+
     methods: {
+        updateSearchQuery(value) {
+            this.searchQuery = value;
+        },
+
         showAlert(message, type) {
             this.alertMessage = message;
             this.alertType = type;
@@ -377,7 +407,6 @@ export default {
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
 <style src="../styles/style.css"></style>
-<!-- <style src="../styles/city.css"></style> -->
 
 <style scoped>
 #dropdown-upd {

@@ -25,11 +25,20 @@
                     </div>
                 </div>
 
+                <nav class="navbar">
+                    <div class="container-fluid">
+                        <form class="d-flex" role="search">
+                            <input class="form-control border border-primary border-2" type="search" placeholder="Поиск"
+                                aria-label="Search" @input="updateSearchQuery($event.target.value)" @keydown.enter.prevent>
+                        </form>
+                    </div>
+                </nav>
+
                 <div class="row" id="table_container">
                     <div class="col-12">
-                        <div v-if="data">
+                        <div v-if="filteredCities.length > 0">
                             <table>
-                                <tbody v-for="(city, index) in data" :key="index">
+                                <tbody v-for="(city, index) in filteredCities" :key="index">
                                     <tr v-for="(street, index) in city.streets" :key="index">
                                         <td v-if="street.street_Name !== null">
                                             <div id="first_column_container">
@@ -109,6 +118,10 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div v-else>
+                            <p>Совпадающих улиц не найдено.</p>
                         </div>
                     </div>
                 </div>
@@ -211,6 +224,7 @@ export default {
             alertMessage: null,
             alertType: null,
             loading: true,
+            searchQuery: '',
 
             cityId: null,
             cities: [],
@@ -233,7 +247,30 @@ export default {
         }, 100);
     },
 
+    computed: {
+        filteredCities() {
+            if (this.data) {
+                if (this.searchQuery) {
+                    return this.data.filter(city =>
+                        city.streets.some(street =>
+                            street.street_Name &&
+                            street.street_Name.toLowerCase().includes(this.searchQuery.toLowerCase())
+                        )
+                    );
+                } else {
+                    return this.data;
+                }
+            } else {
+                return [];
+            }
+        }
+    },
+
     methods: {
+        updateSearchQuery(value) {
+            this.searchQuery = value;
+        },
+
         showAlert(message, type) {
             this.alertMessage = message;
             this.alertType = type;
