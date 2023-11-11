@@ -36,11 +36,12 @@
 
                 <div class="row" id="table_container">
                     <div class="col-12">
-                        <div v-if="filteredCities.length > 0">
-                            <table v-for="(city, index) in filteredCities" :key="index">
-                                <tbody v-for="(street, index) in city.streets" :key="index">
-                                    <tr v-for="(house, index) in street.houses" :key="index">
-                                        <td v-if="house.house_Number !== 0">
+                        <div v-if="filteredHouses.length > 0">
+                            {{filteredHouses.length}}
+                            <table>
+                                <tbody v-for="(house, index) in filteredHouses" :key="index">
+                                    <tr v-if="house.house_Number !== 0">
+                                        <td>
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
                                                     <h6 v-if="house.house_Number" id="sort_icon">
@@ -57,7 +58,7 @@
                                                 <i class="bi bi-geo-alt-fill" id="i-geo"></i>
 
                                                 <h6>
-                                                    <strong>Россия, {{ city.city_Name }}, {{ street.street_Name }}</strong>
+                                                    <strong>Россия, {{ house.cityName }}, {{ house.streetName }}</strong>
                                                 </h6>
                                             </div>
                                         </td>
@@ -253,6 +254,8 @@ export default {
             selectedStreet: null,
 
             filteredStreets: [],
+
+            housesData: [],
         };
     },
 
@@ -271,10 +274,10 @@ export default {
     },
 
     computed: {
-        filteredCities() {
+        filteredHouses() {
             if (this.data) {
-                return this.data.filter(house => {
-                    return house.house_Number.toLowerCase().includes(this.searchQuery.toLowerCase());
+                return this.housesData.filter(house => {
+                    return house.house_Number.toString().includes(this.searchQuery.toLowerCase());
                 });
             } else {
                 return [];
@@ -317,6 +320,21 @@ export default {
             axios.get('https://localhost:5001/api/phonebook/listByCity')
                 .then(response => {
                     this.data = response.data;
+                    //console.log('Data:', this.data);
+                    this.housesData = []
+
+                    for (const city of this.data) {
+                        //console.log('city:', this.data);
+                        for (const street of city.streets) {
+                            for (const house of street.houses) {
+                                Object.assign(house, { cityName: city.city_Name });
+                                Object.assign(house, { streetName: street.street_Name });
+                                //console.log('дом:', house);
+                                //console.log('домStreet:', house.street);
+                                this.housesData.push(house);
+                            }
+                        }
+                    }
                 })
 
                 .catch(error => {

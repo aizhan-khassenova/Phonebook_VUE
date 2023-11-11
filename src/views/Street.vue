@@ -37,10 +37,10 @@
                 <div class="row" id="table_container">
                     <div class="col-12">
                         <div v-if="filteredCities.length > 0">
-                            <table>
-                                <tbody v-for="(city, index) in filteredCities" :key="index">
-                                    <tr v-for="(street, index) in city.streets" :key="index">
-                                        <td v-if="street.street_Name !== null">
+                            <table v-for="(city, index) in filteredCities" :key="index">
+                                <tbody v-for="(street, index) in city.streets" :key="index">
+                                    <tr v-if="street.street_Name !== null && street.street_Name.toLowerCase().includes(this.searchQuery.toLowerCase())">
+                                        <td>
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
                                                     <h6 v-if="street.street_Name" id="sort_icon">
@@ -116,6 +116,7 @@
                                             </ul>
                                         </td>
                                     </tr>
+                                
                                 </tbody>
                             </table>
                         </div>
@@ -250,23 +251,16 @@ export default {
     computed: {
         filteredCities() {
             if (this.data) {
-                if (this.searchQuery) {
-                    return this.data.filter(city =>
-                        city.streets.some(street =>
-                            street.street_Name &&
-                            street.street_Name.toLowerCase().includes(this.searchQuery.toLowerCase())
-                        )
-                    );
-                } else {
-                    return this.data;
-                }
+                return this.data.filter(city => city.streets.some(street => {
+                    return street.street_Name.toLowerCase().includes(this.searchQuery.toLowerCase());
+                }));
             } else {
                 return [];
             }
         }
     },
 
-    methods: {
+    methods: { 
         updateSearchQuery(value) {
             this.searchQuery = value;
         },

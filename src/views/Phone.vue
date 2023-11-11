@@ -34,12 +34,13 @@
                     </div>
                 </nav>
 
-                <div class="row" id="table_container" v-if="filteredCities.length > 0">
-                    <div class="col-12" v-for="(city, index) in filteredCities" :key="index">
-                        <div v-for="(street, index) in city.streets" :key="index">
-                            <table v-for="(house, index) in street.houses" :key="index">
-                                <tbody v-for="(apartment, index) in house.apartments" :key="index">
-                                    <tr v-for="(phone, index) in apartment.phones" :key="index">
+                <div class="row" id="table_container">
+                    <div class="col-12">
+                        <div v-if="phonesData">
+                            <table>
+                                <tbody v-for="(phone, index) in phonesData" :key="index">
+                                    <tr
+                                        v-if="phone.owner_Name !== null && phone.owner_Name.toLowerCase().includes(this.searchQuery.toLowerCase())">
                                         <td v-if="phone.owner_Name !== null">
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
@@ -57,8 +58,8 @@
                                                 <i class="bi bi-geo-alt-fill" id="i-geo"></i>
 
                                                 <h6>
-                                                    <strong>Россия, {{ city.city_Name }}, {{ street.street_Name }}, {{
-                                                        house.house_Number }}, {{ apartment.apartment_Number }}</strong>
+                                                    <strong>Россия, {{ phone.cityName }}, {{ phone.streetName }}, {{
+                                                        phone.houseNumber }}, {{ phone.apartmentNumber }}</strong>
                                                 </h6>
                                             </div>
                                         </td>
@@ -116,11 +117,11 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                </div>
 
-                <div v-else>
-                    <p>Совпадающих контактов не найдено.</p>
+                        <div v-else>
+                            <p>Совпадающих контактов не найдено.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -326,6 +327,8 @@ export default {
             apartmentId: null,
             selectedApartment: null,
             filteredApartments: [],
+
+            phonesData: [],
         };
     },
 
@@ -342,18 +345,6 @@ export default {
         setTimeout(() => {
             this.fetchData();
         }, 100);
-    },
-
-    computed: {
-        filteredCities() {
-            if (this.data) {
-                return this.data.filter(phone => {
-                    return phone.owner_Name.toLowerCase().includes(this.searchQuery.toLowerCase());
-                });
-            } else {
-                return [];
-            }
-        }
     },
 
     methods: {
@@ -394,6 +385,27 @@ export default {
             axios.get('https://localhost:5001/api/phonebook/listByCity')
                 .then(response => {
                     this.data = response.data;
+                    //console.log('Data:', this.data);
+                    this.phonesData = []
+
+                    for (const city of this.data) {
+                        //console.log('city:', this.data);
+                        for (const street of city.streets) {
+                            for (const house of street.houses) {
+                                for (const apartment of house.apartments) {
+                                    for (const phone of apartment.phones) {
+                                        Object.assign(phone, { cityName: city.city_Name });
+                                        Object.assign(phone, { streetName: street.street_Name });
+                                        Object.assign(phone, { houseNumber: house.house_Number });
+                                        Object.assign(phone, { apartmentNumber: apartment.apartment_Number });
+                                        //console.log('дом:', house);
+                                        //console.log('домStreet:', house.street);
+                                        this.phonesData.push(phone);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 })
 
                 .catch(error => {
