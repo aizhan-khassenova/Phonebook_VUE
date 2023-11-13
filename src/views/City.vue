@@ -10,7 +10,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <div id="title_container">
+                        <div class="col-3" id="title_container">
                             <h1 class="text-start text-primary">
                                 <strong>Города</strong>
                             </h1>
@@ -222,7 +222,7 @@ export default {
         filteredCities() {
             if (this.data) {
                 return this.data.filter(city => {
-                    return city.city_Name.toLowerCase().includes(this.searchQuery.toLowerCase());
+                    return city.city_Name && city.city_Name.toLowerCase().includes(this.searchQuery.toLowerCase());
                 });
             } else {
                 return [];

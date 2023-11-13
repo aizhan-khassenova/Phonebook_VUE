@@ -36,12 +36,11 @@
 
                 <div class="row" id="table_container">
                     <div class="col-12">
-                        <div v-if="apartmentsData">
+                        <div v-if="filteredApartments.length > 0">
                             <table>
-                                <tbody v-for="(apartment, index) in apartmentsData" :key="index">
-                                    <tr
-                                        v-if="apartment.apartment_Number !== 0 && apartment.apartment_Number.toString().includes(this.searchQuery.toLowerCase())">
-                                        <td v-if="apartment.apartment_Number !== 0">
+                                <tbody v-for="(apartment, index) in filteredApartments" :key="index">
+                                    <tr v-if="apartment.apartment_Number !== 0">
+                                        <td>
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
                                                     <h6 v-if="apartment.apartment_Number" id="sort_icon">
@@ -304,6 +303,18 @@ export default {
         }, 100);
     },
 
+    computed: {
+        filteredApartments() {
+            if (this.data) {
+                return this.apartmentsData.filter(apartment => {
+                    return apartment.apartment_Number.toString().includes(this.searchQuery.toLowerCase());
+                });
+            } else {
+                return [];
+            }
+        }
+    },
+
     methods: {
         updateSearchQuery(value) {
             this.searchQuery = value;
@@ -340,19 +351,15 @@ export default {
             axios.get('https://localhost:5001/api/phonebook/listByCity')
                 .then(response => {
                     this.data = response.data;
-                    //console.log('Data:', this.data);
                     this.apartmentsData = []
 
                     for (const city of this.data) {
-                        //console.log('city:', this.data);
                         for (const street of city.streets) {
                             for (const house of street.houses) {
                                 for (const apartment of house.apartments) {
                                     Object.assign(apartment, { cityName: city.city_Name });
                                     Object.assign(apartment, { streetName: street.street_Name });
                                     Object.assign(apartment, { houseNumber: house.house_Number });
-                                    //console.log('дом:', house);
-                                    //console.log('домStreet:', house.street);
                                     this.apartmentsData.push(apartment);
                                 }
                             }

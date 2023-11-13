@@ -10,7 +10,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <div id="title_container">
+                        <div class="col-3" id="title_container">
                             <h1 class="text-start text-primary">
                                 <strong>Улицы</strong>
                             </h1>
@@ -100,23 +100,38 @@
                                             </div>
 
                                             <ul id="no-bullets-list">
-                                                <li v-for="(house, hIndex) in street.houses" :key="hIndex">
+                                                <template v-if="street.houses && street.houses.length > 0">
+                                                    <li v-for="(house, hIndex) in street.houses" :key="hIndex">
+                                                        <div v-if="house.house_Number !== null && house.house_Number !== 0" id="second_column_container">
+                                                            <h6>
+                                                                <i class="bi bi-key-fill" id="i-list"></i>
+                                                            </h6>
+
+                                                            <h6>
+                                                                <strong>{{ house.house_Number }}</strong>
+                                                            </h6>
+                                                        </div>
+                                                    </li>
+
+                                                    <li v-if="!street.houses.some(house => house.house_Number !== null && house.house_Number !== 0)">
+                                                        <div id="second_column_container">
+                                                            <h6>
+                                                                <strong>Нет домов</strong>
+                                                            </h6>
+                                                        </div>
+                                                    </li>
+                                                </template>
+
+                                                <li v-else>
                                                     <div id="second_column_container">
                                                         <h6>
-                                                            <i class="bi bi-house-door-fill" id="i-list"
-                                                                v-if="house.house_Number"></i>
-                                                        </h6>
-
-                                                        <h6>
-                                                            <strong>{{ house !== null && house.house_Number !== 0 ?
-                                                                house.house_Number : 'Нет домов' }}</strong>
+                                                            <strong>Нет домов</strong>
                                                         </h6>
                                                     </div>
                                                 </li>
                                             </ul>
                                         </td>
                                     </tr>
-                                
                                 </tbody>
                             </table>
                         </div>
@@ -252,7 +267,7 @@ export default {
         filteredCities() {
             if (this.data) {
                 return this.data.filter(city => city.streets.some(street => {
-                    return street.street_Name.toLowerCase().includes(this.searchQuery.toLowerCase());
+                    return street.street_Name && street.street_Name.toLowerCase().includes(this.searchQuery.toLowerCase());
                 }));
             } else {
                 return [];

@@ -37,7 +37,6 @@
                 <div class="row" id="table_container">
                     <div class="col-12">
                         <div v-if="filteredHouses.length > 0">
-                            {{filteredHouses.length}}
                             <table>
                                 <tbody v-for="(house, index) in filteredHouses" :key="index">
                                     <tr v-if="house.house_Number !== 0">
@@ -101,16 +100,32 @@
                                             </div>
 
                                             <ul id="no-bullets-list">
-                                                <li v-for="(apartment, aIndex) in house.apartments" :key="aIndex">
+                                                <template v-if="house.apartments && house.apartments.length > 0">
+                                                    <li v-for="(apartment, aIndex) in house.apartments" :key="aIndex">
+                                                        <div v-if="apartment.apartment_Number !== null && apartment.apartment_Number !== 0" id="second_column_container">
+                                                            <h6>
+                                                                <i class="bi bi-key-fill" id="i-list"></i>
+                                                            </h6>
+
+                                                            <h6>
+                                                                <strong>{{ apartment.apartment_Number }}</strong>
+                                                            </h6>
+                                                        </div>
+                                                    </li>
+
+                                                    <li v-if="!house.apartments.some(apartment => apartment.apartment_Number !== null && apartment.apartment_Number !== 0)">
+                                                        <div id="second_column_container">
+                                                            <h6>
+                                                                <strong>Нет квартир</strong>
+                                                            </h6>
+                                                        </div>
+                                                    </li>
+                                                </template>
+
+                                                <li v-else>
                                                     <div id="second_column_container">
                                                         <h6>
-                                                            <i class="bi bi-key-fill" id="i-list"
-                                                                v-if="apartment.apartment_Number"></i>
-                                                        </h6>
-
-                                                        <h6>
-                                                            <strong>{{ apartment !== null && apartment.apartment_Number !==
-                                                                0 ? apartment.apartment_Number : 'Нет квартир' }}</strong>
+                                                            <strong>Нет квартир</strong>
                                                         </h6>
                                                     </div>
                                                 </li>
@@ -252,7 +267,6 @@ export default {
             streets: [],
             streetId: null,
             selectedStreet: null,
-
             filteredStreets: [],
 
             housesData: [],
@@ -271,6 +285,8 @@ export default {
         setTimeout(() => {
             this.fetchData();
         }, 100);
+
+        this.validateInput();
     },
 
     computed: {
@@ -313,24 +329,21 @@ export default {
         },
 
         validateInput() {
-            this.isInputValid = /^\d+$/.test(this.newHouseName);
+            // this.isInputValid = /^\d+$/.test(this.newHouseName);
+            this.isInputValid = /^\d*$/.test(this.newHouseName);
         },
 
         fetchData() {
             axios.get('https://localhost:5001/api/phonebook/listByCity')
                 .then(response => {
                     this.data = response.data;
-                    //console.log('Data:', this.data);
                     this.housesData = []
 
                     for (const city of this.data) {
-                        //console.log('city:', this.data);
                         for (const street of city.streets) {
                             for (const house of street.houses) {
                                 Object.assign(house, { cityName: city.city_Name });
                                 Object.assign(house, { streetName: street.street_Name });
-                                //console.log('дом:', house);
-                                //console.log('домStreet:', house.street);
                                 this.housesData.push(house);
                             }
                         }
@@ -374,6 +387,7 @@ export default {
                     this.cities.sort((a, b) => a.city_Name.localeCompare(b.city_Name));
                     console.log(this.cities);
                 })
+
                 .catch(error => {
                     console.error('Ошибка при выполнении GET запроса для получения городов:', error);
                 });
@@ -434,5 +448,4 @@ export default {
 
 #dropdown-upd:hover {
     background-color: initial;
-}
-</style>
+}</style>

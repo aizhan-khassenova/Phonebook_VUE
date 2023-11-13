@@ -9,10 +9,20 @@ body {
 	overflow-x: hidden;
 }
 
+/* pagination */
+.pagination{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 /* search */
 .container-fluid {
     padding: 0;
     margin-top: 25px;
+}
+.navbar{
+	padding: 0;
 }
 .form-control{
 	background-color: transparent;
@@ -49,7 +59,6 @@ body {
 	display: flex;
 	align-items: center;
 }
-
 #btn-create {
 	border-radius: 50%;
 	height: 35px;
@@ -62,6 +71,7 @@ section {
 	padding: 100px 0;
 	background-color: var(--gray-color);
 	width: 100vw;
+	min-height: 86.3vh
 }
 
 table {

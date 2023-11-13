@@ -93,16 +93,16 @@ export default {
         },
 
         updateData() {
-            if (!this.isInputValid) {
-                this.$emit('item-updated', 'Номер телефона должен содержать только цифры.', 'danger');
-                return;
-            }
-
             const itemData = {
                 [this.name]: this.newItem,
             };
 
             if (this.apiEndpoint === 'phone') {
+                if (!this.isInputValid) {
+                    this.$emit('item-updated', 'Номер телефона должен содержать только цифры.', 'danger');
+                    return;
+                }
+
                 const secondItemData = {
                     [this.namePhone]: this.secondParameter,
                 };

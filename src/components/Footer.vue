@@ -34,4 +34,20 @@ footer {
   justify-content: center;
   align-items: center;
 }
+/* #app {
+  min-height: calc(100vh - 60px);
+  padding-bottom: 60px; 
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  color: var(--gray-color);
+  background-color: var(--black-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
 </style>
