@@ -36,10 +36,10 @@
 
                 <div class="row" id="table_container">
                     <div class="col-12">
-                        <div v-if="filteredCities.length > 0">
-                            <table v-for="(city, index) in filteredCities" :key="index">
-                                <tbody v-for="(street, index) in city.streets" :key="index">
-                                    <tr v-if="street.street_Name !== null && street.street_Name.toLowerCase().includes(this.searchQuery.toLowerCase())">
+                        <div v-if="paginatedStreets.length > 0">
+                            <table>
+                                <tbody v-for="(street, index) in paginatedStreets" :key="index">
+                                    <tr v-if="street.street_Name !== null">
                                         <td>
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
@@ -57,7 +57,7 @@
                                                 <i class="bi bi-geo-alt-fill" id="i-geo"></i>
 
                                                 <h6>
-                                                    <strong>Россия, {{ city.city_Name }}</strong>
+                                                    <strong>Россия, {{ street.cityName }}</strong>
                                                 </h6>
                                             </div>
                                         </td>
@@ -102,9 +102,10 @@
                                             <ul id="no-bullets-list">
                                                 <template v-if="street.houses && street.houses.length > 0">
                                                     <li v-for="(house, hIndex) in street.houses" :key="hIndex">
-                                                        <div v-if="house.house_Number !== null && house.house_Number !== 0" id="second_column_container">
+                                                        <div v-if="house.house_Number !== null && house.house_Number !== 0"
+                                                            id="second_column_container">
                                                             <h6>
-                                                                <i class="bi bi-key-fill" id="i-list"></i>
+                                                                <i class="bi bi-house-door-fill" id="i-list"></i>
                                                             </h6>
 
                                                             <h6>
@@ -113,7 +114,8 @@
                                                         </div>
                                                     </li>
 
-                                                    <li v-if="!street.houses.some(house => house.house_Number !== null && house.house_Number !== 0)">
+                                                    <li
+                                                        v-if="!street.houses.some(house => house.house_Number !== null && house.house_Number !== 0)">
                                                         <div id="second_column_container">
                                                             <h6>
                                                                 <strong>Нет домов</strong>
@@ -141,6 +143,18 @@
                         </div>
                     </div>
                 </div>
+
+                <nav aria-label="...">
+                    <ul class="pagination">
+                        <li v-for="pageNumber in totalPages" :key="pageNumber"
+                            :class="{ 'page-item': true, 'active': currentPage === pageNumber }"
+                            @click="changePage(pageNumber)">
+                            <a class="page-link" href="#">
+                                {{ pageNumber }}
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </section>
 
@@ -245,6 +259,11 @@ export default {
             cityId: null,
             cities: [],
             selectedCity: null,
+
+            streetsData: [],
+
+            currentPage: 1,
+            pageSize: 10,
         };
     },
 
@@ -264,20 +283,47 @@ export default {
     },
 
     computed: {
-        filteredCities() {
+        filteredStreets() {
             if (this.data) {
-                return this.data.filter(city => city.streets.some(street => {
+                return this.streetsData.filter(street => {
                     return street.street_Name && street.street_Name.toLowerCase().includes(this.searchQuery.toLowerCase());
-                }));
+                });
             } else {
                 return [];
             }
-        }
+        },
+
+        totalPages() {
+            return Math.ceil(this.filteredStreets.length / this.pageSize);
+        },
+
+        paginatedStreets() {
+            const start = (this.currentPage - 1) * this.pageSize;
+            const end = start + this.pageSize;
+            return this.filteredStreets.slice(start, end);
+        },
     },
 
-    methods: { 
+    methods: {
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+            }
+        },
+
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+
+        changePage(pageNumber) {
+            this.currentPage = pageNumber;
+        },
+
         updateSearchQuery(value) {
             this.searchQuery = value;
+            this.currentPage = 1;
         },
 
         showAlert(message, type) {
@@ -304,6 +350,15 @@ export default {
             axios.get('https://localhost:5001/api/phonebook/listByCity')
                 .then(response => {
                     this.data = response.data;
+                    this.streetsData = []
+
+                    for (const city of this.data) {
+                        for (const street of city.streets) {
+                            Object.assign(street, { cityName: city.city_Name });
+                            Object.assign(street, { streetName: street.street_Name });
+                            this.streetsData.push(street);
+                        }
+                    }
                 })
 
                 .catch(error => {

@@ -36,9 +36,9 @@
 
                 <div class="row" id="table_container">
                     <div class="col-12">
-                        <div v-if="filteredHouses.length > 0">
+                        <div v-if="paginatedHouses.length > 0">
                             <table>
-                                <tbody v-for="(house, index) in filteredHouses" :key="index">
+                                <tbody v-for="(house, index) in paginatedHouses" :key="index">
                                     <tr v-if="house.house_Number !== 0">
                                         <td>
                                             <div id="first_column_container">
@@ -141,6 +141,18 @@
                         </div>
                     </div>
                 </div>
+
+                <nav aria-label="...">
+                    <ul class="pagination">
+                        <li v-for="pageNumber in totalPages" :key="pageNumber"
+                            :class="{ 'page-item': true, 'active': currentPage === pageNumber }"
+                            @click="changePage(pageNumber)">
+                            <a class="page-link" href="#">
+                                {{ pageNumber }}
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </section>
 
@@ -270,6 +282,9 @@ export default {
             filteredStreets: [],
 
             housesData: [],
+
+            currentPage: 1,
+            pageSize: 10,
         };
     },
 
@@ -285,8 +300,6 @@ export default {
         setTimeout(() => {
             this.fetchData();
         }, 100);
-
-        this.validateInput();
     },
 
     computed: {
@@ -298,12 +311,39 @@ export default {
             } else {
                 return [];
             }
-        }
+        },
+
+        totalPages() {
+            return Math.ceil(this.filteredHouses.length / this.pageSize);
+        },
+
+        paginatedHouses() {
+            const start = (this.currentPage - 1) * this.pageSize;
+            const end = start + this.pageSize;
+            return this.filteredHouses.slice(start, end);
+        },
     },
 
     methods: {
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+            }
+        },
+
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+
+        changePage(pageNumber) {
+            this.currentPage = pageNumber;
+        },
+
         updateSearchQuery(value) {
             this.searchQuery = value;
+            this.currentPage = 1;
         },
 
         showAlert(message, type) {
@@ -329,8 +369,7 @@ export default {
         },
 
         validateInput() {
-            // this.isInputValid = /^\d+$/.test(this.newHouseName);
-            this.isInputValid = /^\d*$/.test(this.newHouseName);
+            this.isInputValid = /^\d+$/.test(this.newHouseName);
         },
 
         fetchData() {

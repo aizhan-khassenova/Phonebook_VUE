@@ -36,10 +36,10 @@
 
                 <div class="row" id="table_container">
                     <div class="col-12">
-                        <div v-if="filteredCities.length > 0">
+                        <div v-if="paginatedCities.length > 0">
                             <table>
                                 <tbody>
-                                    <tr v-for="(city, index) in filteredCities" :key="index">
+                                    <tr v-for="(city, index) in paginatedCities" :key="index">
                                         <td>
                                             <div id="first_column_container">
                                                 <div id="sort_name_container">
@@ -123,6 +123,18 @@
                         </div>
                     </div>
                 </div>
+
+                <nav aria-label="...">
+                    <ul class="pagination">
+                        <li v-for="pageNumber in totalPages" :key="pageNumber"
+                            :class="{ 'page-item': true, 'active': currentPage === pageNumber }"
+                            @click="changePage(pageNumber)">
+                            <a class="page-link" href="#">
+                                {{ pageNumber }}
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </section>
 
@@ -200,6 +212,9 @@ export default {
             alertType: null,
             loading: true,
             searchQuery: '',
+
+            currentPage: 1,
+            pageSize: 10,
         };
     },
 
@@ -227,12 +242,39 @@ export default {
             } else {
                 return [];
             }
-        }
+        },
+
+        totalPages() {
+            return Math.ceil(this.filteredCities.length / this.pageSize);
+        },
+
+        paginatedCities() {
+            const start = (this.currentPage - 1) * this.pageSize;
+            const end = start + this.pageSize;
+            return this.filteredCities.slice(start, end);
+        },
     },
 
     methods: {
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+            }
+        },
+
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+
+        changePage(pageNumber) {
+            this.currentPage = pageNumber;
+        },
+
         updateSearchQuery(value) {
             this.searchQuery = value;
+            this.currentPage = 1;
         },
 
         showAlert(message, type) {

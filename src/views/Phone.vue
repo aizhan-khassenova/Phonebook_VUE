@@ -36,9 +36,9 @@
 
                 <div class="row" id="table_container">
                     <div class="col-12">
-                        <div v-if="filteredPhones.length > 0">
+                        <div v-if="paginatedPhones.length > 0">
                             <table>
-                                <tbody v-for="(phone, index) in filteredPhones" :key="index">
+                                <tbody v-for="(phone, index) in paginatedPhones" :key="index">
                                     <tr v-if="phone.owner_Name !== null">
                                         <td>
                                             <div id="first_column_container">
@@ -125,38 +125,11 @@
 
                 <nav aria-label="...">
                     <ul class="pagination">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" aria-label="Предыдущая" @click="prevPage">
-                                <span aria-hidden="true">
-                                    &laquo;
-                                </span>
-                            </a>
-                        </li>
-
-                        <li :class="{ 'page-item': true, 'active': currentPage === 1 }" @click="changePage(1)">
+                        <li v-for="pageNumber in totalPages" :key="pageNumber"
+                            :class="{ 'page-item': true, 'active': currentPage === pageNumber }"
+                            @click="changePage(pageNumber)">
                             <a class="page-link" href="#">
-                                <!-- {{ currentPage }} -->
-                                1
-                            </a>
-                        </li>
-
-                        <li :class="{ 'page-item': true, 'active': currentPage === 2 }" @click="changePage(2)">
-                            <a class="page-link" href="#">
-                                2
-                            </a>
-                        </li>
-
-                        <li :class="{ 'page-item': true, 'active': currentPage === 3 }" @click="changePage(3)">
-                            <a class="page-link" href="#">
-                                3
-                            </a>
-                        </li>
-
-                        <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Следующая" @click="nextPage">
-                                <span aria-hidden="true">
-                                    &raquo;
-                                </span>
+                                {{ pageNumber }}
                             </a>
                         </li>
                     </ul>
@@ -368,9 +341,8 @@ export default {
 
             phonesData: [],
 
-            // Добавление параметров для пагинации
             currentPage: 1,
-            pageSize: 10, // Количество элементов на странице
+            pageSize: 10,
         };
     },
 
@@ -400,12 +372,10 @@ export default {
             }
         },
 
-        // Вычисляемое свойство для общего количества страниц
         totalPages() {
             return Math.ceil(this.filteredPhones.length / this.pageSize);
         },
 
-        // Вычисляемое свойство для отображения данных на текущей странице
         paginatedPhones() {
             const start = (this.currentPage - 1) * this.pageSize;
             const end = start + this.pageSize;
@@ -414,9 +384,8 @@ export default {
     },
 
     methods: {
-        // Методы для управления пагинацией
         nextPage() {
-            if (this.currentPage < this.phonesData) {
+            if (this.currentPage < this.totalPages) {
                 this.currentPage++;
             }
         },
@@ -433,6 +402,7 @@ export default {
 
         updateSearchQuery(value) {
             this.searchQuery = value;
+            this.currentPage = 1;
         },
 
         showAlert(message, type) {
@@ -465,12 +435,7 @@ export default {
         },
 
         fetchData() {
-            // Отправка запроса с параметрами страницы и лимита
-            const page = this.currentPage;
-            const limit = this.pageSize;
-
-            axios.get(`https://localhost:5001/api/phonebook/listByCity?page=${page}&limit=${limit}`)
-                // axios.get('https://localhost:5001/api/phonebook/listByCity')
+            axios.get('https://localhost:5001/api/phonebook/listByCity')
                 .then(response => {
                     this.data = response.data;
                     this.phonesData = [];

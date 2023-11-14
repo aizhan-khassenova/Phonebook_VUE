@@ -14,6 +14,11 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	font-weight: bold;
+	background-color: var(--gray-color);
+}
+.page-item{
+	background-color: var(--gray-color);
 }
 
 /* search */

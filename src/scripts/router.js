@@ -26,6 +26,11 @@ const routes = [
     path: '/apartment',
     component: () => import('@/views/Apartment.vue')
   },
+
+  {
+    path: '/phonebook',
+    component: () => import('@/views/Phonebook.vue')
+  },
 ]
 
 const router = createRouter({

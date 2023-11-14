@@ -54,6 +54,12 @@
                             <strong>Города</strong>
                         </router-link>
                     </li>
+
+                    <li class="nav-item">
+                        <router-link to="/phonebook" class="nav-link" :class="{ 'active': $route.path === '/phonebook' }">
+                            <strong>Навигация</strong>
+                        </router-link>
+                    </li>
                 </ul>
             </div>
         </div>
