@@ -344,3 +344,9 @@ export default {
 <style src="../styles/bootstrap.min.css"></style>
 <style src="../styles/bootstrap-icons.css"></style>
 <style src="../styles/style.css"></style>
+
+<style scoped>
+#sort_icon {
+	margin-right: 35px;
+}
+</style>

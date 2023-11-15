@@ -525,4 +525,8 @@ export default {
 #dropdown-upd:hover {
     background-color: initial;
 }
+
+#sort_icon {
+	margin-right: 35px;
+}
 </style>

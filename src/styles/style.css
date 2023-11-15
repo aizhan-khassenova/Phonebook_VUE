@@ -14,7 +14,6 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	font-weight: bold;
 	background-color: var(--gray-color);
 }
 .page-item{
@@ -109,7 +108,6 @@ td {
 }
 
 #sort_icon {
-	margin-right: 35px;
 	text-align: center;
 	width: 35px;
 	height: 35px;
