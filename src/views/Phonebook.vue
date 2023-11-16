@@ -18,12 +18,12 @@
 
                 <div class="row" id="table_container">
                     <div class="col-12">
-                        <div v-if="data" class="line-data"></div>
-
                         <ul>
-                            <li v-for="city in data" :key="city.city_ID">
-                                <span @click="toggleCity(city)" v-if="city.city_Name !== null && city.city_Name !== 0">
-                                    <button
+                            <li v-for="(city, index) in data" :key="city.city_ID">
+                                <div v-if="data && index !== 0" class="line-data"></div>
+
+                                <span v-if="city.city_Name !== null && city.city_Name !== 0">
+                                    <button @click="toggleCity(city)"
                                         v-if="city.streets && city.streets.filter(street => street.street_Name !== null).length > 0"
                                         type="button" class="btn btn-primary">
                                         <i v-if="city.expanded" class="bi bi-caret-down-fill"></i>
@@ -42,13 +42,12 @@
                                     </h4>
                                 </span>
 
-                                <div v-if="city.expanded" class="line-city"></div>
-
                                 <ul v-if="city.expanded">
                                     <li v-for="street in city.streets" :key="street.street_ID">
-                                        <span @click="toggleStreet(street)"
-                                            v-if="street.street_Name !== null && street.street_Name !== 0">
-                                            <button
+                                        <div v-if="city.expanded" class="line-city"></div>
+
+                                        <span v-if="street.street_Name !== null && street.street_Name !== 0">
+                                            <button @click="toggleStreet(street)"
                                                 v-if="street.houses && street.houses.filter(house => house.house_Number !== 0).length > 0"
                                                 type="button" class="btn btn-primary btn-street">
                                                 <i v-if="street.expanded" class="bi bi-caret-down-fill"></i>
@@ -67,13 +66,12 @@
                                             </h6>
                                         </span>
 
-                                        <div v-if="street.expanded" class="line-street"></div>
-
                                         <ul v-if="street.expanded">
                                             <li v-for="house in street.houses" :key="house.house_ID">
-                                                <span @click="toggleHouse(house)"
-                                                    v-if="house.house_Number !== null && house.house_Number !== 0">
-                                                    <button
+                                                <div v-if="street.expanded" class="line-street"></div>
+
+                                                <span v-if="house.house_Number !== null && house.house_Number !== 0">
+                                                    <button @click="toggleHouse(house)" 
                                                         v-if="house.apartments && house.apartments.filter(apartment => apartment.apartment_Number !== 0).length > 0"
                                                         type="button" class="btn btn-primary btn-house">
 
@@ -92,13 +90,12 @@
                                                     </h6>
                                                 </span>
 
-                                                <div v-if="house.expanded" class="line-house"></div>
-
                                                 <ul v-if="house.expanded">
                                                     <li v-for="apartment in house.apartments" :key="apartment.apartment_ID">
-                                                        <span @click="toggleApartment(apartment)"
-                                                            v-if="apartment.apartment_Number !== null && apartment.apartment_Number !== 0">
-                                                            <button
+                                                        <div v-if="house.expanded" class="line-house"></div>
+
+                                                        <span v-if="apartment.apartment_Number !== null && apartment.apartment_Number !== 0">
+                                                            <button @click="toggleApartment(apartment)"
                                                                 v-if="apartment.phones && apartment.phones.filter(phone => phone.owner_Name !== null).length > 0"
                                                                 type="button" class="btn btn-primary btn-apartment">
                                                                 <i v-if="apartment.expanded"
@@ -118,13 +115,12 @@
                                                             </h6>
                                                         </span>
 
-                                                        <div v-if="apartment.expanded" class="line-apartment"></div>
-
                                                         <ul v-if="apartment.expanded">
                                                             <li v-for="phone in apartment.phones" :key="phone.phone_ID">
-                                                                <span @click="togglePhone(phone)"
-                                                                    v-if="phone.owner_Name !== null && phone.owner_Name !== 0">
-                                                                    <button type="button" class="btn btn-primary btn-owner">
+                                                                <div v-if="apartment.expanded" class="line-apartment"></div>
+
+                                                                <span v-if="phone.owner_Name !== null && phone.owner_Name !== 0">
+                                                                    <button @click="togglePhone(phone)" type="button" class="btn btn-primary btn-owner">
                                                                         <i v-if="phone.expanded"
                                                                             class="bi bi-caret-down-fill"></i>
 
@@ -314,31 +310,36 @@ li {
     background-color: var(--bs-border-color);
     margin-left: 366px;
 }
-.line-apartment{
+
+.line-apartment {
     height: 30px;
     width: 2px;
     background-color: var(--bs-border-color);
     margin-left: 296px;
 }
-.line-house{
+
+.line-house {
     height: 30px;
     width: 2px;
     background-color: var(--bs-border-color);
     margin-left: 226px;
 }
-.line-street{
+
+.line-street {
     height: 30px;
     width: 2px;
     background-color: var(--bs-border-color);
     margin-left: 156px;
 }
-.line-city{
+
+.line-city {
     height: 30px;
     width: 2px;
     background-color: var(--bs-border-color);
     margin-left: 86px;
 }
-.line-data{
+
+.line-data {
     height: 30px;
     width: 2px;
     background-color: var(--bs-border-color);
@@ -352,7 +353,8 @@ li {
     background-color: var(--bs-border-color);
 }
 
-h4, h6 {
+h4,
+h6 {
     display: flex;
     align-items: center;
 }
