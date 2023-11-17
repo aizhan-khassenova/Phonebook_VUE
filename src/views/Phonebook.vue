@@ -197,7 +197,7 @@ export default {
     methods: {
         fetchData() {
             axios
-                .get('https://localhost:5001/api/phonebook/listByCity')
+                .get('http://localhost:5001/api/phonebook/listByCity')
                 .then((response) => {
                     this.data = response.data.map((city) => ({
                         ...city,

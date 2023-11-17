@@ -107,7 +107,7 @@ export default {
                     [this.namePhone]: this.secondParameter,
                 };
 
-                axios.put('https://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, { ...secondItemData, ...itemData })
+                axios.put('http://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, { ...secondItemData, ...itemData })
                     .then(response => {
                         console.log(response.data);
                         this.newItem = '';
@@ -121,7 +121,7 @@ export default {
                         this.$emit('item-updated', error.response.data, 'danger');
                     });
             } else {
-                axios.put('https://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, itemData)
+                axios.put('http://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, itemData)
                     .then(response => {
                         console.log(response.data);
                         this.newItem = '';

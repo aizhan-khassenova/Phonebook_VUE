@@ -320,7 +320,7 @@ export default {
                 City_Name: this.newCityName,
             };
 
-            axios.post('https://localhost:5001/api/city', cityData)
+            axios.post('http://localhost:5001/api/city', cityData)
                 .then(response => {
                     console.log(response.data);
                     this.data.push(response.data);

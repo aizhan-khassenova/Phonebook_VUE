@@ -435,7 +435,7 @@ export default {
         },
 
         fetchData() {
-            axios.get('https://localhost:5001/api/phonebook/listByCity')
+            axios.get('http://localhost:5001/api/phonebook/listByCity')
                 .then(response => {
                     this.data = response.data;
                     this.phonesData = [];
@@ -470,7 +470,7 @@ export default {
             if (this.selectedCity) {
                 const cityId = this.selectedCity;
 
-                axios.get('https://localhost:5001/api/phonebook/listByCity')
+                axios.get('http://localhost:5001/api/phonebook/listByCity')
                     .then(response => {
                         console.log("Все улицы:", response.data);
                         const streetsForSelectedCity = response.data.filter(city => city.city_ID === cityId);
@@ -525,7 +525,7 @@ export default {
         },
 
         fetchCities() {
-            axios.get('https://localhost:5001/api/phonebook/listByCity')
+            axios.get('http://localhost:5001/api/phonebook/listByCity')
                 .then(response => {
                     this.cities = response.data;
                     console.log(this.cities);
@@ -555,7 +555,7 @@ export default {
 
             console.log(apartmentIdData);
 
-            axios.post(`https://localhost:5001/api/phone/${apartmentIdData.Apartment_ID}/`, phoneData)
+            axios.post(`http://localhost:5001/api/phone/${apartmentIdData.Apartment_ID}/`, phoneData)
                 .then(response => {
                     console.log(response.data);
                     this.data.push(response.data);

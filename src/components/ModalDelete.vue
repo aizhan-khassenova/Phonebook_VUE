@@ -51,7 +51,7 @@ export default {
 
     methods: {
         deleteData() {
-            axios.delete('https://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId)
+            axios.delete('http://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId)
 
                 .then(response => {
                     console.log(response.data);

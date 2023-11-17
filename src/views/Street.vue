@@ -347,7 +347,7 @@ export default {
         },
 
         fetchData() {
-            axios.get('https://localhost:5001/api/phonebook/listByCity')
+            axios.get('http://localhost:5001/api/phonebook/listByCity')
                 .then(response => {
                     this.data = response.data;
                     this.streetsData = []
@@ -371,7 +371,7 @@ export default {
         },
 
         fetchCities() {
-            axios.get('https://localhost:5001/api/city')
+            axios.get('http://localhost:5001/api/city')
                 .then(response => {
                     this.cities = response.data;
                     this.cities.sort((a, b) => a.city_Name.localeCompare(b.city_Name));
@@ -397,7 +397,7 @@ export default {
 
             console.log(cityIdData);
 
-            axios.post(`https://localhost:5001/api/street/${cityIdData.City_ID}/`, streetData)
+            axios.post(`http://localhost:5001/api/street/${cityIdData.City_ID}/`, streetData)
                 .then(response => {
                     console.log(response.data);
                     this.newStreetName = '';
