@@ -296,7 +296,7 @@ export default {
         },
 
         fetchData() {
-            axios.get('https://localhost:5001/api/city')
+            axios.get('http://localhost:5001/api/city')
                 .then(response => {
                     const sortedData = response.data.map(city => {
                         city.streets = city.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
