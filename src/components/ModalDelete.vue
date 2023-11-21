@@ -40,6 +40,9 @@
 import axios from 'axios';
 import '@/scripts/bootstrap.bundle.min.js';
 
+// const apiBaseUrl = 'http://172.17.1.31:80'; // Новая переменная для базового URL API
+import { apiBaseUrl } from '@/scripts/urls.js';
+
 export default {
     props: {
         title: String,
@@ -51,7 +54,7 @@ export default {
 
     methods: {
         deleteData() {
-            axios.delete('http://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId)
+            axios.delete(`${apiBaseUrl}/api/` + this.apiEndpoint + `/` + this.itemId)
 
                 .then(response => {
                     console.log(response.data);

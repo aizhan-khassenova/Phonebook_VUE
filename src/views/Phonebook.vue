@@ -174,6 +174,9 @@ import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import Loader from '@/components/Loader.vue';
 
+// const apiBaseUrl = 'http://172.17.1.31:80'; // Новая переменная для базового URL API
+import { apiBaseUrl } from '@/scripts/urls.js';
+
 export default {
     data() {
         return {
@@ -197,7 +200,7 @@ export default {
     methods: {
         fetchData() {
             axios
-                .get('http://localhost:5001/api/phonebook/listByCity')
+                .get(`${apiBaseUrl}/api/phonebook/listByCity`)
                 .then((response) => {
                     this.data = response.data.map((city) => ({
                         ...city,

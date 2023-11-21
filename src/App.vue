@@ -4,6 +4,10 @@
   </div>
 </template>
 
+<!-- <script>
+  const apiBaseUrl = 'http://172.17.1.31:80'; // Новая переменная для базового URL API
+</script> -->
+
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

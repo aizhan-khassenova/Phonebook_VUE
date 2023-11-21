@@ -244,6 +244,8 @@ import ModalDelete from '@/components/ModalDelete.vue';
 import Alert from '@/components/Alert.vue';
 import Loader from '@/components/Loader.vue';
 
+import { apiBaseUrl } from '@/scripts/urls.js';
+
 export default {
     data() {
         return {
@@ -347,7 +349,7 @@ export default {
         },
 
         fetchData() {
-            axios.get('http://localhost:5001/api/phonebook/listByCity')
+            axios.get(`${apiBaseUrl}/api/phonebook/listByCity`)
                 .then(response => {
                     this.data = response.data;
                     this.streetsData = []
@@ -362,7 +364,9 @@ export default {
                 })
 
                 .catch(error => {
+                    console.log(`Вывод: ${apiBaseUrl}/api/phonebook/listByCity`);
                     console.error('Ошибка при выполнении GET запроса:', error);
+                    
                 })
 
                 .finally(() => {
@@ -371,7 +375,7 @@ export default {
         },
 
         fetchCities() {
-            axios.get('http://localhost:5001/api/city')
+            axios.get(`${apiBaseUrl}/api/city`)
                 .then(response => {
                     this.cities = response.data;
                     this.cities.sort((a, b) => a.city_Name.localeCompare(b.city_Name));
@@ -397,7 +401,7 @@ export default {
 
             console.log(cityIdData);
 
-            axios.post(`http://localhost:5001/api/street/${cityIdData.City_ID}/`, streetData)
+            axios.post(`${apiBaseUrl}/api/street/${cityIdData.City_ID}/`, streetData)
                 .then(response => {
                     console.log(response.data);
                     this.newStreetName = '';

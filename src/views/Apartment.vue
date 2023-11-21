@@ -271,6 +271,9 @@ import ModalDelete from '@/components/ModalDelete.vue';
 import Alert from '@/components/Alert.vue';
 import Loader from '@/components/Loader.vue';
 
+// const apiBaseUrl = 'http://172.17.1.31:80'; // Новая переменная для базового URL API
+import { apiBaseUrl } from '@/scripts/urls.js';
+
 export default {
     data() {
         return {
@@ -390,7 +393,7 @@ export default {
         },
 
         fetchData() {
-            axios.get('http://localhost:5001/api/phonebook/listByCity')
+            axios.get(`${apiBaseUrl}/api/phonebook/listByCity`)
                 .then(response => {
                     this.data = response.data;
                     this.apartmentsData = []
@@ -422,7 +425,7 @@ export default {
             if (this.selectedCity) {
                 const cityId = this.selectedCity;
 
-                axios.get('http://localhost:5001/api/phonebook/listByCity')
+                axios.get(`${apiBaseUrl}/api/phonebook/listByCity`)
                     .then(response => {
                         console.log("Все улицы:", response.data);
                         const streetsForSelectedCity = response.data.filter(city => city.city_ID === cityId);
@@ -458,7 +461,7 @@ export default {
         },
 
         fetchCities() {
-            axios.get('http://localhost:5001/api/phonebook/listByCity')
+            axios.get(`${apiBaseUrl}/api/phonebook/listByCity`)
                 .then(response => {
                     this.cities = response.data;
                     console.log(this.cities);
@@ -487,7 +490,7 @@ export default {
 
             console.log(houseIdData);
 
-            axios.post(`http://localhost:5001/api/apartment/${houseIdData.House_ID}/`, apartmentData)
+            axios.post(`${apiBaseUrl}/api/apartment/${houseIdData.House_ID}/`, apartmentData)
                 .then(response => {
                     console.log(response.data);
                     this.data.push(response.data);

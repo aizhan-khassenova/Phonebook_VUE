@@ -59,6 +59,9 @@
 import axios from 'axios';
 import '@/scripts/bootstrap.bundle.min.js';
 
+// const apiBaseUrl = 'http://172.17.1.31:80'; // Новая переменная для базового URL API
+import { apiBaseUrl } from '@/scripts/urls.js';
+
 export default {
     data() {
         return {
@@ -107,7 +110,7 @@ export default {
                     [this.namePhone]: this.secondParameter,
                 };
 
-                axios.put('http://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, { ...secondItemData, ...itemData })
+                axios.put(`${apiBaseUrl}/api/` + this.apiEndpoint + `/` + this.itemId, { ...secondItemData, ...itemData })
                     .then(response => {
                         console.log(response.data);
                         this.newItem = '';
@@ -121,7 +124,7 @@ export default {
                         this.$emit('item-updated', error.response.data, 'danger');
                     });
             } else {
-                axios.put('http://localhost:5001/api/' + this.apiEndpoint + '/' + this.itemId, itemData)
+                axios.put(`${apiBaseUrl}/api/` + this.apiEndpoint + `/` + this.itemId, itemData)
                     .then(response => {
                         console.log(response.data);
                         this.newItem = '';

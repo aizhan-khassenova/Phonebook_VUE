@@ -202,6 +202,9 @@ import ModalDelete from '@/components/ModalDelete.vue';
 import Alert from '@/components/Alert.vue';
 import Loader from '@/components/Loader.vue';
 
+// const apiBaseUrl = 'http://172.17.1.31:80'; // Новая переменная для базового URL API
+import { apiBaseUrl } from '@/scripts/urls.js';
+
 export default {
     data() {
         return {
@@ -296,7 +299,7 @@ export default {
         },
 
         fetchData() {
-            axios.get('http://localhost:5001/api/city')
+            axios.get(`${apiBaseUrl}/api/city`)
                 .then(response => {
                     const sortedData = response.data.map(city => {
                         city.streets = city.streets.sort((a, b) => a.street_Name.localeCompare(b.street_Name));
@@ -308,6 +311,7 @@ export default {
 
                 .catch(error => {
                     console.error('Ошибка при выполнении GET запроса:', error);
+                    console.log(`Вывод: ${apiBaseUrl}/api/city`);
                 })
 
                 .finally(() => {
@@ -320,7 +324,7 @@ export default {
                 City_Name: this.newCityName,
             };
 
-            axios.post('http://localhost:5001/api/city', cityData)
+            axios.post(`${apiBaseUrl}/api/city`, cityData)
                 .then(response => {
                     console.log(response.data);
                     this.data.push(response.data);
