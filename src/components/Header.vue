@@ -1,82 +1,97 @@
 <template>
-    <div class="header-container">
-        <div class="container">
-            <div class="header">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <router-link to="/" class="nav-link" :class="{ 'active': $route.path === '/' }">
-                            <strong>Контакты</strong>
-                        </router-link>
-                    </li>
+    <div>
+        <Alert @alert="showAlert" :alert-message="alertMessage" :alert-type="alertType"></Alert>
 
-                    <li class="nav-item">
-                        <router-link to="/apartment" class="nav-link" :class="{ 'active': $route.path === '/apartment' }">
-                            <strong>Квартиры</strong>
-                        </router-link>
-                    </li>
+        <div class="header-container">
+            <div class="container">
+                <div class="header">
+                    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 link-body-emphasis text-decoration-none"
+                        id="a-title">
+                        <h3><strong id="phone">Телефoнный</strong></h3>
+                        <h3><strong id="book">Справ</strong></h3>
+                        <h5><i class="bi bi-person-circle" id="book"></i></h5>
+                        <h3><strong id="book">чник</strong></h3>
+                        <h3><strong id="dote">.</strong></h3>
+                    </a>
 
-                    <li class="nav-item">
-                        <router-link to="/house" class="nav-link" :class="{ 'active': $route.path === '/house' }">
-                            <strong>Дома</strong>
-                        </router-link>
-                    </li>
-
-                    <li class="nav-item">
-                        <router-link to="/street" class="nav-link" :class="{ 'active': $route.path === '/street' }">
-                            <strong>Улицы</strong>
-                        </router-link>
-                    </li>
-
-                    <li class="nav-item">
-                        <router-link to="/city" class="nav-link" :class="{ 'active': $route.path === '/city' }">
-                            <strong>Города</strong>
-                        </router-link>
-                    </li>
-
-                    <li class="nav-item">
-                        <router-link to="/phonebook" class="nav-link" :class="{ 'active': $route.path === '/phonebook' }">
-                            <strong>Навигация</strong>
-                        </router-link>
-                    </li>
-                </ul>
-
-                <div class="auth-container">
-                    <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#loginModal">
-                        Войти
-                    </button>
-                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#registrationModal">
-                        Регистрация
-                    </button>
+                    <div class="auth-container">
+                        <div v-if="isLoggedIn" class="user-info">
+                            <h6>{{ loginData.username }}</h6>
+                        </div>
+                        <button v-if="isLoggedIn" type="button" class="btn btn-outline-light" @click="logout">
+                            Выйти
+                        </button>
+                        <button v-if="!isLoggedIn" type="button" class="btn btn-outline-light" data-bs-toggle="modal"
+                            data-bs-target="#loginModal">
+                            Войти
+                        </button>
+                        <button v-if="!isLoggedIn" type="button" class="btn btn-light" data-bs-toggle="modal"
+                            data-bs-target="#registrationModal">
+                            Регистрация
+                        </button>
+                    </div>
                 </div>
+            </div>
 
-                <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="loginModalLabel">Вход</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form @submit.prevent="login">
-                                    <div class="mb-3">
-                                        <input type="email" v-model="loginData.email" class="form-control"
-                                            id="recipient-name" placeholder="Email" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <input type="password" v-model="loginData.password" class="form-control"
-                                            id="recipient-name" placeholder="Пароль" required>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" @click="login">Войти</button>
-                            </div>
+            <div class="container">
+                <div class="header">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <router-link to="/" class="nav-link"
+                                :class="{ 'active': $route.path === '/' }"><strong>Контакты</strong></router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/apartment" class="nav-link"
+                                :class="{ 'active': $route.path === '/apartment' }"><strong>Квартиры</strong></router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/house" class="nav-link"
+                                :class="{ 'active': $route.path === '/house' }"><strong>Дома</strong></router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/street" class="nav-link"
+                                :class="{ 'active': $route.path === '/street' }"><strong>Улицы</strong></router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/city" class="nav-link"
+                                :class="{ 'active': $route.path === '/city' }"><strong>Города</strong></router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/phonebook" class="nav-link"
+                                :class="{ 'active': $route.path === '/phonebook' }"><strong>Навигация</strong></router-link>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="loginModalLabel">Вход</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form @submit.prevent="login">
+                                <div class="mb-3">
+                                    <input type="email" v-model="loginData.username" class="form-control"
+                                        id="recipient-name" placeholder="Email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="password" v-model="loginData.password" class="form-control"
+                                        id="recipient-name" placeholder="Пароль" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                                @click="login">Войти</button>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            <!-- <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
@@ -106,53 +121,72 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </div> -->
         </div>
     </div>
 </template>
 
 <script>
 import axios from 'axios';
+import { apiBaseUrl } from '@/scripts/urls.js';
+import Alert from '../components/Alert.vue';
+
 export default {
     data() {
         return {
             loginData: {
-                email: '',
-                password: '',
-            },
-            registerData: {
                 username: '',
-                email: '',
                 password: '',
             },
+            alertMessage: null,
+            alertType: null,
+            isLoggedIn: false,
+            userEmail: null,
         };
     },
+    components: {
+        Alert,
+    },
     methods: {
+        showAlert(message, type) {
+            this.alertMessage = message;
+            this.alertType = type;
+        },
         async login() {
             try {
-                const response = await axios.post('https://localhost:5001/token', this.loginData);
-                // Обработка успешного входа
-                console.log('Успешный вход:', response.data);
-
-                // Добавим вывод информации о роли пользователя
-                if (response.data && response.data.username) {
-                    const role = response.data.role || 'user'; // Если роль не указана, считаем, что это пользователь
-                    console.log('Роль пользователя:', role);
+                const response = await axios.post(`${apiBaseUrl}/api/auth/login`, this.loginData);
+                console.log(response.data.message);
+                this.isLoggedIn = true;
+                const loginButton = document.querySelector('.btn-outline-light');
+                if (loginButton) {
+                    loginButton.innerText = 'Выйти';
                 }
+                this.alertMessage = 'Вы вошли в аккаунт';
+                this.showAlert(this.alertMessage, 'success');
             } catch (error) {
-                // Обработка ошибок
-                console.error('Ошибка входа:', error);
+                console.error(error.response.data.message);
+                this.alertMessage = 'Неверный логин или пароль';
+                this.showAlert(this.alertMessage, 'danger');
             }
         },
-        async register() {
+        async logout() {
             try {
-                const response = await axios.post('ссылка на ваш API для регистрации', this.registerData);
-                // Обработка успешной регистрации
-                console.log(response.data);
+                // You need to send a request to your server to perform the logout
+                const response = await axios.post(`${apiBaseUrl}/api/auth/logout`);
+                console.log(response.data.message);
+
+                // Update UI and state after successful logout
+                this.isLoggedIn = false;
+                const loginButton = document.querySelector('.btn-outline-light');
+                if (loginButton) {
+                    loginButton.innerText = 'Войти';
+                }
+
+                this.alertMessage = 'Вы вышли из аккаунта';
+                this.showAlert(this.alertMessage, 'success');
             } catch (error) {
-                // Обработка ошибок
-                console.error('Ошибка регистрации:', error);
+                console.error(error.response.data.message);
+                this.showAlert(error.response.data, 'danger');
             }
         },
     },
@@ -163,6 +197,10 @@ export default {
 <style src="../styles/bootstrap-icons.css"></style>
 
 <style scoped>
+.user-info {
+    color: white;
+}
+
 .auth-container {
     display: flex;
     justify-content: space-between;
@@ -170,7 +208,7 @@ export default {
 }
 
 .btn {
-    margin: 3px;
+    margin-left: 12px;
 }
 
 .header-container {
@@ -179,7 +217,7 @@ export default {
 }
 
 .container {
-    height: 73px;
+    height: 50px;
     display: flex;
     align-items: flex-end;
 }
